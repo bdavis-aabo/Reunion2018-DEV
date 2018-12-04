@@ -1,9 +1,27 @@
 # Exclude these files from the git repo
+wp-admin/*
+wp-includes/*
 wp-content/backup/*
 wp-content/cache/*
 wp-content/upgrade/*
 wp-content/uploads/*
+
 sitemap.*
+index.php
+license.txt
+wp-activate.php
+wp-blog-header.php
+wp-comments-post.php
+wp-config-sample.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackbck.php
+xmlrpc.php
 wp-config.php
 
 # Hidden system files
