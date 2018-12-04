@@ -1,9 +1,0 @@
-# Attempt to load files from production server if they're
-# not in local files
-<IfModule mod_rewrite.c>
-#  RewriteEngine on
-#  RewriteCond %{REQUEST_FILENAME} !-d
-#  RewriteCond %{REQUEST_FILENAME} !-f
-#
-#  RewriteRule (.*) https://reunionco.com/wp-content/uploads/$1
-</IfModule>
