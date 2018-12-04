@@ -9,6 +9,7 @@ wp-content/uploads/*
 sitemap.*
 index.php
 license.txt
+readme.html
 wp-activate.php
 wp-blog-header.php
 wp-comments-post.php
@@ -20,7 +21,7 @@ wp-login.php
 wp-mail.php
 wp-settings.php
 wp-signup.php
-wp-trackbck.php
+wp-trackback.php
 xmlrpc.php
 wp-config.php
 
@@ -31,3 +32,4 @@ wp-config.php
 
 # Include these files in previously blocked directories
 !wp-content/uploads/.htaccess
+!wp-content/themes/*/index.php
