@@ -6,7 +6,7 @@ use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\UI\Notice;
 use DeliciousBrains\WPMDB\Common\UI\TemplateBase;
 use DeliciousBrains\WPMDB\Common\Util\Util;
@@ -19,17 +19,53 @@ use DeliciousBrains\WPMDB\Common\Util\Util;
  */
 class CompatibilityManager {
 
+	/**
+	 * @var string
+	 */
 	public $mu_plugin_source;
+	/**
+	 * @var string
+	 */
 	public $mu_plugin_dest;
+	/**
+	 * @var Filesystem
+	 */
 	public $filesystem;
+	/**
+	 * @var
+	 */
 	public $settings;
+	/**
+	 * @var string
+	 */
 	public $compatibility_plugin_version;
+	/**
+	 * @var string
+	 */
 	public $mu_plugin_dir;
+	/**
+	 * @var Properties
+	 */
 	public $props;
+	/**
+	 * @var Properties
+	 */
 	public static $static_props;
+	/**
+	 * @var Notice
+	 */
 	public $notices;
+	/**
+	 * @var TemplateBase
+	 */
 	public $template;
+	/**
+	 * @var Http
+	 */
 	public $http;
+	/**
+	 * @var MigrationStateManager
+	 */
 	public $migration_state;
 
 	public function __construct(
@@ -55,7 +91,7 @@ class CompatibilityManager {
 
 
 		//Version of the compatibility plugin, to force an update of the MU plugin, increment this value
-		$this->compatibility_plugin_version = '1.1';
+		$this->compatibility_plugin_version = '1.2';
 
 		$this->mu_plugin_dir    = $this->props->mu_plugin_dir;
 		$this->mu_plugin_source = $this->props->mu_plugin_source;
@@ -90,11 +126,11 @@ class CompatibilityManager {
 		return false;
 	}
 
-	/*
+	/**
 	 * Checks if the compatibility mu-plugin requires an update based on the 'compatibility_plugin_version' setting in
 	 * the database
 	 *
-	 * @param $wpmdb_settings
+	 * @param bool $wpmdb_settings
 	 *
 	 * @return bool
 	 */

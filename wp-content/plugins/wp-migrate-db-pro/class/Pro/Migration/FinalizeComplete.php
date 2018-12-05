@@ -11,7 +11,7 @@ use DeliciousBrains\WPMDB\Common\Migration\FinalizeMigration;
 use DeliciousBrains\WPMDB\Common\Migration\MigrationManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 
 class FinalizeComplete {
 

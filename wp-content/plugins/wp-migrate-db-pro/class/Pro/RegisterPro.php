@@ -6,11 +6,50 @@ use DeliciousBrains\WPMDB\Container;
 
 class RegisterPro {
 
-	public $license_responses, $migration_manager, $license, $template, $import, $beta_manager, $addon, $pro_migration_manager;
-	private $pro_plugin_manager;
-	private $menu;
+	/**
+	 * @var
+	 */
+	private $pro_migration_manager;
+	/**
+	 * @var
+	 */
+	private $migration_manager;
+	/**
+	 * @var
+	 */
 	private $usage_tracking;
-
+	/**
+	 * @var
+	 */
+	private $template;
+	/**
+	 * @var
+	 */
+	private $license;
+	/**
+	 * @var
+	 */
+	private $import;
+	/**
+	 * @var
+	 */
+	private $addon;
+	/**
+	 * @var
+	 */
+	private $beta_manager;
+	/**
+	 * @var
+	 */
+	private $pro_plugin_manager;
+	/**
+	 * @var
+	 */
+	private $menu;
+	/**
+	 * @var mixed|object
+	 */
+	private $backups_manager;
 	/**
 	 * @see Addons and the Pro plugin call this
 	 */
@@ -199,8 +238,17 @@ class RegisterPro {
 			          'migration_state_manager',
 			          'dynamic_properties',
 		          ] );
+		//Backups
+		$container->add( 'backups_manager', 'DeliciousBrains\WPMDB\Pro\Backups\BackupsManager' )
+		          ->withArguments( [
+			          'http',
+			          'filesystem'
+		          ] );
 	}
 
+	/**
+	 *
+	 */
 	public function loadTransfersContainer() {
 		$container = Container::getInstance();
 
@@ -272,9 +320,11 @@ class RegisterPro {
 			          'migration_state_manager',
 			          'form_data',
 		          ] );
-
 	}
 
+	/**
+	 *
+	 */
 	public function register() {
 		$container                   = Container::getInstance();
 		$this->pro_migration_manager = $container->get( 'pro_migration_manager' );
@@ -286,7 +336,8 @@ class RegisterPro {
 		$this->beta_manager          = $container->get( 'beta_manager' );
 		$this->pro_plugin_manager    = $container->get( 'pro_plugin_manager' );
 		$this->menu                  = $container->get( 'menu' );
-		$this->usage_tracking = $container->get( 'usage_tracking' );
+		$this->usage_tracking        = $container->get( 'usage_tracking' );
+		$this->backups_manager       = $container->get( 'backups_manager' );
 
 		// Register other class actions and filters
 		$this->pro_migration_manager->register();
@@ -299,5 +350,6 @@ class RegisterPro {
 		$this->pro_plugin_manager->register();
 		$this->menu->register();
 		$this->usage_tracking->register();
+		$this->backups_manager->register();
 	}
 }

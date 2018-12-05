@@ -4,7 +4,7 @@ namespace DeliciousBrains\WPMDB\Pro\Transfers;
 
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 
 class Receiver {
 

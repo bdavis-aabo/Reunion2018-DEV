@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Common\FormData\FormData;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Pro\UI\Template;
 
 class UsageTracking {

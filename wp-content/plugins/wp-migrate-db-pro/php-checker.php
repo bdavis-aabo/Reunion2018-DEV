@@ -19,14 +19,14 @@ class WPMDB_PHP_Checker {
 	public $path;
 	public static $base_message, $php_doc_link, $min_php;
 
-	public function __construct( $path ) {
+	public function __construct( $path, $min_php ) {
 		$this->path         = $path;
 
-		self::$min_php      = '5.4'; // To increase the minimum PHP required, change this value _AND_ WPMDB_MINIMUM_PHP_VERSION in the main plugin files
+		self::$min_php      =  $min_php; // To increase the minimum PHP required, change this value _AND_ WPMDB_MINIMUM_PHP_VERSION in the main plugin files
 		self::$base_message = __( '%s requires PHP version %s or higher and cannot be activated. You are currently running version %s. <a href="%s">Learn&nbsp;More&nbsp;»</a>', 'wp-migrate-db' );
 		self::$php_doc_link = 'https://deliciousbrains.com/wp-migrate-db-pro/doc/upgrading-php/';
 
-		add_action( 'admin_init', array( $this, 'check_version' ) );
+		add_action( 'admin_init', array( $this, 'maybe_deactivate_plugin' ) );
 	}
 
 	public static function wpmdb_php_version_too_low() {
@@ -37,16 +37,24 @@ class WPMDB_PHP_Checker {
 		wp_die( sprintf( self::$base_message, __( 'WP Migrate DB Pro' ), self::$min_php, PHP_VERSION, self::$php_doc_link ) );
 	}
 
-	public function check_version() {
-		if ( version_compare( PHP_VERSION, self::$min_php, '<' ) ) {
-			if ( is_plugin_active( plugin_basename( $this->path ) ) ) {
-				deactivate_plugins( plugin_basename( $this->path ) );
-				add_action( 'admin_notices', array( $this, 'disabled_notice' ) );
-				if ( isset( $_GET['activate'] ) ) {
-					unset( $_GET['activate'] );
-				}
-			}
+	public function maybe_deactivate_plugin() {
+		if ( version_compare( PHP_VERSION, self::$min_php, '>=' ) || ! is_plugin_active( plugin_basename( $this->path ) ) ) {
+			return;
 		}
+
+		deactivate_plugins( plugin_basename( $this->path ) );
+		add_action( 'admin_notices', array( $this, 'disabled_notice' ) );
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
+		}
+	}
+
+	public function is_compatible_check() {
+		if ( version_compare( PHP_VERSION, self::$min_php, '<' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public function disabled_notice() {

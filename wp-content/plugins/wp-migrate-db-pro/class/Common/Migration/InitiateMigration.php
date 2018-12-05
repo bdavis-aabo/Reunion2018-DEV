@@ -15,8 +15,13 @@ use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class InitiateMigration {
-
+	/**
+	 * @var
+	 */
 	public $state_data;
+	/**
+	 * @var FormData
+	 */
 	public $form_data;
 	/**
 	 * @var MigrationStateManager
@@ -50,7 +55,6 @@ class InitiateMigration {
 	 * @var Filesystem
 	 */
 	private $filesystem;
-
 	/**
 	 * @var ErrorLog
 	 */
@@ -59,6 +63,9 @@ class InitiateMigration {
 	 * @var MigrationState
 	 */
 	private $migration_state;
+	/**
+	 * @var mixed
+	 */
 	private $form_data_arr;
 
 	public function __construct(

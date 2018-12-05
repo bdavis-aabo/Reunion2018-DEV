@@ -1,6 +1,6 @@
 <?php
 
-namespace DeliciousBrains\WPMDBMF\Cli;
+namespace DeliciousBrains\WPMDBMF\CliCommand;
 
 use DeliciousBrains\WPMDB\Common\Cli\Cli;
 use DeliciousBrains\WPMDB\Common\Cli\CliManager;

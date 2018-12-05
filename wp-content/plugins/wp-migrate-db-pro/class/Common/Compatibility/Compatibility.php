@@ -4,8 +4,17 @@ namespace DeliciousBrains\WPMDB\Common\Compatibility;
 
 class Compatibility {
 
+	/**
+	 * @var string
+	 */
 	protected $muplugin_class_dir;
+	/**
+	 * @var string
+	 */
 	protected $muplugin_dir;
+	/**
+	 * @var
+	 */
 	protected $default_whitelisted_plugins;
 
 	public function __construct() {

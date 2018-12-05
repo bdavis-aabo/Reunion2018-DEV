@@ -21,6 +21,13 @@ class Menu {
 	private $assets;
 	private $template;
 
+	/**
+	 * Menu constructor.
+	 *
+	 * @param Properties        $properties
+	 * @param PluginManagerBase $plugin_manager_base
+	 * @param Assets            $assets
+	 */
 	public function __construct(
 		Properties $properties,
 		PluginManagerBase $plugin_manager_base,

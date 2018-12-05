@@ -7,11 +7,10 @@ use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class RemotePost extends Http {
-
 	/**
 	 * @var Properties
 	 */

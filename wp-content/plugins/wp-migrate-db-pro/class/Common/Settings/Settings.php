@@ -1,14 +1,22 @@
 <?php
 
-namespace DeliciousBrains\WPMDB\Common;
+namespace DeliciousBrains\WPMDB\Common\Settings;
 
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class Settings {
 
+	/**
+	 * @var Util
+	 */
 	public $util;
+	/**
+	 * @var
+	 */
 	private $settings;
-
+	/**
+	 * @var
+	 */
 	private static $static_settings;
 	// The constructor is private
 	// to prevent initiation with outer code.

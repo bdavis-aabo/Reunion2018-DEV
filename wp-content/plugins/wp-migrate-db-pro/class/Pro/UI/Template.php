@@ -7,7 +7,7 @@ use DeliciousBrains\WPMDB\Common\FormData\FormData;
 use DeliciousBrains\WPMDB\Common\Profile\ProfileManager;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\UI\Notice;
 use DeliciousBrains\WPMDB\Common\Util\Util;
@@ -17,7 +17,26 @@ use DeliciousBrains\WPMDB\Pro\Plugin\ProPluginManager;
 
 class Template extends \DeliciousBrains\WPMDB\Common\UI\TemplateBase {
 
-	public $notice, $form_data, $dynamic_props, $addons, $license;
+	/**
+	 * @var Notice
+	 */
+	public $notice;
+	/**
+	 * @var FormData
+	 */
+	public $form_data;
+	/**
+	 * @var DynamicProperties
+	 */
+	public $dynamic_props;
+	/**
+	 * @var
+	 */
+	public $addons;
+	/**
+	 * @var License
+	 */
+	public $license;
 	/**
 	 * @var Addon
 	 */
@@ -49,21 +68,45 @@ class Template extends \DeliciousBrains\WPMDB\Common\UI\TemplateBase {
 		$this->dynamic_props  = $dynamic_properties;
 		$this->addon          = $addon;
 		$this->plugin_manager = $plugin_manager;
+
+		// Insert backups tab into plugin_tabs array
+		array_splice( $this->plugin_tabs, 1, 0, [
+			[
+				'slug'  => 'backups',
+				'title' => _x( 'Backups', 'Get backups', 'wp-migrate-db' ),
+			],
+		] );
 	}
 
 	public function register() {
 		// templating actions
-		add_action( 'wpmdb_notices', array( $this, 'template_outdated_addons_warning' ) );
-		add_action( 'wpmdb_notices', array( $this, 'template_secret_key_warning' ) );
-		add_action( 'wpmdb_notices', array( $this, 'template_block_external_warning' ) );
+		add_action( 'wpmdb_notices', [ $this, 'template_outdated_addons_warning' ] );
+		add_action( 'wpmdb_notices', [ $this, 'template_secret_key_warning' ] );
+		add_action( 'wpmdb_notices', [ $this, 'template_block_external_warning' ] );
 
 		$accepted_fields = $this->form_data->get_accepted_fields();
-		$accepted_fields = array_diff( $accepted_fields, array( 'exclude_post_revisions' ) );
+		$accepted_fields = array_diff( $accepted_fields, [ 'exclude_post_revisions' ] );
 		$this->form_data->set_accepted_fields( $accepted_fields );
 
-		remove_action( 'wpmdb_advanced_options', array( $this, 'template_exclude_post_revisions' ) );
+		remove_action( 'wpmdb_advanced_options', [ $this, 'template_exclude_post_revisions' ] );
+
+		add_action( 'admin_init', [ $this, 'toggle_locked_row' ] );
 	}
 
+	public function toggle_locked_row() {
+		if ( isset( $_GET['wpmdb-profile'] )
+		     && ( isset( $_GET['page'] ) && in_array( $_GET['page'], [ 'wp-migrate-db-pro', 'wp-migrate-db' ] ) ) ) {
+			$loaded_profile = $this->profile->get_profile( (int) $_GET['wpmdb-profile'] );
+		} else {
+			$loaded_profile = $this->profile->default_profile;
+		}
+
+		if ( isset( $loaded_profile['mst_select_subsite'] ) ) {
+			add_filter( 'wpmdb_lock_find_replace_row', function () {
+				return true;
+			} );
+		}
+	}
 
 	function template_import_radio_button( $loaded_profile ) {
 		$args = array(
@@ -172,7 +215,7 @@ class Template extends \DeliciousBrains\WPMDB\Common\UI\TemplateBase {
 					'title' => __( 'UI Walkthrough', 'wp-migrate-db' ),
 					'desc'  => __( 'A brief walkthrough of the WP Migrate DB plugin showing all of the different options and explaining them.', 'wp-migrate-db' ),
 				),
-				'fHFcH4bCzmU' => array(
+				'8u_kX5d78Bs' => array(
 					'title' => __( 'Pulling Live Data Into Your Local Development&nbsp;Environment', 'wp-migrate-db' ),
 					'desc'  => __( 'This screencast demonstrates how you can pull data from a remote, live WordPress install and update the data in your local development environment.', 'wp-migrate-db' ),
 				),

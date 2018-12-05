@@ -11,7 +11,7 @@ use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Sanitize;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Pro\Beta\BetaManager;
 
@@ -26,7 +26,9 @@ class License {
 	 * @var Http
 	 */
 	private $http;
-
+	/**
+	 * @var static $license_key
+	 */
 	private static $license_key;
 	/**
 	 * @var ErrorLog
@@ -44,7 +46,14 @@ class License {
 	 * @var RemotePost
 	 */
 	private $remote_post;
+	/**
+	 * @var DynamicProperties
+	 */
 	private $dynamic_props;
+	/**
+	 * @var static $static_settings
+	 */
+	private static $static_settings;
 
 	public function __construct(
 		Api $api,
@@ -73,7 +82,8 @@ class License {
 		$this->scrambler               = $scrambler;
 		$this->remote_post             = $remote_post;
 
-		self::$license_key             = $this->settings['licence'];
+		self::$license_key    = $this->settings['licence'];
+		self::$static_settings = $this->settings;
 	}
 
 	public function register() {
@@ -196,7 +206,10 @@ class License {
 
 
 	public static function get_license() {
-		return static::$license_key;
+		$settings = self::$static_settings;
+		$license  = defined( 'WPMDB_LICENCE' ) ? WPMDB_LICENCE : $settings['licence'];
+
+		return $license;
 	}
 
 	public function setup_license_responses( $plugin_base ) {

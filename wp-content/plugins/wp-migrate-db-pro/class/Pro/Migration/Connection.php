@@ -14,7 +14,7 @@ use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Multisite\Multisite;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Sql\TableHelper;
 use DeliciousBrains\WPMDB\Common\Util\Util;

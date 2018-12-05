@@ -7,7 +7,7 @@ use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Multisite\Multisite;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Sanitize;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\UI\TemplateBase;
 use DeliciousBrains\WPMDB\Common\Util\Util;
@@ -19,12 +19,61 @@ use DeliciousBrains\WPMDB\Common\Util\Util;
  */
 class PluginManagerBase {
 
-	public $props, $settings, $assets, $util, $tables, $http, $license, $filesystem, $addon, $multisite, $api, $download;
+	/**
+	 * @var Properties
+	 */
+	public $props;
+	/**
+	 * @var $settings
+	 */
+	public $settings;
+	/**
+	 * @var Assets
+	 */
+	public $assets;
+	/**
+	 * @var Util
+	 */
+	public $util;
+	/**
+	 * @var Table
+	 */
+	public $tables;
+	/**
+	 * @var Http
+	 */
+	public $http;
+	/**
+	 * @var Filesystem
+	 */
+	public $filesystem;
+	/**
+	 * @var
+	 */
+	public $addon;
+	/**
+	 * @var Multisite
+	 */
+	public $multisite;
 	/**
 	 * @var TemplateBase
 	 */
 	protected $template_base;
 
+	/**
+	 * PluginManagerBase constructor.
+	 *
+	 * Free and Pro extend this class
+	 *
+	 * @param Settings   $settings
+	 * @param Assets     $assets
+	 * @param Util       $util
+	 * @param Table      $table
+	 * @param Http       $http
+	 * @param Filesystem $filesystem
+	 * @param Multisite  $multisite
+	 * @param Properties $properties
+	 */
 	public function __construct(
 		Settings $settings,
 		Assets $assets,
@@ -35,14 +84,14 @@ class PluginManagerBase {
 		Multisite $multisite,
 		Properties $properties
 	) {
-		$this->props         = $properties;
-		$this->settings      = $settings->get_settings();
-		$this->assets        = $assets;
-		$this->util          = $util;
-		$this->tables        = $table;
-		$this->http          = $http;
-		$this->filesystem    = $filesystem;
-		$this->multisite     = $multisite;
+		$this->props      = $properties;
+		$this->settings   = $settings->get_settings();
+		$this->assets     = $assets;
+		$this->util       = $util;
+		$this->tables     = $table;
+		$this->http       = $http;
+		$this->filesystem = $filesystem;
+		$this->multisite  = $multisite;
 	}
 
 	/**
@@ -51,15 +100,69 @@ class PluginManagerBase {
 	public function register() {
 		// display a notice when either WP Migrate DB or WP Migrate DB Pro is automatically deactivated
 		add_action( 'pre_current_active_plugins', array( $this, 'plugin_deactivated_notice' ) );
-
 		// check if WP Engine is filtering the buffer and prevent it
 		add_action( 'plugins_loaded', array( $this, 'maybe_disable_wp_engine_filtering' ) );
 		add_action( 'wp_ajax_wpmdb_process_notice_link', array( $this, 'ajax_process_notice_link' ) );
-
 		add_action( 'wp_ajax_wpmdb_process_notice_link', array( $this, 'ajax_process_notice_link' ) );
 
 		//Remove 'Expect' header which some setups have issues with
 		add_filter( 'http_request_args', array( $this->util, 'preempt_expect_header' ), 10, 2 );
+
+		add_action( 'admin_init', array( $this, 'maybe_schema_update' ) );
+	}
+
+	/**
+	 * Performs a schema update if required.
+	 *
+	 */
+	public function maybe_schema_update() {
+		if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
+			return;
+		}
+
+		$schema_version = get_site_option( 'wpmdb_schema_version' );
+		$update_schema  = false;
+
+		/*
+		 * Upgrade this option to a network wide option if the site has been upgraded
+		 * from a regular WordPress installation to a multisite installation.
+		 */
+		if ( false === $schema_version && is_multisite() && is_network_admin() ) {
+			$schema_version = get_option( 'wpmdb_schema_version' );
+			if ( false !== $schema_version ) {
+				update_site_option( 'wpmdb_schema_version', $schema_version );
+				delete_option( 'wpmdb_schema_version' );
+			}
+		}
+
+		do_action( 'wpmdb_before_schema_update', $schema_version );
+
+		if ( false === $schema_version ) {
+			$schema_version = 0;
+		}
+
+		if ( $schema_version < 1 ) {
+			$error_log = get_option( 'wpmdb_error_log' );
+			// skip multisite installations as we can't use add_site_option because it doesn't include an 'autoload' argument
+			if ( false !== $error_log && false === is_multisite() ) {
+				delete_option( 'wpmdb_error_log' );
+				add_option( 'wpmdb_error_log', $error_log, '', 'no' );
+			}
+
+			$update_schema  = true;
+			$schema_version = 1;
+		}
+
+		if ( $schema_version < 2 ) {
+			$update_schema  = true;
+			$schema_version = 2;
+		}
+
+		if ( true === $update_schema ) {
+			update_site_option( 'wpmdb_schema_version', $schema_version );
+		}
+
+		do_action( 'wpmdb_after_schema_update', $schema_version );
 	}
 
 	function plugin_deactivated_notice() {
@@ -188,7 +291,7 @@ class PluginManagerBase {
 	 * @return bool|null
 	 */
 	public function ajax_process_notice_link() {
-		Util::check_ajax_referer( 'process-notice-link' );
+		$this->http->check_ajax_referer( 'process-notice-link' );
 
 		$key_rules = array(
 			'action'   => 'key',

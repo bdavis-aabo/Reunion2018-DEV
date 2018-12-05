@@ -16,7 +16,8 @@ use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Profile\ProfileManager;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Replace;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\SettingsManager;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Sql\TableHelper;
 use DeliciousBrains\WPMDB\Common\UI\Notice;
@@ -41,6 +42,7 @@ class ServiceProvider extends AbstractServiceProvider {
 		'util',
 		'filesystem',
 		'settings',
+		'settings_manager',
 		'error_log',
 		'http',
 		'http_helper',
@@ -73,6 +75,7 @@ class ServiceProvider extends AbstractServiceProvider {
 	private $properties;
 	private $util;
 	private $settings;
+	private $settings_manager;
 	private $error_log;
 	private $dynamic_props;
 	private $scrambler;
@@ -113,7 +116,7 @@ class ServiceProvider extends AbstractServiceProvider {
 	 * $this->get('DeliciousBrains\WPMDB\Common\SomeClass'); // new instance of `SomeClass`
 	 *
 	 * @TODO Generate this automatically
-	 * @see http://container.thephpleague.com/2.x/basic-usage/
+	 * @see  http://container.thephpleague.com/2.x/basic-usage/
 	 *
 	 */
 	public function setupSharedClasses() {
@@ -309,6 +312,13 @@ class ServiceProvider extends AbstractServiceProvider {
 			$this->util,
 			$this->properties
 		);
+
+		$this->settings_manager = new SettingsManager(
+			$this->http,
+			$this->settings,
+			$this->migration_state_manager,
+			$this->error_log
+		);
 	}
 
 	/**
@@ -449,5 +459,7 @@ class ServiceProvider extends AbstractServiceProvider {
 		$this->getContainer()->add( 'finalize_migration', $this->finalize_migration );
 		// MigrationManager
 		$this->getContainer()->add( 'migration_manager', $this->migration_manager );
+		//SettingsManager
+		$this->getContainer()->add( 'settings_manager', $this->settings_manager );
 	}
 }

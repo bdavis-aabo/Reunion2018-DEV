@@ -10,7 +10,7 @@ use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Http\RemotePost;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class MediaFilesLocal extends MediaFilesBase {

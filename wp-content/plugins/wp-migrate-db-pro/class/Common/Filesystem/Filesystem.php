@@ -8,12 +8,29 @@ use DeliciousBrains\WPMDB\Container;
 class Filesystem {
 
 	use Singleton;
-
+	/**
+	 * @var
+	 */
 	private $wp_filesystem;
+	/**
+	 * @var
+	 */
 	private $credentials;
+	/**
+	 * @var bool
+	 */
 	private $use_filesystem = false;
+	/**
+	 * @var int
+	 */
 	private $chmod_dir;
+	/**
+	 * @var int
+	 */
 	private $chmod_file;
+	/**
+	 * @var \DeliciousBrains\WPMDB\League\Container\Container|null
+	 */
 	private $container;
 
 	/**
@@ -22,10 +39,8 @@ class Filesystem {
 	 * @param bool $force_no_fs
 	 */
 	public function __construct( $force_no_fs = false ) {
-		if ( ! $force_no_fs && function_exists( 'request_filesystem_credentials' ) ) {
-			if ( ( defined( 'WPMDB_WP_FILESYSTEM' ) && WPMDB_WP_FILESYSTEM ) || ! defined( 'WPMDB_WP_FILESYSTEM' ) ) {
-				$this->maybe_init_wp_filesystem();
-			}
+		if ( ! $force_no_fs ) {
+			add_action( 'admin_init', [ $this, 'check_for_wp_filesystem' ] );
 		}
 
 		// Set default permissions
@@ -42,6 +57,14 @@ class Filesystem {
 		}
 
 		$this->container = Container::getInstance();
+	}
+
+	public function check_for_wp_filesystem() {
+		if ( function_exists( 'request_filesystem_credentials' ) ) {
+			if ( ( defined( 'WPMDB_WP_FILESYSTEM' ) && WPMDB_WP_FILESYSTEM ) || ! defined( 'WPMDB_WP_FILESYSTEM' ) ) {
+				$this->maybe_init_wp_filesystem();
+			}
+		}
 	}
 
 	/**
@@ -93,7 +116,7 @@ class Filesystem {
 	 */
 	public function maybe_init_wp_filesystem() {
 		ob_start();
-		$this->credentials = request_filesystem_credentials( '', '', false, false, null );
+		$this->credentials = \request_filesystem_credentials( '', '', false, false, null );
 		$ob_contents       = ob_get_contents();
 		ob_end_clean();
 
@@ -469,7 +492,6 @@ class Filesystem {
 		}
 
 		return $return;
-
 	}
 
 	/**
@@ -490,6 +512,7 @@ class Filesystem {
 		$return['absolute_path']   = $full_path;
 		$return['type']            = $this->is_dir( $abs_path . DIRECTORY_SEPARATOR . $entry ) ? 'd' : 'f';
 		$return['size']            = $this->filesize( $abs_path . DIRECTORY_SEPARATOR . $entry );
+		$return['filemtime']       = filemtime( $abs_path . DIRECTORY_SEPARATOR . $entry );
 
 		$exploded              = explode( DIRECTORY_SEPARATOR, $return['subpath'] );
 		$return['folder_name'] = isset( $exploded[1] ) ? $exploded[1] : $return['relative_path'];
@@ -834,5 +857,44 @@ class Filesystem {
 		} else {
 			fclose( $fp );
 		}
+	}
+
+	public function format_backup_name( $file_name ) {
+		$new_name = preg_replace( '/-\w{5}.sql/', '.sql${1}', $file_name );
+
+		return $new_name;
+	}
+
+	public function get_backups() {
+		$backup_dir = $this->get_upload_info( 'path' ) . DIRECTORY_SEPARATOR;
+		$files      = $this->scandir( $backup_dir );
+		$output     = [];
+
+		foreach ( $files as $file ) {
+			if ( ! preg_match( '/(.*)-backup-\d{14}-\w{5}.sql$/', $file['name'] ) ) {
+				continue;
+			}
+
+			$file_name_formatted = $this->format_backup_name( $file['name'] );
+
+			// Respects WordPress core options 'timezone_string' or 'gmt_offset'
+			$modified = get_date_from_gmt( date( 'Y-m-d H:i:s', $file['filemtime'] ), 'M d, Y g:i a' );
+
+			$backup_info = [
+				'path'         => $file['absolute_path'],
+				'modified'     => $modified,
+				'download_url' => WP_CONTENT_URL . DIRECTORY_SEPARATOR . $file['wp_content_path'],
+				'name'         => $file_name_formatted,
+				'raw_name'     => $file['name'],
+			];
+
+			$output[] = $backup_info;
+		}
+
+		if ( empty( $output ) ) {
+			return false;
+		}
+
+		return $output;
 	}
 }

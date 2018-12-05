@@ -5,7 +5,7 @@ namespace DeliciousBrains\WPMDB\Pro\Addon;
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\BackupExport;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Pro\Api;
 use DeliciousBrains\WPMDB\Pro\Beta\BetaManager;
 use DeliciousBrains\WPMDB\Pro\Download;
@@ -77,19 +77,19 @@ class Addon {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'               => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.4.11b1',
+				'required_version' => '1.4.11',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                               => array(
 				'name'             => 'CLI',
-				'required_version' => '1.3.4b1',
+				'required_version' => '1.3.4',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php'       => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.2.2b1',
+				'required_version' => '1.2.2',
 			),
 			'wp-migrate-db-pro-theme-plugin-files/wp-migrate-db-pro-theme-plugin-files.php' => array(
 				'name'             => 'Theme & Plugin Files',
-				'required_version' => '1.0.4b1',
+				'required_version' => '1.0.4',
 			),
 		);
 	}

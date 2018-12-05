@@ -18,9 +18,73 @@ use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class Table {
 
+	/**
+	 * @var int
+	 */
 	public $max_insert_string_len = 50000;
-	public $rows_per_segment, $create_alter_table_query, $filesystem, $form_data_container, $form_data, $query_template, $primary_keys, $row_tracker, $query_buffer, $current_chunk, $props, $state_data, $first_select, $wpdb;
+	/**
+	 * @var mixed|void
+	 */
+	public $rows_per_segment;
+	/**
+	 * @var
+	 */
+	public $create_alter_table_query;
+	/**
+	 * @var Filesystem
+	 */
+	public $filesystem;
+	/**
+	 * @var
+	 */
+	public $form_data_container;
+	/**
+	 * @var FormData
+	 */
+	public $form_data;
+	/**
+	 * @var
+	 */
+	public $query_template;
+	/**
+	 * @var
+	 */
+	public $primary_keys;
+	/**
+	 * @var
+	 */
+	public $row_tracker;
+	/**
+	 * @var
+	 */
+	public $query_buffer;
+	/**
+	 * @var
+	 */
+	public $current_chunk;
+	/**
+	 * @var Properties
+	 */
+	public $props;
+	/**
+	 * @var
+	 */
+	public $state_data;
+	/**
+	 * @var
+	 */
+	public $first_select;
+	/**
+	 * @var
+	 */
+	public $wpdb;
+	/**
+	 * @var DynamicProperties
+	 */
 	public $dynamic_props;
+	/**
+	 * @var Replace
+	 */
 	public $replace;
 	/**
 	 * @var Util
@@ -59,6 +123,23 @@ class Table {
 	 */
 	private $query_size;
 
+	/**
+	 * Table constructor.
+	 *
+	 * @param Filesystem            $filesystem
+	 * @param Util                  $util
+	 * @param ErrorLog              $error_log
+	 * @param MigrationStateManager $migration_state_manager
+	 * @param FormData              $form_data
+	 * @param TableHelper           $table_helper
+	 * @param Multisite             $multisite
+	 * @param Http                  $http
+	 * @param Helper                $http_helper
+	 * @param RemotePost            $remote_post
+	 * @param Properties            $properties
+	 * @param DynamicProperties     $dynamic_properties
+	 * @param Replace               $replace
+	 */
 	public function __construct(
 		Filesystem $filesystem,
 		Util $util,

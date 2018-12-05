@@ -6,8 +6,22 @@ use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class FormData {
-
-	private $util, $form_data, $accepted_fields, $migration_state_manager;
+	/**
+	 * @var Util
+	 */
+	private $util;
+	/**
+	 * @var
+	 */
+	public $form_data;
+	/**
+	 * @var array
+	 */
+	public $accepted_fields;
+	/**
+	 * @var MigrationStateManager
+	 */
+	public $migration_state_manager;
 
 	public function __construct(
 		Util $util,

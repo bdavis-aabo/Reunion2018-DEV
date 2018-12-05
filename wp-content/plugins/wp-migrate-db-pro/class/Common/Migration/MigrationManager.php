@@ -25,6 +25,9 @@ class MigrationManager {
 	 * @var FormData
 	 */
 	public $form_data;
+	/**
+	 * @var DynamicProperties
+	 */
 	public $dynamic_props;
 	/**
 	 * @var MigrationStateManager

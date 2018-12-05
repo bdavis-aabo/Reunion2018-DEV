@@ -5,14 +5,47 @@ namespace DeliciousBrains\WPMDB\Common\UI;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\Profile\ProfileManager;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class TemplateBase {
 
-	public $plugin_tabs, $props, $settings, $util, $compatibility_manager, $template_pro, $profile, $filesystem;
-
+	/**
+	 * @var array
+	 */
+	public $plugin_tabs;
+	/**
+	 * @var Properties
+	 */
+	public $props;
+	/**
+	 * @var
+	 */
+	public $settings;
+	/**
+	 * @var Util
+	 */
+	public $util;
+	/**
+	 * @var
+	 */
+	public $compatibility_manager;
+	/**
+	 * @var
+	 */
+	public $template_pro;
+	/**
+	 * @var ProfileManager
+	 */
+	public $profile;
+	/**
+	 * @var Filesystem
+	 */
+	public $filesystem;
+	/**
+	 * @var bool
+	 */
 	public $lock_url_find_replace_row = false;
 
 	/**
@@ -38,14 +71,26 @@ class TemplateBase {
 			$this->lock_url_find_replace_row = true;
 		}
 
-		$this->plugin_tabs = array(
-			'<a href="#" class="nav-tab nav-tab-active js-action-link migrate" data-div-name="migrate-tab">' . esc_html( _x( 'Migrate', 'Configure a migration or export', 'wp-migrate-db' ) ) . '</a>',
-			'<a href="#" class="nav-tab js-action-link settings" data-div-name="settings-tab">' . esc_html( _x( 'Settings', 'Plugin configuration and preferences', 'wp-migrate-db' ) ) . '</a>',
-			'<a href="#" class="nav-tab js-action-link addons" data-div-name="addons-tab">' . esc_html( _x( 'Addons', 'Plugin extensions', 'wp-migrate-db' ) ) . '</a>',
-			'<a href="#" class="nav-tab js-action-link help" data-div-name="help-tab">' . esc_html( _x( 'Help', 'Get help or contact support', 'wp-migrate-db' ) ) . '</a>',
-		);
-
 		$this->table = $table;
+
+		$this->plugin_tabs = [
+			[
+				'slug'  => 'migrate',
+				'title' => _x( 'Migrate', 'Configure a migration or export', 'wp-migrate-db' ),
+			],
+			[
+				'slug'  => 'settings',
+				'title' => _x( 'Settings', 'Plugin configuration and preferences', 'wp-migrate-db' ),
+			],
+			[
+				'slug'  => 'addons',
+				'title' => _x( 'Addons', 'Plugin extensions', 'wp-migrate-db' ),
+			],
+			[
+				'slug'  => 'help',
+				'title' => _x( 'Help', 'Get help or contact support', 'wp-migrate-db' ),
+			],
+		];
 	}
 
 	function template_compatibility() {
@@ -102,8 +147,14 @@ class TemplateBase {
 		}
 	}
 
-	function plugin_tabs() {
-		echo implode( '', $this->plugin_tabs );
+	public function plugin_tabs() {
+		$i = 0;
+		foreach ( $this->plugin_tabs as $tab ) {
+			$active = 0 === $i ? ' nav-tab-active' : '';
+			$tpl    = '<a href="#" class="nav-tab js-action-link%s %s" data-div-name="%s-tab">%s</a>';
+			printf( $tpl, $active, $tab['slug'], $tab['slug'], $tab['title'] );
+			$i ++;
+		}
 	}
 
 	/**

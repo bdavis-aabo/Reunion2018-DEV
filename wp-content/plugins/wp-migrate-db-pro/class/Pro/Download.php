@@ -3,11 +3,26 @@
 namespace DeliciousBrains\WPMDB\Pro;
 
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 
 class Download {
 
-	public $props, $api, $license, $settings;
+	/**
+	 * @var Properties
+	 */
+	public $props;
+	/**
+	 * @var
+	 */
+	public $api;
+	/**
+	 * @var
+	 */
+	public $license;
+	/**
+	 * @var Settings
+	 */
+	public $settings;
 
 	public function __construct(
 		Properties $props,
@@ -17,8 +32,13 @@ class Download {
 		$this->settings = $settings;
 	}
 
+	/**
+	 * @param      $plugin_slug
+	 * @param bool $is_beta
+	 *
+	 * @return string
+	 */
 	function get_plugin_update_download_url( $plugin_slug, $is_beta = false ) {
-
 		$licence = License::get_license();
 
 		$query_args = array(
@@ -35,6 +55,13 @@ class Download {
 		return add_query_arg( $query_args, Api::get_api_url() );
 	}
 
+	/**
+	 * @param $response
+	 * @param $args
+	 * @param $url
+	 *
+	 * @return \WP_Error
+	 */
 	function verify_download( $response, $args, $url ) {
 		if ( is_wp_error( $response ) ) {
 			return $response;

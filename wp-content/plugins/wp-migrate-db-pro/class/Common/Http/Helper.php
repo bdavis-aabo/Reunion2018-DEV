@@ -2,7 +2,7 @@
 
 namespace DeliciousBrains\WPMDB\Common\Http;
 
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 
 class Helper {
 

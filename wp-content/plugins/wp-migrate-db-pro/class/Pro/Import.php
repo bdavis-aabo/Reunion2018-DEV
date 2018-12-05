@@ -6,16 +6,63 @@ use DeliciousBrains\WPMDB\Common\BackupExport;
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\FormData\FormData;
+use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Util\Util;
-use DeliciousBrains\WPMDB\Common\Http\Http;
 
 class Import {
 
-	public $http, $props, $filesystem, $template, $error_log, $migration_state_manager, $form_data, $backup_export, $table;
+	/**
+	 * @var Http
+	 */
+	private $http;
+	/**
+	 * @var Properties
+	 */
+	private $props;
+	/**
+	 * @var Filesystem
+	 */
+	private $filesystem;
+	/**
+	 * @var
+	 */
+	protected $template;
+	/**
+	 * @var ErrorLog
+	 */
+	private $error_log;
+	/**
+	 * @var MigrationStateManager
+	 */
+	private $migration_state_manager;
+	/**
+	 * @var FormData
+	 */
+	private $form_data;
+	/**
+	 * @var BackupExport
+	 */
+	private $backup_export;
+	/**
+	 * @var Table
+	 */
+	private $table;
 
+	/**
+	 * Import constructor.
+	 *
+	 * @param Http                  $http
+	 * @param MigrationStateManager $migration_state_manager
+	 * @param ErrorLog              $error_log
+	 * @param Filesystem            $filesystem
+	 * @param BackupExport          $backup_export
+	 * @param Table                 $table
+	 * @param FormData              $form_data
+	 * @param Properties            $properties
+	 */
 	public function __construct(
 		Http $http,
 		MigrationStateManager $migration_state_manager,
@@ -50,6 +97,9 @@ class Import {
 	 */
 	protected $state_data;
 
+	/**
+	 *
+	 */
 	public function register() {
 		add_action( 'wp_ajax_wpmdb_get_import_info', array( $this, 'ajax_get_import_info' ) );
 		add_action( 'wp_ajax_wpmdb_upload_file', array( $this, 'ajax_upload_file' ) );

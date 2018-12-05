@@ -1,6 +1,6 @@
 <?php
 
-namespace DeliciousBrains\WPMDBMF\Cli;
+namespace DeliciousBrains\WPMDBMF\CliCommand;
 
 /**
  * Class WPMDBPro_Media_Files_CLI_Bar_NoOp

@@ -9,24 +9,75 @@ use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class Replace {
 
+	/**
+	 * @var
+	 */
 	protected $search;
+	/**
+	 * @var
+	 */
 	protected $replace;
+	/**
+	 * @var
+	 */
 	protected $subdomain_replaces_on;
+	/**
+	 * @var
+	 */
 	protected $intent;
+	/**
+	 * @var
+	 */
 	protected $base_domain;
+	/**
+	 * @var
+	 */
 	protected $site_domain;
+	/**
+	 * @var
+	 */
 	protected $site_details;
+	/**
+	 * @var
+	 */
 	protected $source_protocol;
+	/**
+	 * @var
+	 */
 	protected $destination_protocol;
+	/**
+	 * @var
+	 */
 	protected $destination_url;
+	/**
+	 * @var bool
+	 */
 	protected $is_protocol_mismatch = false;
 
+	/**
+	 * @var
+	 */
 	public $state_data;
+	/**
+	 * @var TableHelper
+	 */
 	public $table_helper;
+	/**
+	 * @var MigrationStateManager
+	 */
 	public $migration_state_manager;
 
+	/**
+	 * @var
+	 */
 	private $table;
+	/**
+	 * @var
+	 */
 	private $column;
+	/**
+	 * @var
+	 */
 	private $row;
 	/**
 	 * @var ErrorLog

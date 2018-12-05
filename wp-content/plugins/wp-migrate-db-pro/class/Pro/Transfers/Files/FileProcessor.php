@@ -11,7 +11,6 @@ use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
  */
 class FileProcessor {
 
-	public $wpmdb;
 	public $filesystem;
 
 	/**

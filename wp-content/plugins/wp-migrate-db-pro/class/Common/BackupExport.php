@@ -7,12 +7,11 @@ use DeliciousBrains\WPMDB\Common\FormData\FormData;
 use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Sql\TableHelper;
 
 class BackupExport {
-
-	public $props, $api, $license, $settings, $fp;
 	/**
 	 * @var Filesystem
 	 */
@@ -31,7 +30,18 @@ class BackupExport {
 	 * @var Table
 	 */
 	private $table;
+	/**
+	 * @var FormData
+	 */
 	private $form_data;
+	/**
+	 * @var Properties
+	 */
+	private $props;
+	/**
+	 * @var Settings
+	 */
+	private $settings;
 
 	public function __construct(
 		Settings $settings,
@@ -54,7 +64,6 @@ class BackupExport {
 	}
 
 	function register() {
-		// Updates the database backup header for pro version backups
 		add_filter( 'wpmdb_backup_header_included_tables', array( $this, 'backup_header_included_tables' ) );
 	}
 

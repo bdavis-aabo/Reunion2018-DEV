@@ -3,7 +3,6 @@
 namespace DeliciousBrains\WPMDB\Common;
 
 class Sanitize {
-
 	/**
 	 * Sanitize and validate data.
 	 *

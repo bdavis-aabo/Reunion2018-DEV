@@ -5,13 +5,26 @@ namespace DeliciousBrains\WPMDB\Common\Error;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class ErrorLog {
-
-	public $error_log, $state_container, $state_data, $props;
-
+	/**
+	 * @var
+	 */
+	public $error_log;
+	/**
+	 * @var StateDataContainer
+	 */
+	public $state_container;
+	/**
+	 * @var
+	 */
+	public $state_data;
+	/**
+	 * @var Properties
+	 */
+	public $props;
 	/**
 	 * @var Settings
 	 */
@@ -284,7 +297,7 @@ class ErrorLog {
 		);
 
 		$diagnostic_info['db-server-info'] = array(
-			'MySQL'                    => empty( $wpdb->use_mysqli ) ? mysql_get_server_info() : mysqli_get_server_info( $wpdb->dbh ),
+			'MySQL'                    => mysqli_get_server_info( $wpdb->dbh ),
 			'ext/mysqli'               => empty( $wpdb->use_mysqli ) ? 'no' : 'yes',
 			'WP Locale'                => get_locale(),
 			'DB Charset'               => DB_CHARSET,

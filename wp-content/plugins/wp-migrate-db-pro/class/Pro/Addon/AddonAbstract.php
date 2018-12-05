@@ -7,12 +7,33 @@ use DeliciousBrains\WPMDB\Common\Properties\Properties;
 
 abstract class AddonAbstract {
 
+	/**
+	 * @var
+	 */
 	protected $version_required;
+	/**
+	 * @var Properties
+	 */
 	protected $properties;
+	/**
+	 * @var Addon
+	 */
 	protected $addon;
+	/**
+	 * @var DynamicProperties
+	 */
 	protected $dynamic_properties;
+	/**
+	 * @var
+	 */
 	protected $plugin_slug;
+	/**
+	 * @var
+	 */
 	protected $plugin_version;
+	/**
+	 * @var
+	 */
 	protected $addon_name;
 
 	function __construct(

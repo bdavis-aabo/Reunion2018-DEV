@@ -8,8 +8,18 @@ use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class Http {
-
-	public $util, $props, $filesystem;
+	/**
+	 * @var Util
+	 */
+	public $util;
+	/**
+	 * @var Properties
+	 */
+	public $props;
+	/**
+	 * @var Filesystem
+	 */
+	public $filesystem;
 	/**
 	 * @var Scramble
 	 */

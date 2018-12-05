@@ -4,14 +4,44 @@ namespace DeliciousBrains\WPMDB\Pro;
 
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Container;
 
 class Api {
 
-	public $dbrains_api_url, $util, $props, $usage_tracker, $settings, $error_log;
+	/**
+	 * @var string
+	 */
+	public $dbrains_api_url;
+	/**
+	 * @var Util
+	 */
+	public $util;
+	/**
+	 * @var Properties
+	 */
+	public $props;
+	/**
+	 * @var
+	 */
+	public  $usage_tracker;
+	/**
+	 * @var
+	 */
+	public $settings;
+	/**
+	 * @var ErrorLog
+	 */
+	public $error_log;
+	/**
+	 * @var
+	 */
 	public static $api_url;
+
+	/**
+	 *
+	 */
 	const DBRAINS_API_BASE = 'https://api.deliciousbrains.com';
 
 	public function __construct(

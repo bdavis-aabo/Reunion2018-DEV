@@ -53,7 +53,7 @@ class Initialize {
 			          'scramble',
 		          ] );
 
-		$container->add( 'media_files_cli', 'DeliciousBrains\WPMDBMF\Cli\MediaFilesCli' )
+		$container->add( 'media_files_cli', 'DeliciousBrains\WPMDBMF\CliCommand\MediaFilesCli' )
 		          ->withArguments( [
 			          'addon',
 			          'properties',

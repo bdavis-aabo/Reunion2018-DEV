@@ -5,9 +5,8 @@ namespace DeliciousBrains\WPMDB\Common\Util;
 use DeliciousBrains\WPMDB\Common\Db\MDBWPDB;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Container;
-use DeliciousBrains\WPMDB\Pro\Beta\BetaManager;
 
 /**
  * Class Util
@@ -402,69 +401,6 @@ class Util {
 		return $ajax_url;
 	}
 
-	function load_plugin_textdomain( $plugin_file_path ) {
-		load_plugin_textdomain( 'wp-migrate-db', false, dirname( plugin_basename( $plugin_file_path ) ) . '/languages/' );
-	}
-
-
-	/**
-	 * Performs a schema update if required.
-	 *
-	 * @TODO move to DB class
-	 */
-	public function maybe_schema_update() {
-		if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
-			return;
-		}
-
-		$schema_version = get_site_option( 'wpmdb_schema_version' );
-		$update_schema  = false;
-
-		/*
-		 * Upgrade this option to a network wide option if the site has been upgraded
-		 * from a regular WordPress installation to a multisite installation.
-		 */
-		if ( false === $schema_version && is_multisite() && is_network_admin() ) {
-			$schema_version = get_option( 'wpmdb_schema_version' );
-			if ( false !== $schema_version ) {
-				update_site_option( 'wpmdb_schema_version', $schema_version );
-				delete_option( 'wpmdb_schema_version' );
-			}
-		}
-
-		if ( false === $schema_version ) {
-			$schema_version = 0;
-		}
-
-		if ( $schema_version < 1 ) {
-			$error_log = get_option( 'wpmdb_error_log' );
-			// skip multisite installations as we can't use add_site_option because it doesn't include an 'autoload' argument
-			if ( false !== $error_log && false === is_multisite() ) {
-				delete_option( 'wpmdb_error_log' );
-				add_option( 'wpmdb_error_log', $error_log, '', 'no' );
-			}
-
-			$update_schema  = true;
-			$schema_version = 1;
-		}
-
-		if ( $schema_version < 2 ) {
-			if ( BetaManager::is_beta_version( $this->props->plugin_version ) ) {
-				// If the current installed version is a beta version then turn on the beta optin
-				BetaManager::set_beta_optin();
-				// Dismiss the notice also, so it won't keep coming back
-				update_user_meta( get_current_user_id(), 'wpmdb_dismiss_beta_optin', true );
-			}
-
-			$update_schema  = true;
-			$schema_version = 2;
-		}
-
-		if ( true === $update_schema ) {
-			update_site_option( 'wpmdb_schema_version', $schema_version );
-		}
-	}
-
 	function open_ssl_enabled() {
 		if ( defined( 'OPENSSL_VERSION_TEXT' ) ) {
 			return true;
@@ -473,11 +409,8 @@ class Util {
 		}
 	}
 
-
 	function set_time_limit() {
-		if ( ! function_exists( 'ini_get' ) || ! ini_get( 'safe_mode' ) ) {
 			@set_time_limit( 0 );
-		}
 	}
 
 	function display_errors() {

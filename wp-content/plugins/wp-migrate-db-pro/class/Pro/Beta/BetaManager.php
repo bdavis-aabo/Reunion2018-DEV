@@ -2,12 +2,12 @@
 
 namespace DeliciousBrains\WPMDB\Pro\Beta;
 
-use DeliciousBrains\WPMDB\Pro\Download;
-use DeliciousBrains\WPMDB\Common\Settings;
-use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
+use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Pro\Addon\Addon;
 use DeliciousBrains\WPMDB\Pro\Api;
+use DeliciousBrains\WPMDB\Pro\Download;
 use DeliciousBrains\WPMDB\Pro\UI\Template;
 
 /**
@@ -18,7 +18,49 @@ use DeliciousBrains\WPMDB\Pro\UI\Template;
  */
 class BetaManager {
 
-	public $props, $settings, $assets, $util, $tables, $http, $addon, $api, $template, $download;
+	/**
+	 * @var Properties
+	 */
+	public $props;
+	/**
+	 * @var
+	 */
+	public $settings;
+	/**
+	 * @var
+	 */
+	public $assets;
+	/**
+	 * @var Util
+	 */
+	public $util;
+	/**
+	 * @var
+	 */
+	public $tables;
+	/**
+	 * @var
+	 */
+	public $http;
+	/**
+	 * @var Addon
+	 */
+	public $addon;
+	/**
+	 * @var Api
+	 */
+	public $api;
+	/**
+	 * @var Template
+	 */
+	public $template;
+	/**
+	 * @var Download
+	 */
+	public $download;
+	/**
+	 * @var
+	 */
 	public static $static_settings;
 
 	public function __construct(
@@ -57,6 +99,8 @@ class BetaManager {
 		if ( self::is_beta_version( $this->props->plugin_version ) ) {
 			add_action( 'wpmdb_notices', array( $this, 'template_beta_feedback_ask' ) );
 		}
+
+		add_action( 'wpmdb_before_schema_update', [ $this, 'schema_update' ] );
 	}
 
 	/**
@@ -352,6 +396,19 @@ class BetaManager {
 	public static function set_beta_optin( $value = true ) {
 		self::$static_settings['beta_optin'] = $value;
 		update_site_option( 'wpmdb_settings', self::$static_settings );
+	}
+
+	public function schema_update( $schema_version ) {
+		if ( $schema_version >= 2 ) {
+			return;
+		}
+
+		if ( self::is_beta_version( $this->props->plugin_version ) ) {
+			// If the current installed version is a beta version then turn on the beta optin
+			self::set_beta_optin();
+			// Dismiss the notice also, so it won't keep coming back
+			update_user_meta( get_current_user_id(), 'wpmdb_dismiss_beta_optin', true );
+		}
 	}
 
 	/**

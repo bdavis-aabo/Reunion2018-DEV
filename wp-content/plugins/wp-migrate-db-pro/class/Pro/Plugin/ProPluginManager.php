@@ -9,7 +9,7 @@ use DeliciousBrains\WPMDB\Container;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Multisite\Multisite;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Pro\Addon\Addon;

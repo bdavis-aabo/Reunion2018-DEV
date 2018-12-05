@@ -1,6 +1,6 @@
 <?php
 
-namespace DeliciousBrains\WPMDBMF\Cli;
+namespace DeliciousBrains\WPMDBMF\CliCommand;
 
 class MediaFilesCliBarNoOp {
 

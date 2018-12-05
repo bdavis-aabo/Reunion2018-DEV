@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Common\Http\Helper;
 use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Http\RemotePost;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
-use DeliciousBrains\WPMDB\Common\Settings;
+use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Pro\Transfers\Receiver;
 
 class Util {

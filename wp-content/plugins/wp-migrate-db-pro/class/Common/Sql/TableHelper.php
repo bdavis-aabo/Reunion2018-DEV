@@ -13,7 +13,13 @@ class TableHelper {
 	 * @var FormData
 	 */
 	private $form_data;
+	/**
+	 * @var StateDataContainer
+	 */
 	public $state_container;
+	/**
+	 * @var \DeliciousBrains\WPMDB\League\Container\Container|null
+	 */
 	public $container;
 
 	public function __construct(
@@ -39,7 +45,7 @@ class TableHelper {
 			if ( is_array( $a_name ) ) {
 				$result = array();
 				reset( $a_name );
-				while ( list( $key, $val ) = each( $a_name ) ) {
+				foreach ( $a_name as $key => $val ) {
 					$result[ $key ] = '`' . $val . '`';
 				}
 

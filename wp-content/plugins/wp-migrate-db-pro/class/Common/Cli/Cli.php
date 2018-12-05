@@ -16,13 +16,6 @@ use DeliciousBrains\WPMDB\Common\Util\Util;
 class Cli {
 
 	/**
-	 * Instance of WPMDB.
-	 *
-	 * @var WPMDB
-	 */
-	protected $wpmdb;
-
-	/**
 	 * Migration profile.
 	 *
 	 * @var array
@@ -201,6 +194,10 @@ class Cli {
 		$this->post_data['site_details']['local'] = $this->util->site_details();
 
 		$this->profile = apply_filters( 'wpmdb_cli_filter_before_cli_initiate_migration', $this->profile, $this->post_data );
+
+		if ( is_wp_error( $this->profile ) ) {
+			\WP_CLI::error( $this->profile->get_error_message() );
+		}
 
 		// Check for tables specified in migration profile that do not exist in the source database
 		if ( ! empty( $this->profile['select_tables'] ) && 'import' !== $this->profile['action'] ) {
