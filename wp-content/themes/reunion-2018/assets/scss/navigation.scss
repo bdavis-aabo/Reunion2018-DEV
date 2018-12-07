@@ -1,0 +1,145 @@
+/*** navicon ***/
+$button-width:                24px;
+$button-height:               18px;
+$bar-thickness:               2px;
+
+
+.nav-btn { background: transparent; border: none; border-radius: 0; cursor: pointer;
+  width: $button-width; height: $button-height; position: absolute; left: 20px; top: 50%; transform: translateY(-50%) rotate(0deg);
+  &:focus { outline: 0; }
+  .nav-iconbar { display: block; position: absolute; height: $bar-thickness; width: 100%; background: $gold; opacity: 1; left: 0; top: 0;
+    transform: rotate(0deg); transition: 0.25s ease-in-out;
+    &:nth-child(1) { top: 0; }
+    &:nth-child(2),
+    &:nth-child(3) { top: 9px; }
+    &:nth-child(4) { top: 18px; }
+  }
+  &.open {
+    .nav-iconbar {
+      &:nth-child(1) { top: 12px; opacity: 0; }
+      &:nth-child(2) { transform: rotate(-45deg); transition-delay: .3s; }
+      &:nth-child(3) { transform: rotate(45deg); transition-delay: .3s; }
+      &:nth-child(4) { top: 12px; opacity: 0; }
+    }
+  }
+}
+
+.dropdown:hover > .dropdown-menu { display: block; }
+
+.navigation { position: absolute; top: 100px; left: 0; z-index: 999; width: 100vw; height: 100%; overflow-y: scroll;
+  transform: translateX(-100%); transition: transform .5s cubic-bezier(0.25, 0.1, 0.25, 1); box-shadow: 0 0 5px gba(0,0,0,.5);
+  &.nav-open { transform: translateX(0); }
+
+  .main-menu-container { padding: 40px 40px 100px; height: auto;
+    h1 { text-transform: uppercase; font-size: 1.2em; border: 2px solid $white; display: inline-block; padding: 12px 30px 6px; }
+    .main-menu.nav { text-transform: uppercase; list-style: none; margin: 0 0 35px; padding: 0; font-size: 1.15em;
+      .nav-item { padding: 0 0 5px;
+        .nav-link { color: $white; cursor: pointer; padding-left: 0;
+          &:hover { color: $gold; }
+          &.dropdown-toggle {
+            &:after { border: none; content: '\f078'; font-family: 'Font Awesome 5 Free'; font-weight: 900; vertical-align: -1px; margin-left: 15px; }
+          }
+        }
+        .dropdown-menu { border-radius: 0; display: block;
+          .dropdown-item { color: $white;
+            &:hover { background: none; color: $gold; }
+          }
+        }
+        &.active {
+          .nav-link { color: $gold; background: transparent; }
+          .dropdown-menu {
+            .nav-item {
+              &.active {
+                .dropdown-item { color: $gold; }
+              }
+            }
+          }
+        }
+        &.show {
+          .nav-link { color: $gold; }
+          .dropdown-menu {
+            .nav-item {
+              .nav-link { color: $white; background: transparent !important;
+                &:hover { color: $gold; background: transparent; }
+              }
+            }
+
+          }
+        }
+      }
+
+      .dropdown-menu { font-size: .8em; position: relative !important; transform: translate3d(0,0,0) !important;
+        background: transparent; border: none; padding-left: 15px;
+        a { display: block; padding: 5px 0; }
+      }
+    }
+
+    .main-menu-information {  font-family: 'tradegothic-normal', sans-serif;
+      h2 { font-size: 1.3em; margin-bottom: 10px; }
+      .phone { font-weight: bold; }
+      .social-btns { margin: 12px 0; padding: 0; list-style: none;
+        li { display: inline-block; padding-right: 5px; font-size: 1.5em;
+          a { color: $gold;
+            &:hover { color: shade($gold, 5); }
+          }
+        }
+      }
+    }
+  }
+}
+
+/*** NAVIGATION CONTAINER AND MENU ***/
+
+/*
+Extra small devices (portrait phones, less than 544px)
+No media query since this is the default in Bootstrap because it is "mobile first"
+*/
+
+/* Small devices (landscape phones, 544px and up) */
+@media (min-width: 544px) {
+
+}
+
+/* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
+@media (min-width: 768px) {
+  .navigation { position: absolute; top: 100px; left: 0; z-index: 999; width: 100vw; height: calc(100vh - 100px);
+    transform: translateX(-100%); transition: transform .5s cubic-bezier(0.25, 0.1, 0.25, 1); box-shadow: 0 0 5px gba(0,0,0,.5);
+    &.nav-open { transform: translateX(0); }
+
+    .main-menu-container { padding: 40px; position: relative; height: 100%;
+      h1 { text-transform: uppercase; font-size: 1.2em; border: 2px solid $white; display: inline-block; padding: 12px 30px 6px; }
+      .main-menu.nav {
+        .nav-item { padding-bottom: 20px; width: 275px;
+          .nav-link { width: 100%;
+            &.dropdown-toggle {
+              &:after { border: none; content: '\f054'; }
+            }
+            &:active { background: none; }
+          }
+          .dropdown-menu { position: absolute !important; left: 230px !important; transform: translateY(4px) !important; padding-top: 0;
+            top: 0; display: none;
+            .nav-item { padding-bottom: 0;
+              a { padding-bottom: 25px;
+                &:hover { color: $gold; background: transparent !important; }
+              }
+            }
+          }
+        }
+      }
+      .main-menu-information { position: absolute; bottom: 20px; }
+    }
+  }
+  .dropdown:hover > .dropdown-menu { display: block !important; }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .navigation { width: 60vw; clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); -webkit-clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+
+}
+
+/* End */
