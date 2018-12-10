@@ -29,4 +29,4 @@
       <a class="alert-close"><i class="fas fa-2x fa-times"></i></a>
       <?php endwhile; ?>
     </section>
-    <?php endif; ?>
+    <?php endif; wp_reset_query(); ?>

@@ -2,7 +2,7 @@
 
 <?php get_header() ?>
 
-  <?php get_template_part('home/home-heroimage') ?>
+  <?php if(is_front_page() || is_page('home')): get_template_part('home/home-heroimage'); endif; ?>
 
   <div class="scroll-indicator"></div>
 

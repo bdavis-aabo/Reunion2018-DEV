@@ -47,17 +47,58 @@ $(document).ready(function(){
       }
   });
 
-  //alert box
-  $('.news-box .alert-close').click(function(){
-    $('.news-box').addClass('closed');
-  });
+  //alert box & promotion lightbox Functions
+  function displayAlert(){
+    $('.news-box').addClass('show-alert');
+  }
+  function closeAlert(){
+    $('.news-box').removeClass('show-alert');
+  }
+  function displayMask(){
+    $('.window-mask').addClass('show');
+    $('html, body').css('overflow','hidden');
+  }
+  function displayPromo(){
+    $('.promotion-container').addClass('visible');
+  }
+  function closePromo(){
+    $('.window-mask').removeClass('show');
+    $('.promotion-container').removeClass('visible');
+    $('html, body').css('overflow', 'auto');
+  }
 
 
-  // $('.home-image').click(function() {
-  //   var e = $(this),
-  //       t = e.attr('data-link');
-  //   return e.hasClass('home-image-left') ? ($('.home-image-left').addClass('animate'), $('.home-image-right').addClass('hide')) : e.hasClass('home-image-right') && ($('.home-image-left').addClass('hide'), $('.home-image-right').addClass('animate')), $('.home-overlay').addClass('animate'), setTimeout(function() { window.location.href = t }, 1200), !1
-  // });
+
+  if(window.location.pathname === '/'){
+    if($('.news-box').length){
+      setTimeout(function(){
+      displayAlert();
+      }, 2000);
+      $('.news-box .alert-close').click(function(){
+        closeAlert();
+      });
+    }
+    if($('.window-mask').length){
+      setTimeout(function(){
+        displayMask();
+      },3000);
+      setTimeout(function(){
+        displayPromo();
+      },3500);
+
+      $('.close').click(function(){
+        closePromo();
+      });
+      $('.window-mask').click(function(){
+        closePromo();
+      });
+      $(document).keyup(function(e){
+        if(e.keyCode === 27){
+          closePromo();
+        }
+      });
+    }
+  }
 
   $('.home-image').click(function(){
     var e = $(this),
@@ -73,10 +114,26 @@ $(document).ready(function(){
     $('.home-overlay').addClass('animate'); setTimeout(function(){ window.location.href = t; }, 1250);
   });
 
-  setTimeout(function(){
-    $('.page-overlay').addClass('hide');
-  }, 750);
+  if(window.location.pathname !== '/'){
+    setTimeout(function(){
+      $('.page-overlay').addClass('hide');
+    }, 1000);
+  }
 
+  // Flip Card Functions
+  var flipFrontH = $('.flipper > .front').height();
+  $('.flipper').height(flipFrontH);
+  $('.flipper .back').height(flipFrontH);
+
+  $(window).resize(function(){
+    var flipFrontH = $('.flipper > .front').height();
+    $('.flipper').height(flipFrontH);
+    $('.flipper .back').height(flipFrontH);
+  });
+
+  $('.flip-container').click(function(){
+    $(this).toggleClass('hover');
+  });
 
 
 

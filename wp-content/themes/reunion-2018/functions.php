@@ -174,7 +174,7 @@ function create_events(){
   ));
 }
 
-// Create Post Type for Amenities
+// Create Post Type for Alerts
 add_action('init','create_alerts');
 function create_alerts(){
   register_post_type('alerts', array(
@@ -192,7 +192,7 @@ function create_alerts(){
   ));
 }
 
-// Create Post Type for Amenities
+// Create Post Type for Promotions
 add_action('init','create_promos');
 function create_promos(){
   register_post_type('promos', array(
