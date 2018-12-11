@@ -33,6 +33,7 @@ $heading-scale:    6;
 }
 .vcenter 	 { display: flex; align-items: center; }
 .vbottom   { align-items: flex-end; }
+.hidden    { display: none; }
 
 /*** COLORS ***/
 $white:   #fff;
@@ -77,7 +78,8 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
     &:hover { background: tint($blue, 10); }
   }
   &.outline-btn { background: transparent; border: 1px solid rgba(255,255,255,.5); text-transform: uppercase;
-    font-family: 'tradegothic-normal', sans-serif; color: $white;
+    font-family: 'tradegothic-normal', sans-serif; color: $white; transition: all 666ms ease-in-out; margin-top: 10px;
+    &:hover { background: $white; color: $gold; }
   }
 }
 
@@ -95,12 +97,12 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
       &:focus { box-shadow: none !important; border-color: $ltgray; }
     }
   }
-
   &.radio-group {
     label { float: left; }
     label, span { font-family: 'tradegothic-normal', sans-serif; font-size: 1em; }
     // Radio + Checkbox Styles
     .control { position: relative; display: inline-block; cursor: pointer; margin: 0 15px 0 0; padding-left: 35px;
+      font-family: 'tradegothic-normal', sans-serif; font-size: 1em;
       input { position: absolute; z-index: 2; left: 8px; top: 0; cursor: pointer; opacity: 0;
         &:checked ~ .control__indicator { background: $blue;
           &:after { display: block; }
@@ -121,11 +123,14 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
 
       &.control--checkbox {
         .control__indicator { border-radius: none;
-          // &:after { top: 3px; left: 6px; width: 5px; height: 10px; transform: rotate(45deg); border: solid $white; border-width: 0 2px 2px 0; }
+          &:after { top: 3px; left: 6px; width: 5px; height: 10px; transform: rotate(45deg); border: solid $white; border-width: 0 2px 2px 0; }
         }
         input:disabled ~ .control__indicator:after { border-color: $red; }
       }
     }
+  }
+  &.builder-group {
+      .checkbox-builder { float: left; }
   }
 }
 .one-half { width: 48%; float: left;

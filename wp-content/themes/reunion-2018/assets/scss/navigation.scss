@@ -31,7 +31,7 @@ $bar-thickness:               2px;
   &.nav-open { transform: translateX(0); }
 
   .main-menu-container { padding: 40px 40px 100px; height: auto;
-    h1 { text-transform: uppercase; font-size: 1.2em; border: 2px solid $white; display: inline-block; padding: 12px 30px 6px; }
+    h1 { text-transform: uppercase; font-size: 1.2em; border: 2px solid $white; display: inline-block; padding: 12px 30px 6px; color: $white; }
     .main-menu.nav { text-transform: uppercase; list-style: none; margin: 0 0 35px; padding: 0; font-size: 1.15em;
       .nav-item { padding: 0 0 5px;
         .nav-link { color: $white; cursor: pointer; padding-left: 0;
@@ -86,6 +86,50 @@ $bar-thickness:               2px;
       }
     }
   }
+
+  &.gold-bg {
+    .main-menu.nav {
+      .nav-item {
+        .nav-link {
+          &:hover { color: $blue; }
+        }
+        .dropdown-menu {
+          .dropdown-item { color: $white;
+            &:hover { color: $blue !important; }
+          }
+        }
+        &.active {
+          .nav-link { color: $blue; background: transparent; }
+          .dropdown-menu {
+            .nav-item {
+              &.active {
+                .dropdown-item { color: $blue; }
+              }
+            }
+          }
+        }
+        &.show {
+          .nav-link { color: $blue; }
+          .dropdown-menu {
+            .nav-item {
+              .nav-link { color: $white; background: transparent !important;
+                &:hover { color: $blue; background: transparent; }
+              }
+            }
+          }
+        }
+      }
+    }
+    .main-menu-information { color: $white;
+      .social-btns {
+        li {
+          a { color: $blue;
+            &:hover { color: tint($blue, 5); }
+          }
+        }
+      }
+    }
+  }
 }
 
 /*** NAVIGATION CONTAINER AND MENU ***/
@@ -116,7 +160,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
             }
             &:active { background: none; }
           }
-          .dropdown-menu { position: absolute !important; left: 230px !important; transform: translateY(4px) !important; padding-top: 0;
+          .dropdown-menu { position: absolute !important; left: 260px !important; transform: translateY(4px) !important; padding-top: 0;
             top: 0; display: none;
             .nav-item { padding-bottom: 0;
               a { padding-bottom: 25px;

@@ -2,8 +2,7 @@
   <div class="container-fluid">
     <div class="row row-eq-height no-gutters">
       <div class="col-12 col-lg-4">
-        <article class="map-container">
-          <img src="<?php bloginfo('template_directory') ?>/assets/images/directions-map.jpg" class="img-fluid" alt="Reunion CO - Directions" />
+        <article class="map-container" style="background: transparent url('<?php bloginfo('template_directory') ?>/assets/images/directions-map.jpg') no-repeat center top; background-size: cover; " class="img-fluid" alt="Reunion CO - Directions" />
         </article>
       </div>
       <div class="col-12 col-lg-5">
@@ -12,7 +11,7 @@
           <h2 class="footer-builders">Oakwood Homes | Richmond American Homes | Shea Homes</h2>
           <em>Enjoy more real experiences at Reunion.</em>
           <p>If you'd like to hear the latest and greatest happenings at Reunion, we'd love to share them with you. Please fill out this form and we'll send you email updates from time to time. Do note that we respect your information and will not misuse it in any inappropriate manner.</p>
-          <?php //include('form.php') ?>
+          <?php echo do_shortcode('[contact-form-7 id="11" title="Contact form 1"]') ?>
         </div>
       </div>
       <div class="col-12 col-lg-3">
