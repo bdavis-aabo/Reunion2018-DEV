@@ -91,6 +91,9 @@
 
 
 .homepage-introduction { padding: 10vh 0; text-align: center;
+  &.page-introduction  { padding-bottom: 3vh;
+    em { font-size: .9em; }
+  }
   .page-content {
     h1, h4, h5, h6 { font-family: 'authenia', sans-serif; margin-bottom: 20px; color: $gold; }
     h2, h3 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; }

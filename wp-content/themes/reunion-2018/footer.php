@@ -17,7 +17,7 @@
       </div>
       <div class="col-12 col-lg-3">
         <div class="footer-instagram">
-          instagram - pull most recent
+          <?php echo do_shortcode('[instagram-feed]') ?>
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
 
 <?php if(!is_front_page() || !is_page('home')): ?><div class="page-overlay"></div><?php endif; ?>
 
-<?php wp_footer() ?>
+<?php sb_instagram_custom_js(); wp_footer();  ?>
 
 </body>
 </html>

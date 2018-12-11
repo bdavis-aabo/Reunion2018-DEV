@@ -2,7 +2,6 @@
 // Theme Functions
 
 /* bootstrap nav walker */
-//if(!file_exists(get_template_directory().'/assets/_inc/wp-bootstrap.'))
 require_once get_template_directory() . '/assets/_inc/class-wp-bootstrap-navwalker.php';
 
 /* Remove Admin Bar from Frontend */
@@ -50,6 +49,8 @@ function wpt_register_js(){
   if($_SERVER['HTTPS'] == 'on'){
 		        $_protocol = 'https:';
   }
+
+  remove_action( 'wp_footer', 'sb_instagram_custom_js' );
 
 	wp_register_script('jquery', '//code.jquery.com/jquery-3.3.1.slim.min.js', 'jquery', '', true);
   wp_register_script('jquery.popper.min', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', '', true);

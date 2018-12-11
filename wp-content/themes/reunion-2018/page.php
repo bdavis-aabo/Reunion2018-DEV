@@ -4,7 +4,7 @@
 
   <?php get_template_part('page/page-heroimage') ?>
 
-  <section class="homepage-introduction">
+  <section class="homepage-introduction page-introduction">
     <div class="container-fluid">
       <div class="row align-items-center">
         <div class="col-12 col-sm-10 offset-sm-1">
