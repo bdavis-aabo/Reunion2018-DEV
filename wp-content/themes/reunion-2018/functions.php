@@ -50,8 +50,6 @@ function wpt_register_js(){
 		        $_protocol = 'https:';
   }
 
-  remove_action( 'wp_footer', 'sb_instagram_custom_js' );
-
 	wp_register_script('jquery', '//code.jquery.com/jquery-3.3.1.slim.min.js', 'jquery', '', true);
   wp_register_script('jquery.popper.min', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', '', true);
 	wp_register_script('jquery.bootstrap.min', '//stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js', 'jquery', '', true);

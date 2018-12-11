@@ -36,7 +36,7 @@
 
 <?php if(!is_front_page() || !is_page('home')): ?><div class="page-overlay"></div><?php endif; ?>
 
-<?php sb_instagram_custom_js(); wp_footer();  ?>
+<?php wp_footer();  ?>
 
 </body>
 </html>
