@@ -15,7 +15,7 @@
 <section class="page-amenities">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-10 offset-1">
+      <div class="col-12 col-sm-10 offset-sm-1">
         <div class="row no-gutters">
           <?php if(get_field('amenities') != ''): $_amenities = get_field('amenities'); ?>
 

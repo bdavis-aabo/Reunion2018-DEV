@@ -32,7 +32,7 @@
   .reunion-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 150px; }
   .secondary-links { display: none; }
 }
-.news-box { padding: 10px; text-align: left; float: left; width: 100%; z-index: 1; position: relative; z-index: 10;
+.news-box { padding: 10px; text-align: left; float: left; width: 100%; z-index: 1; position: relative; z-index: 1;
   box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: transform .5s ease-out; top: -15px; left: 0; transform: translateY(-60px);
   .fas { padding-top: 2px; display: block; float: left; }
   p { float: left; padding: 8px 0 0 20px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 14px; width: 80%;
@@ -42,7 +42,7 @@
   .alert-close { color: $white; transition: opacity .3s ease-in-out; float: right; cursor: pointer;
     &:hover { opacity: .8; }
   }
-  &.show-alert { transform: translateY(10px);}
+  &.show-alert { transform: translateY(10px); z-index: 10;}
 }
 .scroll-indicator { display: block; width: 20px; height: 100px;
   background: transparent url('../images/scroll-indicator.png') center top no-repeat;
@@ -91,7 +91,11 @@
       &:hover { background: tint($blue, 5); }
     }
   }
-  .page-heroimage { height: calc(100vh - 100px); width: 100vw; position: relative; }
+  .page-heroimage { height: 40vh; width: 100vw; position: relative; background-size: contain !important;
+    background-position: center top !important;
+
+  }
+  .scroll-indicator { bottom: -50px !important; }
 }
 
 
@@ -105,7 +109,7 @@
     h2 { font-size: 2em; margin-bottom: 12px; }
     h3 { font-size: 1.75em; }
     h4 { font-size: 3em; margin-top: 20px; }
-    p { padding: 0 10vw; line-height: 2em; margin: 25px 0; }
+    p { padding: 0 2vw; line-height: 2em; margin: 25px 0; }
   }
 }
 
@@ -127,9 +131,9 @@
       .back  { transform: rotateY(180deg);
         .back-contents { padding: 0 20px; width: 90%; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
           text-align: center;
-          .gold-txt { font-size: 6em; margin: 0; font-family: 'rockwell-bold', serif; }
-          .gothic   { font-size: 1.5em; margin: -10px 0 10px; }
-          p { font-size: 1em; line-height: 1.5em; margin-bottom: 0;
+          .gold-txt { font-size: 3em; margin: 0; font-family: 'rockwell-bold', serif; }
+          .gothic   { font-size: 1.2em; margin: 0 0 10px; }
+          p { font-size: .9em; line-height: 1.5em; margin-bottom: 0;
             a { color: $gold;
               &:hover { text-decoration: none; color: tint($gold, 15); }
             }
@@ -137,25 +141,8 @@
         }
       }
     }
-
   }
 }
-//.page-amenities {
-// .flip-container { perspective: 1000px;
-//   &:hover,
-//   &.hover {
-//     .flipper { transform: rotateY(180deg); }
-//   }
-//   .flipper { transition: .6s; transform-style: preserve-3d; position: relative; }
-// }
-// .flip-container,
-// .front,
-// .back { width: 100%; }
-// .front,
-// .back { backface-visibility: hidden; position: absolute; top: 0; left: 0; }
-// .front { z-index: 2; transform: rotateY(0deg); }
-// .back  { transform: rotateY(180deg); }
-//}
 
 /*** FOOTER STYLES ***/
 .footer {
@@ -227,6 +214,44 @@ No media query since this is the default in Bootstrap because it is "mobile firs
       &.hide { width: 0 !important; }
     }
   }
+
+  .pagehero-section {
+    .page-heroimage { height: calc(100vh - 100px); width: 100vw; position: relative; background-size: cover !important;
+      background-position: center top !important;
+    }
+  }
+  .homepage-introduction { padding: 10vh 0; text-align: center;
+    &.page-introduction  { padding-top: 15vh; padding-bottom: 3vh;
+      em { font-size: .9em; }
+    }
+    .page-content {
+      h1, h4, h5, h6 { font-family: 'authenia', sans-serif; margin-bottom: 20px; color: $gold; }
+      h2, h3 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; }
+      h2 { font-size: 2em; margin-bottom: 12px; }
+      h3 { font-size: 1.75em; }
+      h4 { font-size: 3em; margin-top: 20px; }
+      p { padding: 0 2vw; line-height: 2em; margin: 25px 0; }
+    }
+  }
+  // page amenities grid
+  .page-amenities {
+    .flip-container {
+      .flipper {
+        .back  {
+          .back-contents { padding: 0 0; width: 95%;
+            .gold-txt { font-size: 2.5em; margin: 0; font-family: 'rockwell-bold', serif; }
+            .gothic   { font-size: 1.1em; margin: 0 0 10px; }
+            p { font-size: .8em; line-height: 1.5em; margin-bottom: 0;
+              a { color: $gold;
+                &:hover { text-decoration: none; color: tint($gold, 15); }
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
 }
 
 /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
@@ -247,6 +272,28 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   }
   .scroll-indicator { display: block; width: 20px; height: 152px; background: transparent url('../images/scroll-indicator.png');
     position: absolute; bottom: -76px; left: 50%; transform: translateX(-50%); }
+  .pagehero-section {
+    .page-heroimage { height: 50vh; width: 100vw; position: relative; background-size: contain !important;
+      background-position: center top !important;
+    }
+    .scroll-indicator { bottom: -76px !important; }
+  }
+
+
+    .homepage-introduction { padding: 10vh 0; text-align: center;
+      &.page-introduction  { padding-top: 10vh; padding-bottom: 3vh;
+        em { font-size: .9em; }
+      }
+      .page-content {
+        h1, h4, h5, h6 { font-family: 'authenia', sans-serif; margin-bottom: 20px; color: $gold; }
+        h2, h3 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; }
+        h2 { font-size: 2em; margin-bottom: 12px; }
+        h3 { font-size: 1.75em; }
+        h4 { font-size: 3em; margin-top: 20px; }
+        p { padding: 0 5vw; line-height: 2em; margin: 25px 0; }
+      }
+    }
+
 
   /*** FOOTER STYLES ***/
   .footer {
@@ -328,7 +375,13 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   }
 
   .pagehero-section {
-    .page-heroimage { height: 70vh; }
+    .page-heroimage { height: 70vh; width: 100vw; position: relative; background-size: cover !important; }
+    .scroll-indicator { bottom: -76px !important; }
+  }
+  .homepage-introduction {
+    .page-content {
+      p { padding: 0 2vw; line-height: 2em; margin: 25px 0; }
+    }
   }
   .page-overlay { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: $white; opacity: 1; visibility: visible;
     transition: opacity 666ms ease-out; z-index: 1000;
@@ -342,37 +395,24 @@ No media query since this is the default in Bootstrap because it is "mobile firs
 
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-  // .page-amenities { margin-bottom: 80px; width: 100%; height: 100%; overflow: auto;
-  //   .flip-container,
-  //   .front,
-  //   .back { width: 100%; }
-  //   .flip-container { width: 100%; height: 100%; perspective: 1000px;
-  //     .flipper { position: relative;
-  //       .front,
-  //       .back { position: absolute; left: 0; top: 0; }
-  //       .front,
-  //       .back { backface-visibility: hidden; }
-  //       .front { z-index: 2; transform: rotateY(0deg); }
-  //       .back  { transform: rotateY(180deg);
-  //         .back-contents { padding: 0 20px; width: 90%; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  //           text-align: center;
-  //           .gold-txt { font-size: 6em; margin: 0; font-family: 'rockwell-bold', serif; }
-  //           .gothic   { font-size: 1.5em; margin: -10px 0 10px; }
-  //           p { font-size: 1em; line-height: 1.5em; margin-bottom: 0;
-  //             a { color: $gold;
-  //               &:hover { text-decoration: none; color: tint($gold, 15); }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //     &:hover,
-  //     &.hover {
-  //       .flipper { transform: rotateY(180deg);}
-  //     }
-  //     .flipper { transition: .6s; transform-style: preserve-3d; position: relative; }
-  //   }
-  // }
+  .pagehero-section {
+    .page-heroimage { height: 70vh; width: 100vw; position: relative; background-position: center 50% !important; }
+  }
+
+  .page-amenities {
+    .flip-container {
+      .flipper {
+        .back  {
+          .back-contents { padding: 0 20px; width: 90%;
+            .gold-txt { font-size: 6em; margin: 0; }
+            .gothic   { font-size: 1.5em; margin: -10px 0 10px; }
+            p { font-size: 1em; line-height: 1.5em; margin-bottom: 0; }
+          }
+        }
+      }
+    }
+  }
+
 
 
 
