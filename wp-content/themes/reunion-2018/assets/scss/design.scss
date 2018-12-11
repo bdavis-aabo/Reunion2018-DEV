@@ -84,7 +84,7 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
 }
 
 /*** FORMS ***/
-.form-group { margin-bottom: 10px; float: left; width: 100%;
+.form-group { margin-bottom: 0px; float: left; width: 100%;
   .field { position: relative; width: 100%; height: 40px;
     .form-label,
     .form-control { position: absolute; left: 0; top: 0; font-family: 'tradegothic-normal', sans-serif; font-size: .95em; color: $gray; }
@@ -133,7 +133,7 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
       .checkbox-builder { float: left; }
   }
 }
-.one-half { width: 48%; float: left;
+.one-half { width: 48%; float: left; margin-bottom: 8px;
   &.last { float: right; }
 }
 

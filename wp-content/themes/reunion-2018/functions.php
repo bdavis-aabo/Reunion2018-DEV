@@ -48,10 +48,10 @@ function wpt_register_js(){
     wp_deregister_script('jquery');
   }
 
-  $_protocol= 'http:';
-  if($_SERVER['HTTPS'] == 'on'){
-		        $_protocol = 'https:';
-  }
+  // $_protocol= 'http:';
+  // if($_SERVER['HTTPS'] == 'on'){
+	// 	        $_protocol = 'https:';
+  // }
 
 	wp_register_script('jquery', '//code.jquery.com/jquery-3.3.1.slim.min.js', 'jquery', '', true);
   wp_register_script('jquery.popper.min', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', '', true);
@@ -212,24 +212,14 @@ function create_promos(){
   ));
 }
 
-// Remove Span Tags from CF7
-add_filter('wpcf7_form_elements', function( $content ) {
-  $dom = new DOMDocument();
-  $dom->preserveWhiteSpace = false;
-  $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+/*Contact form 7 remove span*/
+add_filter('wpcf7_form_elements', function($content) {
+    $content = preg_replace('/<(span).*?class="\s*(?:.*\s)?wpcf7-form-control-wrap(?:\s[^"]+)?\s*"[^\>]*>(.*)<\/\1>/i', '\2', $content);
 
-  $xpath = new DomXPath($dom);
-  $spans = $xpath->query("//span[contains(@class, 'wpcf7-form-control-wrap')]" );
+    $content = str_replace('<br />', '', $content);
 
-  foreach ( $spans as $span ) :
-    $children = $span->firstChild;
-    $span->parentNode->replaceChild( $children, $span );
-  endforeach;
-
-  return $dom->saveHTML();
+    return $content;
 });
-
-
 
 
 
