@@ -32,8 +32,8 @@
   .reunion-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 150px; }
   .secondary-links { display: none; }
 }
-.news-box { padding: 10px; text-align: left; float: left; width: 100%; z-index: 1; position: relative; z-index: 1;
-  box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: transform .5s ease-out; top: 0; left: 0; transform: translateY(-60px);
+.news-box { padding: 10px; text-align: left; float: left; width: 100%; z-index: 1; position: relative; z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: transform .5s ease-out; top: -15px; left: 0; transform: translateY(-60px);
   .fas { padding-top: 2px; display: block; float: left; }
   p { float: left; padding: 8px 0 0 20px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 14px; width: 80%;
     line-height: 1.5em;
@@ -42,7 +42,7 @@
   .alert-close { color: $white; transition: opacity .3s ease-in-out; float: right; cursor: pointer;
     &:hover { opacity: .8; }
   }
-  &.show-alert { transform: translateY(0);}
+  &.show-alert { transform: translateY(10px);}
 }
 .scroll-indicator { display: block; width: 20px; height: 100px;
   background: transparent url('../images/scroll-indicator.png') center top no-repeat;
@@ -231,11 +231,10 @@ No media query since this is the default in Bootstrap because it is "mobile firs
 
 /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
 @media (min-width: 768px) {
-
   .header {
     .reunion-logo { width: 175px; }
   }
-  .news-box { padding: 10px 20px; text-align: left; float: left; width: 100%; position: relative; top: 0; left: 0; z-index: 1;
+  .news-box { padding: 10px 20px; text-align: left; float: left; width: 100%; position: relative; top: 0; left: 0; z-index: 10;
     box-shadow: 0 2px 5px rgba(0,0,0,.3);
     .fas { padding-top: 2px; display: block; float: left; }
     p { float: left; padding: 8px 0 0 20px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 18px;
@@ -244,6 +243,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     .alert-close { color: $white; transition: opacity .3s ease-in-out; float: right; cursor: pointer;
       &:hover { opacity: .8; }
     }
+    &.show-alert { transform: translateY(0);}
   }
   .scroll-indicator { display: block; width: 20px; height: 152px; background: transparent url('../images/scroll-indicator.png');
     position: absolute; bottom: -76px; left: 50%; transform: translateX(-50%); }
@@ -327,6 +327,9 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
   }
 
+  .pagehero-section {
+    .page-heroimage { height: 70vh; }
+  }
   .page-overlay { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: $white; opacity: 1; visibility: visible;
     transition: opacity 666ms ease-out; z-index: 1000;
     &.hide { opacity: 0; visibility: hidden; }

@@ -1,6 +1,5 @@
     <nav class="navigation blue-bg">
       <div class="main-menu-container">
-        <h1>Make this my home</h1>
         <?php
           wp_nav_menu( array(
             'theme_location'  =>  'community',
@@ -12,6 +11,8 @@
           ));
         ?>
 
+        <a href="/district-information" class="switch-link" title="This is my home">This is my home</a>
+
         <div class="main-menu-information">
         <h2>Reunion Information Center</h2>
         <p class="phone">303.486.8842</p>
@@ -22,6 +23,8 @@
           <li class="icon"><a href=""><i class="fab fa-youtube-square"></i></a></li>
           <li class="icon"><a href=""><i class="fab fa-google-plus-square"></i></a></li>
         </ul>
+
+
 
         <p class="small">@ReunionCO</p>
       </div>

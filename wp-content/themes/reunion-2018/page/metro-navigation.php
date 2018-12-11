@@ -1,6 +1,5 @@
 <nav class="navigation gold-bg">
   <div class="main-menu-container">
-    <h1>This is my home</h1>
     <?php
       wp_nav_menu( array(
         'theme_location'  =>  'metro',
@@ -11,6 +10,8 @@
         'walker'          => new WP_Bootstrap_Navwalker()
       ));
     ?>
+
+    <a href="/about-reunion" class="switch-link" title="Make this is my home">Make this is my home</a>
 
     <div class="main-menu-information">
     <h2>Reunion Information Center</h2>
