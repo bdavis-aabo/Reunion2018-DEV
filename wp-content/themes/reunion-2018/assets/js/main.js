@@ -123,15 +123,16 @@ $(document).ready(function(){
   // Flip Card Functions
   var flipFrontH = $('.flipper > .front').height();
   $('.flipper').height(flipFrontH);
-  $('.flipper .back').height(flipFrontH);
+  $('.flipper .back').height(flipFrontH).width(flipFrontH);
 
   $(window).resize(function(){
     var flipFrontH = $('.flipper > .front').height();
     $('.flipper').height(flipFrontH);
-    $('.flipper .back').height(flipFrontH);
+    $('.flipper .back').height(flipFrontH).width(flipFrontH);
   });
 
   $('.flip-container').click(function(){
+    $('.flip-container.hover').not(this).removeClass('hover');
     $(this).toggleClass('hover');
   });
 

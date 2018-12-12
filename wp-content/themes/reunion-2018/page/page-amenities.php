@@ -24,7 +24,7 @@
             <div class="flip-container">
               <div class="flipper">
                 <div class="front">
-                  <img src="https://placehold.it/600x600" alt="<?php echo get_sub_field('amenity_number') . ' ' . get_sub_field('amenity_context') ?>" class="img-fluid" />
+                  <img src="<?php echo $_amenitiesImage['url'] ?>" alt="<?php echo get_sub_field('amenity_number') . ' ' . get_sub_field('amenity_context') ?>" class="img-fluid" />
                 </div>
                 <div class="back blue-bg">
                   <div class="back-contents">
