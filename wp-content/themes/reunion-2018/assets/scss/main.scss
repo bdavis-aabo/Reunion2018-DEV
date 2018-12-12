@@ -420,6 +420,27 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
   }
 
+  .page-faqs { padding: 45px 0 80px;
+    .card {
+      .card-header {
+        .indicator { display: block; width: 24px; height: 24px; position: absolute; left: 20px; top: 20px; transition: transform .5s ease-in-out;
+
+        }
+        h5 {
+          .btn { font-family: 'tradegothic-normal', sans-serif; font-size: .9em; text-transform: uppercase; color: $gray; padding: 4px 0 0 48px;
+            p { margin: 3px 0 0; }
+            &.open {
+              .indicator { transform: rotate(45deg); }
+            }
+            &:hover,
+            &:focus { text-decoration: none; color: tint($gray,15); }
+          }
+        }
+      }
+    }
+  }
+
+
   .footer {
     .map-container { background-position: center top; }
   }

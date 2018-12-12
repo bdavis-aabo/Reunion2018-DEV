@@ -136,6 +136,11 @@ $(document).ready(function(){
     $(this).toggleClass('hover');
   });
 
+  // Accordion
+  $('.btn-link').click(function(){
+    $(this).toggleClass('open');
+    $('.btn-link').not(this).removeClass('open');
+  });
 
 
 
