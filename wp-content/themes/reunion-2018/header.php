@@ -11,17 +11,6 @@
     <?php wp_head() ?>
   </head>
   <body>
-
-    <div class="mobile-containers">
-      <div class="container-box mobile">mobile</div>
-      <div class="container-box mobland">mobile landscape</div>
-      <div class="container-box tablet">tablet (col-md)</div>
-      <div class="container-box tab-land">tablet landscape (col-lg)</div>
-      <div class="container-box small-desk">small desktop</div>
-      <div class="container-box desktop">desktop</div>
-    </div>
-
-
     <header class="header">
       <?php if(!is_front_page()): ?>
       <button class="nav-btn">

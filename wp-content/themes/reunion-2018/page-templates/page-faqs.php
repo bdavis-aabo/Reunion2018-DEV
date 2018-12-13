@@ -34,7 +34,9 @@
 
                 <h5 class="mb-0">
                   <button class="btn btn-link <?php if($_c == 1): echo 'open'; endif; ?>" type="button" data-toggle="collapse" data-target="#<?php echo 'collapse'.$_c; ?>" aria-expanded="<?php if($_c == 1): echo 'true'; else: echo 'false'; endif; ?>" aria-controls="<?php echo 'collapse'.$_c; ?>">
-                    <span class="indicator <?php if($_c == 1): echo 'active'; endif; ?>"><i class="fas fa-plus"></i></span>
+                    <span class="indicator <?php if($_c == 1): echo 'active'; endif; ?>">
+                      <i class="fas fa-plus"></i>
+                    </span>
                     <?php echo get_sub_field('faq_question') ?>
                   </button>
                 </h5>
