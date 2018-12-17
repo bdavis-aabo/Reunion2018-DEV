@@ -3,6 +3,7 @@
     <div class="row row-eq-height no-gutters">
       <div class="col-12 col-lg-4">
         <article class="map-container" style="background: transparent url('<?php bloginfo('template_directory') ?>/assets/images/directions-map.jpg') no-repeat center top; background-size: cover; " class="img-fluid" alt="Reunion CO - Directions" />
+          <a href="https://www.google.com/maps/dir//Reunion,+Commerce+City,+CO/@39.8910575,-104.8163706,15334m/data=!3m1!1e3!4m8!4m7!1m0!1m5!1m1!1s0x876c6efc50a5b981:0xc45d3d5b59244a59!2m2!1d-104.7812654!2d39.8909969?hl=en-US" target="_blank" class="map-link" title="Directions to Reunion"></a>
         </article>
       </div>
       <div class="col-12 col-lg-5">

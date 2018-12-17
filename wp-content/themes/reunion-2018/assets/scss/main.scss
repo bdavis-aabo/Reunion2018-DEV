@@ -152,7 +152,9 @@
       .builder-buttons { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; font-size: .95em; }
       .builder-buttons { position: absolute; bottom: 45px; width: 100%;
         a { display: block; background: $blue; color: $white; position: absolute; padding: 7px 10px 5px;
-          &.builder-btn { left: 0; top: 0;  width: 32%; }
+          &.builder-btn { left: 0; top: 0;  width: 32%;
+            &:hover { background: tint($blue, 10); }
+          }
           &.builder-phone { right: 0; top: 0; width: 67%;
             .phone-icon { width: 24px; height: 24px; border-radius: 24px; background: $gold; display: inline-block;
               position: absolute; left: 5px; top: 6px;
@@ -179,7 +181,9 @@
       .builder-buttons { width: 100%; font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; font-size: .95em;
         position: relative;
         a { display: block; background: $blue; color: $white; padding: 7px 10px 5px; position: relative; margin-bottom: 10px;
-          &.builder-btn { padding: 9px 10px 5px; }
+          &.builder-btn { padding: 9px 10px 5px;
+            &:hover { background: tint($blue, 10); }
+          }
           &.builder-phone {
             .phone-icon { width: 24px; height: 24px; border-radius: 24px; background: $gold; display: inline-block;
               margin-right: 20px;
@@ -205,7 +209,9 @@
     .footer-builders { font-size: 1em; font-weight: lighter; }
     p { font-size: .9em; }
   }
-  .map-container { width: 100%; min-height: 375px; }
+  .map-container { width: 100%; min-height: 375px;
+    .map-link { display: block; width: 100%; height: 100%; }
+  }
   .footer-instagram { background: transparent url('../images/footer-dots.jpg') no-repeat left 50%; height: 100%; }
   .footer-directions { padding: 10px 0 5px; text-align: center;
     p { margin-bottom: 0; font-size: 1em; line-height: 1.3em;  }
@@ -502,11 +508,18 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     &.builder-information {
       .page-content {
         p { padding: 0 7vw; }
+        &.intro-content {
+          p { padding: 0 10vw; }
+        }
       }
     }
     &.builder-information {
       .page-content {
-        p { font-size: .95em; }
+        p { font-size: .95em;
+          a { color: $gold; text-transform: uppercase;
+            &:hover { text-decoration: none; color: shade($gold,5); }
+          }
+        }
       }
     }
   }
@@ -588,7 +601,6 @@ No media query since this is the default in Bootstrap because it is "mobile firs
                 margin-right: 20px;
                 .fas { color: $blue; padding-top: 4px; }
               }
-            &:hover { background: tint($blue, 10); }
             }
           }
         }

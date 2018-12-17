@@ -6,15 +6,17 @@
     'posts_per_page' => 1,
     'order' => 'asc',
     'orderby' => 'title',
-    'post_name' => $post->post_name
+    'name' => $post->post_name
   );
   $_builders->query($_args);
+
+  //echo '<pre>'; var_dump($_args); echo '</pre>';
 ?>
 
 <?php while($_builders->have_posts()): $_builders->the_post() ?>
 <section class="builder-collections">
   <div class="container">
-    <?php while(have_rows('homebuilder_collections')): the_row(); ?>
+    <?php if(have_rows('homebuilder_collections')): while(have_rows('homebuilder_collections')): the_row(); ?>
     <div class="row">
       <div class="col-12">
         <div class="collection">
@@ -42,7 +44,7 @@
         </div>
       </div>
     </div>
-    <?php endwhile; ?>
+    <?php endwhile; endif; ?>
   </div>
 </section>
 
@@ -50,7 +52,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12 col-sm-10 offset-sm-1">
-        <div class="page-content">
+        <div class="page-content intro-content">
           <?php echo get_field('homebuilder_introduction') ?>
         </div>
       </div>
