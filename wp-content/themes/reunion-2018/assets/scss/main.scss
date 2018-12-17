@@ -140,6 +140,32 @@
   }
 }
 
+// amenities slider
+.amenities-slider-section { margin-bottom: 80px;
+  .carousel-item {
+    .amenity-details { text-align: center; width: 100%; position: absolute; top: 50%; transform: translateY(-50%);
+      .gold-txt { font-size: 4em; font-family: 'rockwell-bold', serif; margin: 0; }
+      .gothic   { font-size: 1.25em; margin: -5px 0 8px; }
+      p { padding: 0 15%; font-size: 0.9em; line-height: 1.3em;
+        a { text-transform: uppercase; color: $gold; }
+      }
+    }
+  }
+  .carousel-indicators { width: 30%; height: 5px; margin: 0; left: 11%; bottom: 20%;
+    li { width: 8px; height: 8px; border-radius: 8px; background-color: $ltgray; opacity: 1;
+      &.active { background-color: $blue; }
+    }
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next { color: $ltgray; opacity: 1; width: auto;
+    &:hover { color: $gray; }
+  }
+  .carousel-control-prev { left: 2%; }
+  .carousel-control-next { right: 50%; }
+
+}
+
 // Homebuilder Page
 .builder-grid { margin-bottom: 80px;
   .builder { padding: 0 5px; margin-bottom: 10px;
@@ -316,6 +342,8 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
   }
 
+
+
   // Homebuilder Page
   .builder-grid {
     .builder { margin-bottom: 30px;
@@ -330,7 +358,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   .header {
     .reunion-logo { width: 175px; }
   }
-  .news-box { padding: 10px 20px; text-align: left; float: left; width: 100%; position: relative; top: 0; left: 0; z-index: 10;
+  .news-box { padding: 10px 20px; text-align: left; float: left; width: 100%; position: relative; top: 0; left: 0; z-index: 1;
     box-shadow: 0 2px 5px rgba(0,0,0,.3);
     .fas { padding-top: 2px; display: block; float: left; }
     p { float: left; padding: 8px 0 0 20px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 18px;

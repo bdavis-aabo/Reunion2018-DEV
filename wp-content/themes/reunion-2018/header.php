@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
+    <link rel="shortcut icon" href="<?php bloginfo('template_directory') ?>/favicon.png" type="image/x-icon" />
 
     <?php //get stylesheets from functions.php ?>
 

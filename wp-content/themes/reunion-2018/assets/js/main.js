@@ -142,9 +142,6 @@ $(document).ready(function(){
     $('.btn-link').not(this).removeClass('open');
   });
 
-
-
-
   //form placeholder effects
   $('.form-control').focus(function(){
     $(this).siblings('.form-label').addClass('key');
