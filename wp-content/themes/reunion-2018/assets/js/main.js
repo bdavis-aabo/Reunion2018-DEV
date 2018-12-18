@@ -5,6 +5,17 @@ $(document).ready(function(){
   //   setTimeout(function(){ window.scrollTo(0,1) }, 1000);
   // }
 
+  //fix header to top on scroll
+  $(window).scroll(function(){
+    if($(this).scrollTop() > 101){
+      $('.header').addClass('sticky');
+      $('.navigation').addClass('scroll');
+    } else if($(this).scrollTop() < 1) {
+      $('.header').removeClass('sticky');
+      $('.navigation').removeClass('scroll');
+    }
+  });
+
 
   //nav-btn
   $('.nav-btn').click(function(){

@@ -24,8 +24,18 @@
 
       <a href="<?php bloginfo('url') ?>" title="<?php bloginfo('name') ?>" class="reunion-logo"><img src="<?php bloginfo('template_directory') ?>/assets/images/reunion-logo.svg" /></a>
 
-      <ul class="secondary-links">
-        <li><a href="/home-builders/quick-move-in-homes" class="blue-btn left-btn btn">Quick Move-in Homes</a></li>
-        <li><a href="/stay-connected" class="gold-btn right-btn btn">Stay Connected</a></li>
-      </ul>
+      <div class="secondary-links-container">
+        <ul class="secondary-links">
+          <li><a href="/home-builders/quick-move-in-homes" class="blue-btn left-btn btn">Quick Move-in Homes</a></li>
+          <li><a href="#stay-connected" class="gold-btn right-btn btn">Stay Connected</a></li>
+        </ul>
+        <ul class="social-links">
+          <li class="icon"><a href="https://www.facebook.com/ReunionCO" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
+          <li class="icon"><a href="http://www.pinterest.com/ReunionCO/" target="_blank"><i class="fab fa-pinterest-square"></i></a></li>
+          <li class="icon"><a href="http://instagram.com/reunionco" target="_blank"><i class="fab fa-instagram"></i></a></li>
+        </ul>
+      </div>
+
+
+
     </header>

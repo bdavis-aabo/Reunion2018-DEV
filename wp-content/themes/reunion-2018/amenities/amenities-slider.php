@@ -17,7 +17,7 @@
   <div id="amenities-slider" class="carousel slide" data-ride="carousel">
     <div class="container">
       <div class="row">
-        <div class="col-12 col-sm-10 offset-sm-1">
+        <div class="col-12 col-sm-12 col-md-10 offset-md-1">
             <div class="carousel-inner">
 
             <?php while(have_rows('amenities')): the_row(); $_amenitiesImage = get_sub_field('amenity_image'); ?>

@@ -13,13 +13,24 @@
 
 ***/
 
+html { scroll-behavior: smooth; }
+
+// Keyframes for smoothScroll
+@keyframes smoothScroll {
+  0%   { transform: translateY(-100px); }
+  100% { transform: translateY(0px); }
+}
+
+
 // Main CSS File
 .no-scroll { overflow: hidden;}
 
 /*** HEADER STYLES ***/
-.header { height: 100px; position: relative; background: $white; z-index: 3;
+.header { height: 100px; position: relative; background: $white; z-index: 3; transition: all 666ms ease-in-out; //animation: smoothScroll 666ms backwards;
   .reunion-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 150px; }
-  .secondary-links { display: none; }
+  .secondary-links-container { display: none; }
+
+  &.sticky { position: fixed; width: 100%; animation: smoothScroll 1s forwards; z-index: 10;}
 }
 .news-box { padding: 10px; text-align: left; float: left; width: 100%; z-index: 1; position: relative; z-index: 1;
   box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: transform .5s ease-out; top: -15px; left: 0; transform: translateY(-60px);
@@ -31,7 +42,7 @@
   .alert-close { color: $white; transition: opacity .3s ease-in-out; float: right; cursor: pointer;
     &:hover { opacity: .8; }
   }
-  &.show-alert { transform: translateY(10px); z-index: 10;}
+  &.show-alert { transform: translateY(10px); z-index: 1;}
 }
 .scroll-indicator { display: block; width: 20px; height: 100px;
   background: transparent url('../images/scroll-indicator.png') center top no-repeat;
@@ -98,6 +109,7 @@
     h3 { font-size: 1.75em; }
     h4 { font-size: 3em; margin-top: 20px; }
     p { padding: 0 2vw; line-height: 2em; margin: 25px 0; }
+    a { color: $gold; }
   }
   // Builder Details Page
   &.builder-introduction { padding-bottom: 40px;
@@ -143,27 +155,22 @@
 // amenities slider
 .amenities-slider-section { margin-bottom: 80px;
   .carousel-item {
-    .amenity-details { text-align: center; width: 100%; position: absolute; top: 50%; transform: translateY(-50%);
+    .amenity-details { text-align: center; width: 100%; padding: 20px 0; height: 275px;
       .gold-txt { font-size: 4em; font-family: 'rockwell-bold', serif; margin: 0; }
       .gothic   { font-size: 1.25em; margin: -5px 0 8px; }
-      p { padding: 0 15%; font-size: 0.9em; line-height: 1.3em;
+      p { padding: 0; font-size: 0.9em; line-height: 1.5em;
         a { text-transform: uppercase; color: $gold; }
       }
     }
   }
-  .carousel-indicators { width: 30%; height: 5px; margin: 0; left: 11%; bottom: 20%;
-    li { width: 8px; height: 8px; border-radius: 8px; background-color: $ltgray; opacity: 1;
+  .carousel-indicators { width: 100%; height: 5px; margin: 0; bottom: 58%; z-index: 100;
+    li { width: 10px; height: 10px; border-radius: 10px; background-color: $ltgray; opacity: 1;
       &.active { background-color: $blue; }
     }
   }
 
   .carousel-control-prev,
-  .carousel-control-next { color: $ltgray; opacity: 1; width: auto;
-    &:hover { color: $gray; }
-  }
-  .carousel-control-prev { left: 2%; }
-  .carousel-control-next { right: 50%; }
-
+  .carousel-control-next { display: none; }
 }
 
 // Homebuilder Page
@@ -222,6 +229,7 @@
     }
   }
 }
+
 
 
 
@@ -341,6 +349,18 @@ No media query since this is the default in Bootstrap because it is "mobile firs
       }
     }
   }
+  .amenities-slider-section {
+    .carousel-item {
+      .amenity-details { height: auto; padding: 5px 0;
+        .gold-txt { font-size: 3em; font-family: 'rockwell-bold', serif; margin: 0; }
+        .gothic   { font-size: 1.15em; margin: -5px 0 8px; }
+        p { padding: 0; font-size: 0.85em; line-height: 1.5em;
+          a { text-transform: uppercase; color: $gold; }
+        }
+      }
+    }
+    .carousel-indicators { width: 30%; height: 5px; margin: 0; left: 7%; bottom: 5%; }
+  }
 
 
 
@@ -415,6 +435,26 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
   }
 
+  // Amenities Slider
+  .amenities-slider-section { margin-bottom: 80px;
+    .carousel-item {
+      .amenity-details { text-align: center; width: 100%; position: absolute; top: 50%; transform: translateY(-50%);
+        .gold-txt { font-size: 4em; font-family: 'rockwell-bold', serif; margin: 0; }
+        .gothic   { font-size: 1.25em; margin: -5px 0 8px; }
+        p { padding: 0 2%; font-size: 0.9em; line-height: 1.3em;
+          a { text-transform: uppercase; color: $gold; }
+        }
+      }
+    }
+    .carousel-indicators { width: 30%; height: 5px; margin: 0; left: 11%; bottom: 10px;
+      li { width: 10px; height: 10px; border-radius: 10px; background-color: $ltgray; opacity: 1;
+        &.active { background-color: $blue; }
+      }
+    }
+
+
+  }
+
   /*** FOOTER STYLES ***/
   .footer {
     .container-fluid { padding-right: 0; padding-left: 0; }
@@ -425,7 +465,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
       .footer-builders { font-size: 1.1em; font-weight: lighter; }
       p { font-size: .9em; line-height: 1.4em; }
     }
-    .map-container { width: 100%; min-height: auto; height: 100%; background-position: right top; }
+    .map-container { width: 100%; min-height: 300px; height: 100%; background-position: right top; }
     .footer-instagram { background: transparent url('../images/footer-dots.jpg') no-repeat left 50%; height: 100%; }
     .footer-directions { padding: 10px 0 5px; text-align: center;
       p { margin-bottom: 0; font-size: 1.15em; line-height: 1.3em;  }
@@ -447,10 +487,19 @@ No media query since this is the default in Bootstrap because it is "mobile firs
 @media (min-width: 992px) {
   .header {
     .reunion-logo { width: 200px; }
-    .secondary-links { display: block; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); list-style: none;
+    .secondary-links-container { display: block; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); list-style: none;
       font-family: 'tradegothic-normal', sans-serif;
-      li { display: inline-block; padding: 0; margin: 0; text-transform: uppercase;
-        a { color: $white; }
+      .secondary-links { margin-bottom: 8px;
+        li { display: inline-block; padding: 0; margin: 0; text-transform: uppercase;
+          a { color: $white; }
+        }
+      }
+      .social-links { margin: 0; list-style: none; font-size: 1.5em; float: right;
+        li { display: inline-block; padding: 0 4px; margin: 0;
+          a { color: tint($gray, 15);
+            &:hover { color: $gray; }
+          }
+        }
       }
     }
   }
@@ -521,6 +570,33 @@ No media query since this is the default in Bootstrap because it is "mobile firs
         .builder-buttons { font-size: .9em; }
       }
     }
+  }
+
+  // Amenities Slider
+  .amenities-slider-section {
+    .carousel-item {
+      .amenity-details {
+        p { padding: 0 15%; font-size: 0.9em; line-height: 1.5em; }
+      }
+    }
+    .carousel-indicators { width: 30%; height: 5px; margin: 0; left: 10%; bottom: 20%;
+      li { width: 10px; height: 10px; border-radius: 10px; background-color: $ltgray; opacity: 1;
+        &.active { background-color: $blue; }
+      }
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next { color: $ltgray; opacity: 1; width: auto; display: block; top: 50%;
+      &:hover { color: $gray; }
+    }
+    .carousel-control-prev { left: 2%; }
+    .carousel-control-next { right: 50%; }
+  }
+
+
+
+  .footer {
+    .map-container { min-height: auto; }
   }
 }
 
@@ -636,6 +712,25 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
   }
 
+  // Quick Move-In Homes
+  .qmihomes-section { padding: 45px 0;
+    .quickmove-table {
+      .align-items-center { margin: 30px 0; }
+    }
+    .builder-logo,
+    .builder-description {  }
+    .builder-description {
+      .builder-name { font-family: 'tradegothic-normal', sans-serif; font-size: 2em; color: $medgray; text-transform: uppercase; margin: 0 0 8px; }
+      .address,
+      .hours { font-size: 1em; }
+      .hours {
+        strong { text-transform: uppercase; color: $gold; }
+      }
+    }
+    .builder-nohome { text-align: center; 
+      h2 { font-size: 1.25em; font-family: 'tradegothic-normal', sans-serif; }
+    }
+  }
 
 
   .footer {
