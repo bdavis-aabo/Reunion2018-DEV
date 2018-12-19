@@ -17,6 +17,16 @@
           </div>
         </div>
       </div>
+
+      <?php if(is_page('reunion-coffee-house')): ?>
+      <div class="row">
+        <div class="col-12">
+          <div class="cup-collage">
+            <img src="<?php bloginfo('template_directory') ?>/assets/images/cup-collage.jpg" class="aligncenter img-fluid" alt="Community Uplift Partnership (CUP)" />
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
     </div>
   </section>
 

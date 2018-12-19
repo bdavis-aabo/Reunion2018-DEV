@@ -26,6 +26,7 @@
               <div class="builder-description">
                 <h2 class="builder-name"><?php the_title() ?></h2>
                 <span class="address"><?php echo str_replace('<br/>', ' | ', get_field('homebuilder_address')) ?></span>
+                <span class="phone"><?php echo get_field('homebuilder_phone') ?></span><br />
                 <span class="hours">
                   <strong>Sales Office Hours: </strong><br /><?php echo get_field('homebuilder_hours') ?>
                 </span>
@@ -48,18 +49,18 @@
               if($_quickmoves->have_posts()): while($_quickmoves->have_posts()): $_quickmoves->the_post();
                 $_homeImage = get_field('qmi_image');
             ?>
-              <div class="col-6 col-md-3">
+              <div class="col-12 col-sm-6 col-md-6 col-xl-3">
                 <div class="qmi-home">
                   <img src="<?php echo $_homeImage['url'] ?>" class="aligncenter img-fluid" />
-                  <strong><?php echo get_field('qmi_floorplan') ?></strong><br />
+                  <h2 class="home-name"><?php echo get_field('qmi_floorplan') ?></h2>
                   <span class="address-price"><?php echo get_field('qmi_address') ?> | <strong><?php echo '$' . get_field('qmi_price') ?></strong></span>
                   <p><?php echo get_field('qmi_available') ?></p>
 
                   <p class="details">
-                    <?php echo get_field('qmi_square_footage') . ' | ' . get_field('qmi_bedrooms') . ' beds | ' . get_field('qmi_bathrooms') . ' bath<br/>' .
+                    <?php echo get_field('qmi_square_footage') . ' sq ft | ' . get_field('qmi_bedrooms') . ' beds | ' . get_field('qmi_bathrooms') . ' bath<br/>' .
 											get_field('qmi_garage') ?>
                   </p>
-									<a href="<?php echo get_field('qmi_link') ?>" class="builder-btn" target="_blank"><i class="fa fa-chevron-right"></i> More Information</a>
+									<a href="<?php echo get_field('qmi_link') ?>" class="builder-btn" target="_blank">View This Home</a>
                 </div>
               </div>
             <?php endwhile; else: ?>

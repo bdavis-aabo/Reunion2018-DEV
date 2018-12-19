@@ -8,7 +8,7 @@
       </div>
       <div class="col-12 col-lg-5">
         <div class="footer-contactform" id="stay-connected">
-          <h1 class="footer-headline">Single-Family Homes from the low $300s</h1>
+          <h1 class="footer-headline">Single-Family Homes from the high $200s</h1>
           <h2 class="footer-builders">Oakwood Homes | Richmond American Homes | Shea Homes</h2>
           <em>Enjoy more real experiences at Reunion.</em>
           <p>If you'd like to hear the latest and greatest happenings at Reunion, we'd love to share them with you. Please fill out this form and we'll send you email updates from time to time. Do note that we respect your information and will not misuse it in any inappropriate manner.</p>

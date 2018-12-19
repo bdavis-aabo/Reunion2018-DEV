@@ -231,6 +231,40 @@ html { scroll-behavior: smooth; }
 }
 
 
+// Quick Move-In Homes
+.qmihomes-section { padding: 45px 0;
+  .quickmove-table {
+    .align-items-center { margin: 30px 0; }
+  }
+  .builder-logo,
+  .builder-description {  }
+  .builder-description { text-align: center;
+    .builder-name { font-family: 'tradegothic-normal', sans-serif; font-size: 2em; color: $medgray; text-transform: uppercase; margin: 18px 0 8px; }
+    .address,
+    .hours { font-size: 1em; }
+    .hours {
+      strong { text-transform: uppercase; color: $gold; }
+    }
+  }
+  .builder-homes { border-bottom: 1px solid $ltgray; padding: 30px 0 30px; margin-bottom: 30px;
+    .qmi-home { text-align: center; margin-bottom: 20px;
+      img { margin-bottom: 12px; }
+      .home-name { text-transform: uppercase; font-family: 'tradegothic-normal', sans-serif; font-size: 1.35em; margin: 0 0 5px; }
+      .address-price {
+        strong { color: $gold; }
+      }
+      .builder-btn { background: $gold; color: $white; padding: 8px 25px 6px; text-transform: uppercase; font-family: 'tradegothic-normal', sans-serif;
+        &:hover { background: shade($gold, 5); }
+      }
+    }
+  }
+  .builder-nohome { text-align: center;
+    h2 { font-size: 1.25em; font-family: 'tradegothic-normal', sans-serif; }
+  }
+}
+
+
+
 
 
 /*** FOOTER STYLES ***/
@@ -432,6 +466,13 @@ No media query since this is the default in Bootstrap because it is "mobile firs
           }
         }
       }
+    }
+  }
+
+  // Quick Move-In Homes
+  .qmihomes-section {
+    .builder-description { text-align: left;
+      .builder-name { margin: 0 0 8px; }
     }
   }
 
@@ -709,26 +750,6 @@ No media query since this is the default in Bootstrap because it is "mobile firs
           }
         }
       }
-    }
-  }
-
-  // Quick Move-In Homes
-  .qmihomes-section { padding: 45px 0;
-    .quickmove-table {
-      .align-items-center { margin: 30px 0; }
-    }
-    .builder-logo,
-    .builder-description {  }
-    .builder-description {
-      .builder-name { font-family: 'tradegothic-normal', sans-serif; font-size: 2em; color: $medgray; text-transform: uppercase; margin: 0 0 8px; }
-      .address,
-      .hours { font-size: 1em; }
-      .hours {
-        strong { text-transform: uppercase; color: $gold; }
-      }
-    }
-    .builder-nohome { text-align: center; 
-      h2 { font-size: 1.25em; font-family: 'tradegothic-normal', sans-serif; }
     }
   }
 
