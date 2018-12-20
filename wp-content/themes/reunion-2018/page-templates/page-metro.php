@@ -20,6 +20,6 @@
     </div>
   </section>
 
-  <?php if(is_page('about-reunion')): get_template_part('page/page-amenities'); endif; ?>
+  <?php if(is_page('hoa') || is_page('district-info')): get_template_part('metro/metro-documents'); endif; ?>
 
 <?php get_footer() ?>

@@ -701,6 +701,11 @@ No media query since this is the default in Bootstrap because it is "mobile firs
       }
       .card-body { padding: 2rem 90px 2rem 70px;
         p { line-height: 1.75em; margin-bottom: 0; }
+        ul { margin: 0; padding: 0;
+          li { padding: 5px 0 3px; text-transform: uppercase;
+            a { color: $gold; }
+          }
+        }
       }
     }
   }
