@@ -23,7 +23,23 @@
           <div class="row">
             <div class="col-12 col-md-6">
               <div class="collection-images">
-                images
+              <?php if(get_sub_field('collection_gallery')): $_galleryImages = get_sub_field('collection_gallery'); $_s = 0; ?>
+                <div id="<?php echo $post->post_name.'-slider'?>" class="carousel slide" data-ride="carousel">
+                  <div class="carousel-inner">
+                  <?php foreach($_galleryImages as $_image): ?>
+                    <div class="carousel-item <?php if($_s == 0): echo 'active'; endif; ?>">
+                      <img src="<?php echo $_image['url'] ?>" alt="<?php the_title() ?>" class="img-fluid" />
+                    </div>
+                  <?php $_s++; endforeach; ?>
+
+                    <ol class="carousel-indicators">
+                    <?php $_i = 0; foreach($_galleryImages as $_image): ?>
+                      <li data-target="#<?php echo $post->post_name.'-slider'?>" data-slide-to="<?php echo $_i ?>" <?php if($_i == 0): ?>class="active"<?php endif; ?>></li>
+                    <?php $_i++; endforeach; ?>
+                    </ol>
+                  </div>
+                </div>
+              <?php endif; ?>
               </div>
             </div>
             <div class="col-12 col-md-6">
