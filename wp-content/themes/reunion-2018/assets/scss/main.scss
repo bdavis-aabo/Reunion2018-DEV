@@ -686,7 +686,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     .card {
       .card-header {
         .indicator { display: block; width: 24px; height: 24px; position: absolute; left: 20px; top: 20px; transition: transform .5s ease-in-out;
-          .fa-plus { color: $white; text-shadow: 0 0 1px $red, 0 0 1px $red; }
+          .fa-plus { color: $white; text-shadow: 0 0 1px $gold, 0 0 1px $gold; }
         }
         h5 {
           .btn { font-family: 'tradegothic-normal', sans-serif; font-size: .9em; text-transform: uppercase; color: $gray; padding: 4px 0 0 48px;
@@ -700,10 +700,14 @@ No media query since this is the default in Bootstrap because it is "mobile firs
         }
       }
       .card-body { padding: 2rem 90px 2rem 70px;
-        p { line-height: 1.75em; margin-bottom: 0; }
-        ul { margin: 0; padding: 0;
-          li { padding: 5px 0 3px; text-transform: uppercase;
-            a { color: $gold; }
+        p { line-height: 1.75em; margin-bottom: 10px; }
+        ol, ul { margin: 0; padding: 0;
+          li { padding: 8px 0;
+            a, strong { color: $gold; text-transform: uppercase; }
+
+            ul { margin: 5px 0 5px 30px;
+              li { padding: 5px 0; }
+            }
           }
         }
       }
