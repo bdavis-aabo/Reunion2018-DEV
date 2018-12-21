@@ -12,7 +12,7 @@
             <h2 class="article-title"><a href="<?php the_permalink() ?>"><?php the_title() ?></a></h2>
             <p class="article-date">Posted on <?php the_time('d') ?> <?php the_time('M Y') ?></p>
 
-            <?php the_excerpt() ?>
+            <?php the_content() ?>
             <a href="<?php the_permalink() ?>" title="<?php the_title() ?>" class="btn gold-btn">Read More <i class="fas fa-chevron-right"></i></a>
           </article>
         <?php endwhile; endif; ?>

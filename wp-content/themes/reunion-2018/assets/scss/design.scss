@@ -71,7 +71,7 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
     padding-left: 20px;
   }
 
-  &.gold-btn { background: $gold;
+  &.gold-btn { background: $gold; color: $white !important;
     &:hover { background: shade($gold, 10); }
   }
   &.blue-btn { background: $blue;
