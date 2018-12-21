@@ -21,7 +21,7 @@
   </section>
 
   <?php
-  elseif(is_page('district-information')):
+  if(is_page('district-information')):
     get_template_part('metro/metro-boxes');
   else:
     get_template_part('metro/metro-documents');
