@@ -6,7 +6,7 @@
 
   <?php get_template_part('page/page-heroimage') ?>
 
-  <section class="homepage-introduction page-introduction">
+  <section class="homepage-introduction page-introduction metro-introduction">
     <div class="container-fluid">
       <div class="row align-items-center">
         <div class="col-12 col-sm-10 offset-sm-1">
@@ -20,6 +20,12 @@
     </div>
   </section>
 
-  <?php if(is_page('hoa') || is_page('district-info')): get_template_part('metro/metro-documents'); endif; ?>
+  <?php
+  elseif(is_page('district-information')):
+    get_template_part('metro/metro-boxes');
+  else:
+    get_template_part('metro/metro-documents');
+  endif;
+  ?>
 
 <?php get_footer() ?>
