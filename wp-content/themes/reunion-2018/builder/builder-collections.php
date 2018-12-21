@@ -16,7 +16,11 @@
 <?php while($_builders->have_posts()): $_builders->the_post() ?>
 <section class="builder-collections">
   <div class="container">
+    <?php $_row = 0; ?>
+
     <?php if(have_rows('homebuilder_collections')): while(have_rows('homebuilder_collections')): the_row(); ?>
+
+
     <div class="row">
       <div class="col-12">
         <div class="collection">
@@ -24,7 +28,7 @@
             <div class="col-12 col-md-6">
               <div class="collection-images">
               <?php if(get_sub_field('collection_gallery')): $_galleryImages = get_sub_field('collection_gallery'); $_s = 0; ?>
-                <div id="<?php echo $post->post_name.'-slider'?>" class="carousel slide" data-ride="carousel">
+                <div id="<?php echo $post->post_name.'-slider-'.$_row ?>" class="carousel slide" data-ride="carousel">
                   <div class="carousel-inner">
                   <?php foreach($_galleryImages as $_image): ?>
                     <div class="carousel-item <?php if($_s == 0): echo 'active'; endif; ?>">
@@ -34,7 +38,7 @@
 
                     <ol class="carousel-indicators">
                     <?php $_i = 0; foreach($_galleryImages as $_image): ?>
-                      <li data-target="#<?php echo $post->post_name.'-slider'?>" data-slide-to="<?php echo $_i ?>" <?php if($_i == 0): ?>class="active"<?php endif; ?>></li>
+                      <li data-target="#<?php echo $post->post_name.'-slider-'.$_row ?>" data-slide-to="<?php echo $_i ?>" <?php if($_i == 0): ?>class="active"<?php endif; ?>></li>
                     <?php $_i++; endforeach; ?>
                     </ol>
                   </div>
@@ -60,7 +64,7 @@
         </div>
       </div>
     </div>
-    <?php endwhile; endif; ?>
+    <?php $_row++; endwhile; endif; ?>
   </div>
 </section>
 
