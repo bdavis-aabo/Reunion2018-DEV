@@ -4,8 +4,6 @@
 
   <?php if(is_front_page() || is_page('home')): get_template_part('home/home-heroimage'); endif; ?>
 
-  <div class="scroll-indicator"></div>
-
     <section class="homepage-introduction">
       <div class="container-fluid">
         <div class="row align-items-center">

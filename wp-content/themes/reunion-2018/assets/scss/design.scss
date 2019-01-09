@@ -72,7 +72,7 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
   }
 
   &.gold-btn { background: $gold; color: $white !important;
-    &:hover { background: shade($gold, 10); }
+    &:hover { background: shade($gold, 3); }
   }
   &.blue-btn { background: $blue;
     &:hover { background: tint($blue, 10); }

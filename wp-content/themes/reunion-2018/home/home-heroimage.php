@@ -18,7 +18,8 @@
           <span class="home-image-bg" style="background-image: url('<?php echo $_rightImage['url'] ?>')"></span>
         </a>
       </div>
+
+      <div class="scroll-indicator"></div>
+      
       <div class="home-overlay"></div>
     </section>
-
-    <div class="scroll-indicator"></div>

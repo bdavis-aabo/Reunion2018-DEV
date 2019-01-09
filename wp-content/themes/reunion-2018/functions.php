@@ -216,6 +216,50 @@ add_filter('wpcf7_form_elements', function($content) {
     return $content;
 });
 
+/* Excerpt Formatting */
+function reunion_excerpt($text){
+  $_raw = $text;
+  if($text == ''){
+    $text = get_the_content('');
+    $text = strip_shortcodes($text);
+    $text = apply_filters('the_content', $text);
+    $text = str_replace(']]>', ']]&gt;', $text);
+
+    $_length = apply_filters('excerpt_length', 55);
+    $_more   = apply_filters('excerpt_more', ' ' . '...');
+
+    $_words = preg_split('/[\n\r\t ]+/', $text, $_length + 1, PREG_SPLIT_NO_EMPTY);
+    if(count($_words) > $_length){
+      array_pop($_words);
+      $text = implode(' ', $words);
+      $text = force_balance_tags($text);
+      $text = $text . $_more;
+    } else {
+      $text = implode(' ', $_words);
+    }
+  }
+  return apply_filters('wp_trim_excerpt', $text, $_raw);
+}
+remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+add_filter('get_the_excerpt', 'reunion_excerpt');
+
+
+/* Get First Image in Blog Article */
+function get_article_image(){
+  global $post, $posts;
+  $_firstImage = '';
+  ob_start();
+  ob_end_clean();
+
+  $_output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
+  $_firstImage = $matches[1][0];
+
+  if(empty($_firstImage)){
+    $_firstImage = get_template_directory_uri() . '/assets/images/default.png';
+  }
+  return $_firstImage;
+}
+
 
 
 
