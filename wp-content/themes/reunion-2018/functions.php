@@ -216,6 +216,15 @@ add_filter('wpcf7_form_elements', function($content) {
     return $content;
 });
 
+function is_child(){
+  global $post;
+  if(is_page() && $post->post_parent > 0){
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /* Excerpt Formatting */
 function reunion_excerpt($text){
   $_raw = $text;

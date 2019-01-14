@@ -76,6 +76,16 @@ html { scroll-behavior: smooth; }
   }
 }
 
+/*** BREADCRUMBS ***/
+.page-breadcrumbs {
+  .crumbs { padding: 0; margin: 25px 0 0; list-style: none; font-size: .95em; text-transform: uppercase; color: $medgray;
+    li { display: inline-block; padding: 0 12px 0 0;
+      .fas { padding-left: 12px; display: inline-block; }
+      a { color: $gold; }
+    }
+  }
+}
+
 /*** LANDING/HOME PAGE STYLES ***/
 .pagehero-section { position: relative;
   .metro-btn {  transform: rotate(90deg) translate(-25%, -5px); transform-origin: 100% 0; text-align: center; padding: 20px 30px 0; right: 0; top: calc(50vh + 100px); position: absolute; text-transform: uppercase; transition: all 666ms ease-in-out;
@@ -325,6 +335,9 @@ html { scroll-behavior: smooth; }
   }
 }
 
+.map-container {
+  p { margin: 20px 0; }
+}
 
 
 
@@ -496,7 +509,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
 
 
   .homepage-introduction { padding: 10vh 0; text-align: center;
-    &.page-introduction  { padding-top: 10vh; padding-bottom: 3vh;
+    &.page-introduction  { padding-top: 10vh; padding-bottom: 10vh;
       em { font-size: .9em; }
     }
     .page-content {
@@ -561,9 +574,9 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   /*** FOOTER STYLES ***/
   .footer {
     .container-fluid { padding-right: 0; padding-left: 0; }
-    .footer-contactform { color: $white; padding: 25px; overflow: auto;
-      h1,h2 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; margin-bottom: 10px; }
-      em { display: block; font-family: 'tradegothic-italic', sans-serif; font-size: 1.1em; padding-bottom: 5px; }
+    .footer-contactform { color: $white; padding: 40px 25px; overflow: auto;
+      h1,h2 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; margin-bottom: 13px; }
+      em { display: block; font-family: 'tradegothic-italic', sans-serif; font-size: 1.1em; padding-bottom: 12px; }
       .footer-headline { font-size: 1.4em; font-weight: bold; }
       .footer-builders { font-size: 1.1em; font-weight: lighter; }
       p { font-size: .9em; line-height: 1.4em; }
@@ -652,7 +665,8 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   }
   .homepage-introduction {
     .page-content {
-      p { padding: 0 2vw; line-height: 2em; margin: 25px 0; }
+      p { padding: 0; line-height: 2em; margin: 25px 0 30px 0; }
+      h2 { margin: 30px 0; }
     }
   }
   .page-overlay { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: $white; opacity: 1; visibility: visible;
@@ -714,7 +728,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     &.builder-introduction,
     &.builder-information {
       .page-content {
-        p { padding: 0 7vw; }
+        p { padding: 0 2vw; }
         &.intro-content {
           p { padding: 0 10vw; }
         }

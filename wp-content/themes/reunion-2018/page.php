@@ -2,12 +2,14 @@
 
   <?php if(!is_front_page()): get_template_part('page/page-navigation'); endif; ?>
 
-  <?php get_template_part('page/page-heroimage') ?>
+  <?php if(!is_page('model-directory')): get_template_part('page/page-heroimage'); endif; ?>
+
+  <?php if(is_child() && !is_page('model-directory')): get_template_part('page/page-breadcrumbs'); endif; ?>
 
   <section class="homepage-introduction page-introduction">
-    <div class="container-fluid">
+    <div class="container">
       <div class="row align-items-center">
-        <div class="col-12 col-sm-10 offset-sm-1">
+        <div class="col-12 col-sm-10 offset-sm-1 offset-md-0 col-md-12">
           <div class="page-content">
             <?php while(have_posts()): the_post() ?>
               <?php the_content() ?>
@@ -16,6 +18,21 @@
         </div>
       </div>
     </div>
+    <?php if(is_page('model-directory')): ?>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-10 offset-1">
+          <div class="map-container">
+            <?php echo get_the_post_thumbnail($post->ID, 'full', array('class' => 'img-fluid aligncenter')); ?>
+
+            <p>
+              <a href="<?php bloginfo('template_directory') ?>/assets/images/ReunionBuilderMap.pdf" target="_blank" class="btn gold-btn">Download Directory Map</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <?php endif; ?>
   </section>
 
   <?php if(is_page('about-reunion')): get_template_part('page/page-amenities'); endif; ?>

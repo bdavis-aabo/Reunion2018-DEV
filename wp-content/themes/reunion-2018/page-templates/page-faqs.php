@@ -6,6 +6,8 @@
 
   <?php get_template_part('page/page-heroimage') ?>
 
+  <?php if(is_child()): get_template_part('page/page-breadcrumbs'); endif; ?>
+
   <section class="homepage-introduction page-introduction">
     <div class="container-fluid">
       <div class="row align-items-center">
