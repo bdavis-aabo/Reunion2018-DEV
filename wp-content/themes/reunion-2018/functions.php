@@ -240,7 +240,7 @@ function reunion_excerpt($text){
     $_words = preg_split('/[\n\r\t ]+/', $text, $_length + 1, PREG_SPLIT_NO_EMPTY);
     if(count($_words) > $_length){
       array_pop($_words);
-      $text = implode(' ', $words);
+      $text = implode(' ', $_words);
       $text = force_balance_tags($text);
       $text = $text . $_more;
     } else {
@@ -249,8 +249,8 @@ function reunion_excerpt($text){
   }
   return apply_filters('wp_trim_excerpt', $text, $_raw);
 }
-remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-add_filter('get_the_excerpt', 'reunion_excerpt');
+//remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+//add_filter('get_the_excerpt', 'reunion_excerpt');
 
 
 /* Get First Image in Blog Article */

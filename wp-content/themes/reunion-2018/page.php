@@ -2,9 +2,9 @@
 
   <?php if(!is_front_page()): get_template_part('page/page-navigation'); endif; ?>
 
-  <?php if(!is_page('model-directory')): get_template_part('page/page-heroimage'); endif; ?>
+  <?php if(!is_page('model-directory') && !is_page('reunion-community-map')): get_template_part('page/page-heroimage'); endif; ?>
 
-  <?php if(is_child() && !is_page('model-directory')): get_template_part('page/page-breadcrumbs'); endif; ?>
+  <?php if(is_child() && !is_page('model-directory') && !is_page('reunion-community-map')): get_template_part('page/page-breadcrumbs'); endif; ?>
 
   <section class="homepage-introduction page-introduction">
     <div class="container">
@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <?php if(is_page('model-directory')): ?>
+    <?php if(is_page('model-directory') || is_page('reunion-community-map')): ?>
     <div class="container-fluid">
       <div class="row">
         <div class="col-10 offset-1">
