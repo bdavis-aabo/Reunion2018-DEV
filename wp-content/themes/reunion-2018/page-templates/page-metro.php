@@ -4,7 +4,7 @@
 
   <?php if(!is_front_page()): get_template_part('page/metro-navigation'); endif; ?>
 
-  <?php get_template_part('page/page-heroimage') ?>
+  <?php get_template_part('page/metro-heroimage') ?>
 
   <?php if(is_child()): get_template_part('page/page-breadcrumbs'); endif; ?>
 
@@ -25,11 +25,6 @@
   <?php if(is_page('staff-directory')): ?>
   <section class="staff-member-section">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <h2 class="member-heading">Board Members</h2>
-        </div>
-      </div>
       <?php if(have_rows('staff_members')): get_template_part('metro/metro-staff'); endif; ?>
     </div>
   </section>

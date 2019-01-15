@@ -6,7 +6,7 @@
 
   <?php if(is_child() && !is_page('model-directory') && !is_page('reunion-community-map')): get_template_part('page/page-breadcrumbs'); endif; ?>
 
-  <section class="homepage-introduction page-introduction">
+  <section class="homepage-introduction page-introduction <?php echo $post->post_name.'-bg' ?>">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-12 col-sm-10 offset-sm-1 offset-md-0 col-md-12">

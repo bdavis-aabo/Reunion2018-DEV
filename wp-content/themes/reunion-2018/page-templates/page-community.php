@@ -20,14 +20,9 @@
         </div>
       </div>
 
-      <?php if(is_page('reunion-coffee-house')): ?>
-      <div class="row">
-        <div class="col-12">
-          <div class="cup-collage">
-            <img src="<?php bloginfo('template_directory') ?>/assets/images/cup-collage.jpg" class="aligncenter img-fluid" alt="Community Uplift Partnership (CUP)" />
-          </div>
-        </div>
-      </div>
+
+      <?php if(get_field('page_content_image') != ''): $_bodyImage = get_field('page_content_image'); ?>
+        <img src="<?php echo $_bodyImage['url'] ?>" class="aligncenter img-fluid" alt="<?php the_title() ?>" />
       <?php endif; ?>
     </div>
   </section>

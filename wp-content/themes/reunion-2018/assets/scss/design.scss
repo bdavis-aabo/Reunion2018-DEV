@@ -62,7 +62,7 @@ $red:     #981b22;
 body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-height: $line-height; color: $medgray;
   -webkit-font-smooting: antialiased; -moz-osx-font-smoothing: grayscale;
 
-  a { transition: all 666ms ease-in-out;
+  a { transition: all 666ms ease-in-out; text-shadow: none;
     &:hover { text-decoration: none; }
   }
 }

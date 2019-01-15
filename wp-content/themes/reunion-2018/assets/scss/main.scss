@@ -341,15 +341,29 @@ html { scroll-behavior: smooth; }
 
 /*** METRO STAFF MEMBERS ***/
 .staff-member-section {
-  .member-heading { font-size: 1.3em; color: $gold; }
-  .staff-member { border: 1px solid $gray; padding-bottom: 100%; margin-bottom: 40px; position: relative; overflow: hidden;
+  .member-heading { font-size: 1.3em; color: $gold; text-align: center; }
+  .staff-member { border: 1px solid $gray; padding-bottom: 100%; margin-bottom: 40px; position: relative; overflow: hidden; cursor: pointer;
     .staff-member-details { font-family: 'tradegothic-normal', sans-serif; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 80%;
-      background: pink;
       span { display: block;
         &.member-name { text-transform: uppercase; margin-bottom: 8px; }
       }
     }
-    .staff-member-email { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform: translateY(-100%); text-align: center; background: yellow;  }
+    .staff-member-email { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform: translateY(100%); text-align: center; transition: transform 666ms ease-in-out;
+      &.blue-bg { background: $blue; }
+      &.red-bg  { background: $red;  }
+      &.gold-bg { background: $gold;
+        .staff-member-details {
+          a { color: $blue;
+            &:hover { color: $white; }
+          }
+        }
+      }
+      .staff-member-details { font-size: 1.2em;
+        a { color: $white;
+          &:hover { color: $gold; }
+        }
+      }
+    }
 
     &:hover {
       .staff-member-email { transform: translateY(0); }
@@ -531,6 +545,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     &.page-introduction  { padding-top: 10vh;
       em { font-size: .9em; }
     }
+    &.reunion-history-bg { background: url('../images/wheat-bg.jpg') no-repeat right 20%;  }
     .page-content {
       h1, h4, h5, h6 { font-family: 'authenia', sans-serif; margin-bottom: 20px; color: $gold; }
       h2, h3 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; }
@@ -679,7 +694,9 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   }
 
   .pagehero-section {
-    .page-heroimage { height: 70vh; width: 100vw; position: relative; background-size: cover !important; }
+    .page-heroimage { height: 70vh; width: 100vw; position: relative; background-size: cover !important;
+      .page-herologo { position: absolute; left: 2vw; bottom: 2vh; width: 250px; }
+    }
     .scroll-indicator { bottom: -76px !important; }
   }
   .homepage-introduction {

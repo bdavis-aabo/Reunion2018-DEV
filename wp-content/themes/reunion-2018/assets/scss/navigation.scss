@@ -30,7 +30,7 @@ $bar-thickness:               2px;
 .navigation { position: absolute; top: 100px; left: 0; z-index: 999; width: 100vw; height: 100%; overflow-y: scroll; -webkit-overflow-scrolling: touch;
   transform: translateX(-100%); transition: transform .5s cubic-bezier(0.25, 0.1, 0.25, 1); box-shadow: 0 0 5px gba(0,0,0,.5);
   &.scroll { top: 100px; position: fixed; }
-
+  &.blue-bg { background: $blue url('../images/reunion-r.png') no-repeat -75px bottom; }
   &.nav-open { transform: translateX(0); }
 
   .main-menu-container { padding: 40px 40px 100px; height: auto;
@@ -130,6 +130,7 @@ $bar-thickness:               2px;
         }
       }
     }
+    .hero-logo { width: 250px; display: block; margin-bottom: 40px; }
     .switch-link {
         &:hover { color: $blue; border-color: $blue; }
     }
