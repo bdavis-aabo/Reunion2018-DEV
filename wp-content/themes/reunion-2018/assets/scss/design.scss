@@ -34,6 +34,12 @@ $heading-scale:    6;
 .vcenter 	 { display: flex; align-items: center; }
 .vbottom   { align-items: flex-end; }
 .hidden    { display: none; }
+.square:before {
+    content: '';
+    display: block;
+    pading-top: 100%;
+  }
+
 
 /*** COLORS ***/
 $white:   #fff;
