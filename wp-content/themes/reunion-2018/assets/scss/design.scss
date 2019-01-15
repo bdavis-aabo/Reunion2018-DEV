@@ -68,6 +68,9 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
 }
 @include headings($base-font-size, $heading-scale * 1.3);
 
+img.alignleft, .alignleft { float: left; margin: 0 15px 15px 0; }
+img.alignright, .alignright { float: right; margin: 0 0 15px 15px; }
+
 /*** BUTTONS ***/
 .btn { border-radius: 0; padding: 7px 15px 4px; transition: all .3s ease-in-out;
   &.left-btn { -webkit-clip-path: polygon(0 0, 100% 0%, 95% 100%, 0% 100%); clip-path: polygon(0 0, 100% 0%, 95% 100%, 0% 100%);
