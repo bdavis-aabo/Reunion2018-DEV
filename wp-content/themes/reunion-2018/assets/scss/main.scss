@@ -112,6 +112,7 @@ html { scroll-behavior: smooth; }
   &.page-introduction  { padding-bottom: 3vh;
     em { font-size: .9em; }
   }
+  &.reunion-history-bg { background-position: 225% 5% !important;  }
   &.metro-introduction {
     strong { font-weight: normal; text-transform: uppercase; color: $gold; font-size: 1.1em; }
     p { text-align: left;
@@ -406,6 +407,20 @@ html { scroll-behavior: smooth; }
 .pinwheel-detail 		{ background: transparent url('../images/pinwheel.jpg') no-repeat 0 0; }
 .discovery-detail 		{ background: transparent url('../images/discovery.jpg') no-repeat 0 0; }
 
+/*** FACILITY FEES TABLES ***/
+.tablepress {
+  &.metro-table {
+    thead {
+      th { background-color: $blue; padding: 10px 8px 7px;
+        strong { color: $white; }
+      }
+    }
+    tbody {
+      td { padding: 10px; vertical-align: middle; border: 1px solid $ltgray; }
+    }
+  }
+}
+
 
 /*** FOOTER STYLES ***/
 .footer {
@@ -577,7 +592,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     &.page-introduction  { padding-top: 10vh;
       em { font-size: .9em; }
     }
-    //&.reunion-history-bg { background: url('../images/wheat-bg.jpg') no-repeat right 20%;  }
+    &.reunion-history-bg { background-position: right 5% !important;  }
     .page-content {
       h1, h4, h5, h6 { font-family: 'authenia', sans-serif; margin-bottom: 20px; color: $gold; }
       h2, h3 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; }
