@@ -193,7 +193,7 @@ html { scroll-behavior: smooth; }
   .carousel-control-next { display: none; }
 }
 
-.page-faqs { padding: 45px 0 80px;
+.page-faqs { padding: 0 0 80px;
   .card {
     .card-header {
       .indicator { display: block; width: 24px; height: 24px; position: absolute; left: 20px; top: 20px; transition: transform .5s ease-in-out;
@@ -213,6 +213,7 @@ html { scroll-behavior: smooth; }
     .card-body { padding: 2rem 90px 2rem 70px;
       p { line-height: 1.75em; margin-bottom: 10px;
         strong { text-transform: uppercase; }
+        a { color: $gold; }
       }
       ol, ul { margin: 0; padding: 0 5vw; list-style: none;
         li { padding: 12px 0; padding-left: 1.5em; line-height: 1.5em;
@@ -373,7 +374,37 @@ html { scroll-behavior: smooth; }
   }
 }
 
+/*** Parks & Trails Map (OLD) ***/
+.trail-map-container { width: 589px; height: 485px; margin: 15px auto; background: #fff url('../images/map-base.jpg') no-repeat 0 0; position: relative; }
+.main-map .map-point { display: block; width: 13px; height: 13px; position: absolute; left: 0; top: 0; cursor: pointer; }
 
+.main-map #boxelder 		{ top: 92px; left: 174px; }
+.main-map #heartland 		{ top: 106px; left: 282px; }
+.main-map #sunflower 		{ top: 132px; left: 273px; }
+.main-map #reunion 			{ top: 122px; left: 319px; }
+.main-map #unity-parkway 	{ top: 136px; left: 310px; }
+.main-map #unity			{ top: 154px; left: 284px; }
+.main-map #touchstone		{ top: 158px; left: 324px; }
+.main-map #harmony			{ top: 165px; left: 346px; }
+.main-map #liberty			{ top: 230px; left: 324px; }
+.main-map #southlawn		{ top: 222px; left: 358px; }
+.main-map #pinwheel			{ top: 227px; left: 374px; }
+.main-map #discovery		{ top: 260px; left: 338px; }
+
+.map-detail { width: 284px; height: 191px; position: absolute; top: 275px; left: 9px; overflow: hidden; }
+.map-detail div { width: 100%; height: 100%; display: none; }
+.boxelder-detail 		{ background: transparent   url('../images/box-elder.gif') no-repeat 0 0; }
+.heartland-detail 		{ background: transparent url('../images/heartland.gif') no-repeat 0 0; }
+.sunflower-detail 		{ background: transparent url('../images/sunflower.gif') no-repeat 0 0; }
+.reunion-detail 		{ background: transparent url('../images/reunion.gif') no-repeat 0 0; }
+.unity-parkway-detail 	{ background: transparent url('../images/unity-parkway.gif') no-repeat 0 0; }
+.unity-detail 			{ background: transparent url('../images/unity.gif') no-repeat 0 0; }
+.touchstone-detail 		{ background: transparent url('../images/touchstone.gif') no-repeat 0 0; }
+.harmony-detail 		{ background: transparent url('../images/harmony.gif') no-repeat 0 0; }
+.liberty-detail 		{ background: transparent url('../images/liberty.jpg') no-repeat 0 0; }
+.southlawn-detail 		{ background: transparent url('../images/southlawn.jpg') no-repeat 0 0; }
+.pinwheel-detail 		{ background: transparent url('../images/pinwheel.jpg') no-repeat 0 0; }
+.discovery-detail 		{ background: transparent url('../images/discovery.jpg') no-repeat 0 0; }
 
 
 /*** FOOTER STYLES ***/
@@ -546,7 +577,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     &.page-introduction  { padding-top: 10vh;
       em { font-size: .9em; }
     }
-    &.reunion-history-bg { background: url('../images/wheat-bg.jpg') no-repeat right 20%;  }
+    //&.reunion-history-bg { background: url('../images/wheat-bg.jpg') no-repeat right 20%;  }
     .page-content {
       h1, h4, h5, h6 { font-family: 'authenia', sans-serif; margin-bottom: 20px; color: $gold; }
       h2, h3 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; }

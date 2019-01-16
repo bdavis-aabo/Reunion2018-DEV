@@ -111,6 +111,17 @@ $(document).ready(function(){
     }
   }
 
+  if(window.location.pathname === '/amenities/parks-and-trails/'){
+    $('.map-point').hover(function(){
+			var pointName = $(this).attr('id');
+			$('.' + pointName + '-detail').show();
+		},
+		function(){
+			var pointName = $(this).attr('id');
+			$('.' + pointName + '-detail').hide();
+		});
+  }
+
   $('.home-image').click(function(){
     var e = $(this),
       t = e.attr('data-link');

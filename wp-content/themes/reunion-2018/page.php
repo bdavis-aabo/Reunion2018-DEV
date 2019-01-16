@@ -24,7 +24,6 @@
         <div class="col-10 offset-1">
           <div class="map-container">
             <?php echo get_the_post_thumbnail($post->ID, 'full', array('class' => 'img-fluid aligncenter')); ?>
-
             <p>
               <a href="<?php bloginfo('template_directory') ?>/assets/images/ReunionBuilderMap.pdf" target="_blank" class="btn gold-btn">Download Directory Map</a>
             </p>
