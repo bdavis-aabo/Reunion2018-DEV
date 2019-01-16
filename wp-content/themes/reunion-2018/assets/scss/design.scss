@@ -138,6 +138,7 @@ img.alignright, .alignright { float: right; margin: 0 0 15px 15px; }
       }
     }
   }
+  select.form-control { font-family: 'tradegothic-normal', sans-serif; color: $gray; }
   &.builder-group {
       .checkbox-builder { float: left; }
   }
