@@ -11,8 +11,6 @@
       ));
     ?>
 
-    <a href="/about-reunion" class="switch-link" title="Make this is my home">Make this is my home</a>
-
     <div class="main-menu-information">
       <img src="<?php bloginfo('template_directory') ?>/assets/images/metro-logo.svg" alt="Reunion Metro District" class="hero-logo right-hero-logo" />
       <h2>Reunion Information Center</h2>

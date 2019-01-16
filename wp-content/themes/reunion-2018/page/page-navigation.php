@@ -11,8 +11,6 @@
           ));
         ?>
 
-        <a href="/district-information" class="switch-link" title="This is my home">This is my home</a>
-
         <div class="main-menu-information">
         <h2>Reunion Information Center</h2>
         <p class="phone">303.486.8842</p>

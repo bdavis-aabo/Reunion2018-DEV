@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-12 col-sm-10 offset-sm-1 col-md-12 offset-md-0">
         <div class="page-content">
-          <h1>Real Community <?php if(is_page('community-blog')): echo 'Blog'; else: echo 'Updates'; endif; ?></h1>
+          <h1>Real Community <?php if(is_page('community-blog')): echo 'Blog'; else: echo 'News'; endif; ?></h1>
 
           <?php $_articles = new WP_Query();
             $_catID = get_cat_ID('Reunion News');
