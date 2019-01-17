@@ -21,10 +21,6 @@
           <li class="icon"><a href="" target="_blank"><i class="fab fa-youtube-square"></i></a></li>
           <li class="icon"><a href="" target="_blank"><i class="fab fa-google-plus-square"></i></a></li>
         </ul>
-
-
-
-        <p class="small">@ReunionCO</p>
       </div>
       </div>
     </nav>

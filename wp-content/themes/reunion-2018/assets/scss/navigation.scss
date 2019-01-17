@@ -78,7 +78,7 @@ $bar-thickness:               2px;
     }
 
     .switch-link { text-transform: uppercase; font-size: 1em; border: 2px solid $white; display: block; color: $white;
-      text-align: center; display: inline-block; padding: 0 !important; margin-top: 30px;
+      text-align: center; display: inline-block; padding: 0 !important;
       a { padding: 10px 15px 8px !important; }
       &:hover { color: $gold; border-color: $gold; }
     }
@@ -168,7 +168,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     .main-menu-container { padding: 40px; position: relative; height: 100%;
 
 
-      .main-menu.nav {
+      .main-menu.nav { z-index: 5; position: relative;
         .nav-item { padding-bottom: 20px; width: 275px;
           .nav-link { width: 100%;
             &.dropdown-toggle {
@@ -184,9 +184,10 @@ No media query since this is the default in Bootstrap because it is "mobile firs
               }
             }
           }
+          &.switch-link { width: 300px; }
         }
       }
-      .switch-link {  }
+
       .main-menu-information { position: absolute; bottom: 20px; }
     }
   }
@@ -196,14 +197,36 @@ No media query since this is the default in Bootstrap because it is "mobile firs
       .main-menu.nav {
         .nav-item {
           .dropdown-menu { left: 275px !important; }
+        &.switch-link { width: 325px; }
         }
       }
     }
     .main-menu-information {
-      .hero-logo { opacity: .05; width: 600px; position: absolute; bottom: -120px; left: -120px; }
+      .hero-logo { opacity: .05; width: 600px; position: absolute; bottom: -120px; left: -120px; z-index: 1; }
     }
   }
 }
+
+@media (min-width: 768px) and (max-height: 795px) {
+  .navigation {
+    .main-menu-container {
+      .main-menu {
+        &.nav {
+          .nav-item { padding-bottom: 15px;
+            .dropdown-menu { //left: 328px !important;
+              .nav-item {
+                a { padding-bottom: 8px; }
+              }
+            }
+            &.switch-link { margin-top: 20px; }
+          }
+        }
+      }
+    }
+  }
+}
+
+
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
