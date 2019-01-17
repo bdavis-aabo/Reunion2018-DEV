@@ -154,22 +154,22 @@ function builder_taxonomies(){
 }
 
 // Create Post Type for Amenities
-add_action('init','create_events');
-function create_events(){
-  register_post_type('events', array(
-    'label'           =>	__('Events'),
-		'singular_label'	=>	__('Event'),
-		'public'          =>	true,
-		'show_ui'         =>	true,
-		'capability_type'	=>	'post',
-		'hierarchical'		=>	'true',
-		'rewrite'         =>	array('slug' => 'events'),
-		'supports'        =>	array('title','custom-fields','order','page-attributes'),
-		'menu_position'		=>	23,
-		'menu_icon'       =>	'dashicons-tickets-alt',
-		'has_archive'     =>	true,
-  ));
-}
+// add_action('init','create_events');
+// function create_events(){
+//   register_post_type('events', array(
+//     'label'           =>	__('Events'),
+// 		'singular_label'	=>	__('Event'),
+// 		'public'          =>	true,
+// 		'show_ui'         =>	true,
+// 		'capability_type'	=>	'post',
+// 		'hierarchical'		=>	'true',
+// 		'rewrite'         =>	array('slug' => 'events'),
+// 		'supports'        =>	array('title','custom-fields','order','page-attributes'),
+// 		'menu_position'		=>	23,
+// 		'menu_icon'       =>	'dashicons-tickets-alt',
+// 		'has_archive'     =>	true,
+//   ));
+// }
 
 // Create Post Type for Alerts
 add_action('init','create_alerts');
