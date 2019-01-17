@@ -103,7 +103,7 @@ html { scroll-behavior: smooth; }
   }
   .page-heroimage { height: 40vh; width: 100vw; position: relative; background-size: contain !important;
     background-position: center top !important;
-
+    .page-herologo { display: none; }
   }
   .scroll-indicator { bottom: -34px !important; }
 }
@@ -583,6 +583,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   .pagehero-section {
     .page-heroimage { height: 50vh; width: 100vw; position: relative; background-size: contain !important;
       background-position: center top !important;
+      .page-herologo { display: block; position: absolute; left: 2vw; bottom: 2vh; width: 250px; }
     }
     .scroll-indicator { bottom: -76px !important; }
   }

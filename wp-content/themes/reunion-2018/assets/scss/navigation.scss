@@ -199,6 +199,9 @@ No media query since this is the default in Bootstrap because it is "mobile firs
         }
       }
     }
+    .main-menu-information {
+      .hero-logo { opacity: .05; width: 600px; position: absolute; bottom: -120px; left: -120px; }
+    }
   }
 }
 
