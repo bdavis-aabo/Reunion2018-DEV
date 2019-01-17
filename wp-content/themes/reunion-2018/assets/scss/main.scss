@@ -679,6 +679,15 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     .promotion-container { min-width: auto; }
   }
 
+  /*** Gallery Styles */
+  .envira-gallery-wrap { margin: 35px 0;
+    .envira-gallery-item { 
+    .envira-album-title,
+    .envira-title { font-family: 'tradegothic-normal', sans-serif; font-weight: normal; font-size: .9em; text-transform: uppercase; }
+    }
+  }
+
+
 }
 
 /* Large devices (desktops, 992px and up) */
