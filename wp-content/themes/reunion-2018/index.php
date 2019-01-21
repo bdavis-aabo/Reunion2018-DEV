@@ -30,11 +30,11 @@
                     Read More <i class="fas fa-chevron-right"></i>
                   </a>
                 </div>
-
               </div>
             </div>
           </article>
         <?php endwhile; endif; ?>
+
         </div>
       </div>
     </div>
