@@ -63,8 +63,12 @@
             </article>
             <?php endwhile; ?>
             <div class="article-navigation">
-            <?php previous_posts_link('&laquo; Newer') ?>
-            <?php next_posts_link('Older &raquo;') ?>
+              <div class="previous-btn">
+                <?php next_posts_link('<i class="fas fa-chevron-left"></i> Older Articles') ?>
+              </div>
+              <div class="next-btn">
+                <?php previous_posts_link('Newer Articles <i class="fas fa-chevron-right"></i>') ?>
+              </div>
             </div>
 
             <?php endif; $wp_query = null; $wp_query = $temp;?>

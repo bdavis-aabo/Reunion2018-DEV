@@ -68,8 +68,9 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
 }
 @include headings($base-font-size, $heading-scale * 1.3);
 
-img.alignleft, .alignleft { float: left; margin: 0 15px 15px 0; }
-img.alignright, .alignright { float: right; margin: 0 0 15px 15px; }
+img.alignleft, .alignleft     { float: left; margin: 0 15px 15px 0; }
+img.alignright, .alignright   { float: right; margin: 0 0 15px 15px; }
+img.aligncenter, .aligncenter { float: none; margin: 0 0 15px; }
 
 /*** BUTTONS ***/
 .btn { border-radius: 0; padding: 7px 15px 4px; transition: all .3s ease-in-out;
@@ -145,6 +146,77 @@ img.alignright, .alignright { float: right; margin: 0 0 15px 15px; }
 }
 .one-half { width: 48%; float: left; margin-bottom: 8px;
   &.last { float: right; }
+}
+
+/*** CALENDAR STYLES ***/
+.mec-color,
+.mec-color-before :before,
+.mec-wrap .mec-color,
+.mec-wrap .mec-color-before :before,
+.mec-wrap .mec-color-hover:hover { color: $gold; }
+.mec-color-hover:hover { color: $gold !important; }
+.mec-wrap {
+  h1,h2,h3,h4,h5,h6 { font-family: 'rockwell-bold', sans-serif; font-weight: normal; }
+}
+.mec-event-content {
+  p { font-family: 'rockwell', sans-serif; font-size: 17px; line-height: 1.8em; }
+}
+.mec-search-form { display: none; }
+.mec-calendar { margin: 45px 0;
+  .mec-calendar-side {
+    .mec-month-navigator {
+      .mec-previous-month,
+      .mec-next-month { font-family: 'tradegothic-normal', sans-serif; font-size: 1.1em; color: $medgray; text-transform: uppercase;
+        i { color: $medgray; }
+      }
+      .mec-calendar-header {
+        h2 { font-family: 'tradegothic-normal', sans-serif !important; color: $gold; }
+      }
+    }
+    .mec-calendar-table {
+      .mec-month-container {
+        .mec-calendar-table-head,
+        .mec-calendar-day { font-family: 'tradegothic-normal', sans-serif !important; font-size: 1.1em; }
+        .mec-calendar-day {
+          &.mec-selected-day { background: $blue;
+
+          }
+        }
+      }
+    }
+  }
+  .mec-event-article {
+    .mec-event-time { font-size: 13px; color: $gold !important;  font-family: 'tradegothic-normal', sans-serif !important; font-size: 1.15em; text-transform: uppercase; }
+    .mec-event-title { font-family: 'tradegothic-normal', sans-serif !important; font-size: 1.15em; }
+  }
+  .mec-calendar-events-side {
+    .mec-table-side-title { text-transform: none; font-size: 2.5em; letter-spacing: 0; margin-bottom: 0; }
+    .mec-table-side-day { border: none; font-size: 2em; text-transform: none; color: $medgray; }
+  }
+
+
+  .mec-has-event {
+    &:after { background-color: $blue; }
+  }
+
+  .mec-calendar-row  {
+    dt.mec-has-event {
+      &:hover { background: $blue; }
+    }
+  }
+}
+.mec-wrap {
+  .flip-clock-wrapper {
+    ul {
+      li {
+        a {
+          div {
+            div.inn { background: $gold; }
+          }
+        }
+      }
+    }
+  }
 }
 
 

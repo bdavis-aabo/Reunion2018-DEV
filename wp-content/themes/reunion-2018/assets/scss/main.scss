@@ -335,6 +335,20 @@ html { scroll-behavior: smooth; }
       .article-title { margin: 0 0 3px; }
       .article-date  { font-size: .9em; margin: 0 0 10px; }
     }
+     &.single-article { text-align: left;
+      .article-title { margin: 0 0 3px; text-align: center; }
+      .article-date  { font-size: .9em; margin: 0 0 10px; text-align: center; }
+     }
+  }
+  .article-navigation { padding: 20px 10px; float: left; width: 100%;
+    .previous-btn,
+    .next-btn { width: 48%;
+      a { color: $white; padding: 7px 15px 4px; border-radius: 0; line-height: 1.5; display: inline-block; font-size: 1rem; background: $gold;
+        &:hover { background: shade($gold, 3); }
+      }
+    }
+    .previous-btn { float: left; text-align: left; }
+    .next-btn { float: right; text-align: right; }
   }
 }
 
@@ -649,8 +663,6 @@ No media query since this is the default in Bootstrap because it is "mobile firs
         &.active { background-color: $blue; }
       }
     }
-
-
   }
 
   /*** FOOTER STYLES ***/
