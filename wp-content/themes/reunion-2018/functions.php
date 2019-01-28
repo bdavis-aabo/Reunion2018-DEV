@@ -153,24 +153,6 @@ function builder_taxonomies(){
   register_taxonomy('builder','quickmoves',$_args);
 }
 
-// Create Post Type for Amenities
-// add_action('init','create_events');
-// function create_events(){
-//   register_post_type('events', array(
-//     'label'           =>	__('Events'),
-// 		'singular_label'	=>	__('Event'),
-// 		'public'          =>	true,
-// 		'show_ui'         =>	true,
-// 		'capability_type'	=>	'post',
-// 		'hierarchical'		=>	'true',
-// 		'rewrite'         =>	array('slug' => 'events'),
-// 		'supports'        =>	array('title','custom-fields','order','page-attributes'),
-// 		'menu_position'		=>	23,
-// 		'menu_icon'       =>	'dashicons-tickets-alt',
-// 		'has_archive'     =>	true,
-//   ));
-// }
-
 // Create Post Type for Alerts
 add_action('init','create_alerts');
 function create_alerts(){
@@ -206,6 +188,19 @@ function create_promos(){
 		'has_archive'     =>	true,
   ));
 }
+
+// Create Widget Areas
+function reunion_sidebar_widget(){
+  register_sidebar(array(
+    'name'  =>  'Blog Sidebar',
+    'id'    =>  'blog-sidebar',
+    'before_widget' =>  '<div class="blog-sidebar-widget">',
+    'after_widget'  =>  '</div>',
+    'before_title'  =>  '<h3 class="widget-title">',
+    'after_title'   =>  '</h3>',
+  ));
+}
+add_action('widgets_init','reunion_sidebar_widget');
 
 /*Contact form 7 remove span*/
 add_filter('wpcf7_form_elements', function($content) {

@@ -329,6 +329,19 @@ html { scroll-behavior: smooth; }
 
 /*** BLOG POSTS ***/
 .community-news {
+  .blog-content-left {  }
+  .blog-content-right {
+    .blog-sidebar-widget { padding: 30px 20px; text-align: left;
+      .widget-title { font-family: 'tradegothic-normal', sans-serif; color: $blue; text-transform: uppercase; font-size: 1.5em; margin-bottom: 10px; }
+      ul { list-style: none; margin: 12px 0;
+        li { color: $medgray;
+          &:before { content: '\f111'; font-family: 'Font Awesome 5 Free'; padding: 0 25px 2px 0; display: inline-block; margin-left: -1.25em; width: 1.25em; font-size: .75em; }
+          a { color: $gold; }
+        }
+      }
+    }
+  }
+
   .news-article { border-bottom: 1px solid $ltgray; padding: 30px 0;
     .article-contents { text-align: left;
       p { padding: 0; }
@@ -350,6 +363,10 @@ html { scroll-behavior: smooth; }
     .previous-btn { float: left; text-align: left; }
     .next-btn { float: right; text-align: right; }
   }
+}
+/*** share icons ***/
+.swp_social_panel {
+  span.iconFiller { color: $white !important; }
 }
 
 .map-container {
@@ -775,7 +792,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
   }
   .page-overlay { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: $white; opacity: 1; visibility: visible;
-    transition: opacity 666ms ease-out; z-index: 1000;
+    transition: all 666ms ease-out; z-index: 1000;
     &.hide { opacity: 0; visibility: hidden; }
   }
 

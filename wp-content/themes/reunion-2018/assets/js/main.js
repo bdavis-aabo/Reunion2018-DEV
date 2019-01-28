@@ -136,12 +136,6 @@ $(document).ready(function(){
     $('.home-overlay').addClass('animate'); setTimeout(function(){ window.location.href = t; }, 1250);
   });
 
-  if(window.location.pathname !== '/'){
-    setTimeout(function(){
-      $('.page-overlay').addClass('hide');
-    }, 1000);
-  }
-
   // Flip Card Functions
   var flipFrontH = $('.flipper > .front').height();
   $('.flipper').height(flipFrontH);
@@ -174,3 +168,9 @@ $(document).ready(function(){
     }
   });
 });
+
+if(window.location.pathname === '/about-reunion/' || window.location.pathname === '/district-information/'){
+  setTimeout(function(){
+    $('.page-overlay').addClass('hide');
+  }, 750);
+}

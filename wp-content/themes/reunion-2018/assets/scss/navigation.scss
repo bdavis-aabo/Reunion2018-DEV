@@ -207,18 +207,33 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   }
 }
 
-@media (min-width: 768px) and (max-height: 795px) {
+@media only screen and (min-width: 768px) and (max-height: 768px) {
   .navigation {
-    .main-menu-container {
+    .main-menu-container { padding: 20px 40px;
       .main-menu {
-        &.nav {
-          .nav-item { padding-bottom: 15px;
+        &.nav { font-size: 1em;
+          .nav-item { padding-bottom: 5px;
             .dropdown-menu { //left: 328px !important;
               .nav-item {
-                a { padding-bottom: 8px; }
+                a { padding-bottom: 5px;  }
               }
             }
-            &.switch-link { margin-top: 20px; }
+            &.switch-link { margin-top: 10px; }
+          }
+        }
+      }
+    }
+    .main-menu-information { bottom: 10px !important; }
+  }
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .navigation {
+    .main-menu-container { padding: 20px 40px;
+      .main-menu {
+        &.nav { font-size: 1em;
+          .nav-item { padding-bottom: 5px;
+
           }
         }
       }
