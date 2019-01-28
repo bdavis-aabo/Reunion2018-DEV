@@ -34,7 +34,7 @@
 
 <?php if(is_front_page() || is_page('home')): get_template_part('home/home-promotion'); endif; ?>
 
-<?php if(!is_front_page() || !is_page('home')): ?><div class="page-overlay"></div><?php endif; ?>
+<?php if(is_page('about-reunion') || is_page('district-information')): ?><div class="page-overlay"></div><?php endif; ?>
 
 <?php wp_footer();  ?>
 
