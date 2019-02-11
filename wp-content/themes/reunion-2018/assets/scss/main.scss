@@ -140,7 +140,7 @@ html { scroll-behavior: smooth; }
   }
 }
 
-.page-amenities { margin-bottom: 80px; width: 100%; height: 100%; overflow: auto;
+.page-amenities { margin-bottom: 80px; width: 100%; height: 100%; overflow: none; float: left;
   .flip-container,
   .front,
   .back { width: 100%; }
@@ -454,7 +454,7 @@ html { scroll-behavior: smooth; }
 
 
 /*** FOOTER STYLES ***/
-.footer {
+.footer { clear: both;
   .container-fluid { padding-right: 0; padding-left: 0; }
   .footer-contactform { color: $white; padding: 25px 15px;
     h1,h2 { font-family: 'tradegothic-normal', sans-serif; text-transform: uppercase; margin-bottom: 15px; }
@@ -872,7 +872,7 @@ No media query since this is the default in Bootstrap because it is "mobile firs
       .flipper {
         .back  {
           .back-contents { padding: 0 20px; width: 90%;
-            .gold-txt { font-size: 6em; margin: 0; }
+            .gold-txt { font-size: 6em; margin: 0 0 15px; }
             .gothic   { font-size: 1.5em; margin: -10px 0 10px; }
             p { font-size: 1em; line-height: 1.5em; margin-bottom: 0; }
           }

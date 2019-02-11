@@ -20,7 +20,6 @@
         <li class="icon"><a href=""><i class="fab fa-pinterest-square"></i></a></li>
         <li class="icon"><a href=""><i class="fab fa-instagram"></i></a></li>
         <li class="icon"><a href=""><i class="fab fa-youtube-square"></i></a></li>
-        <li class="icon"><a href=""><i class="fab fa-google-plus-square"></i></a></li>
       </ul>
   </div>
   </div>
