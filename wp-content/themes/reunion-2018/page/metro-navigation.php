@@ -16,10 +16,10 @@
       <h2>Reunion Information Center</h2>
       <p class="phone">303.486.8842</p>
       <ul class="social-btns">
-        <li class="icon"><a href=""><i class="fab fa-facebook-square"></i></a></li>
-        <li class="icon"><a href=""><i class="fab fa-pinterest-square"></i></a></li>
-        <li class="icon"><a href=""><i class="fab fa-instagram"></i></a></li>
-        <li class="icon"><a href=""><i class="fab fa-youtube-square"></i></a></li>
+        <li class="icon"><a href="https://www.facebook.com/ReunionCO" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
+        <li class="icon"><a href="http://www.pinterest.com/ReunionCO/" target="_blank"><i class="fab fa-pinterest-square"></i></a></li>
+        <li class="icon"><a href="http://instagram.com/reunionco" target="_blank"><i class="fab fa-instagram"></i></a></li>
+        <li class="icon"><a href="https://www.youtube.com/user/ReunionCO" target="_blank"><i class="fab fa-youtube-square"></i></a></li>
       </ul>
   </div>
   </div>

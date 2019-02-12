@@ -26,7 +26,7 @@ html { scroll-behavior: smooth; }
 .no-scroll { overflow: hidden;}
 
 /*** HEADER STYLES ***/
-.header { height: 100px; position: relative; background: $white; z-index: 3; transition: all 666ms ease-in-out; //animation: smoothScroll 666ms backwards;
+.header { height: 100px; position: relative; background: $white; z-index: 3; transition: all 666ms ease-in-out; box-shadow: 0 1px 5px rgba(0,0,0,.2);
   .reunion-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 150px; }
   .secondary-links-container { display: none; }
 
@@ -151,7 +151,7 @@ html { scroll-behavior: smooth; }
         .back { }
       }
     }
-    .flipper { transition: .6s; transform-style: preserve-3d; position: relative; transform: unset;
+    .flipper { transition: .6s; transform-style: preserve-3d; position: relative; transform: unset; cursor: pointer;
       .front,
       .back { position: absolute; left: 0; top: 0; }
       .front,
@@ -938,16 +938,15 @@ No media query since this is the default in Bootstrap because it is "mobile firs
       }
     }
   }
-
-
   .footer {
     .map-container { background-position: center top; }
   }
+}
 
-
-
-
-
+@media (min-width: 1200px) and (min-height: 980px) {
+  .pagehero-section {
+    .page-heroimage { background-position: center 0 !important; }
+  }
 }
 
 /* End */
