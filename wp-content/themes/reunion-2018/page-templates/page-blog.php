@@ -23,7 +23,16 @@
         </div>
       </div>
       <div class="col-3">
-        <div class="blog-content-right"><?php get_sidebar() ?></div>
+        <div class="blog-content-right">
+          <?php get_sidebar() ?>
+
+          <!-- <div class="blog-sidebar-widget">
+            <h3 class="widget-title">Stay up to date</h3>
+            <ul>
+              <li><a href="<?php bloginfo('url') ?>/feed/">Follow our RSS Feed</a></li>
+            </ul>
+          </div> -->
+        </div>
       </div>
     </div>
   </div>

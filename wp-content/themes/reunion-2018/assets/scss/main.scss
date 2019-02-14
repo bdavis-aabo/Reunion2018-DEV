@@ -699,7 +699,9 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
     .footer-copyright { background: $white; color: $gray; text-align: right; padding: 10px 20px;
       font-family: 'tradegothic-normal', sans-serif;
-      p { margin-bottom: 0; padding: 0 !important; }
+      p { margin: 6px 0 0; padding: 0 !important;
+        img { margin-top: -6px; }
+      }
     }
   }
 

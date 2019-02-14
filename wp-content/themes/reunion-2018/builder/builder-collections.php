@@ -9,8 +9,6 @@
     'name' => $post->post_name
   );
   $_builders->query($_args);
-
-  //echo '<pre>'; var_dump($_args); echo '</pre>';
 ?>
 
 <?php while($_builders->have_posts()): $_builders->the_post() ?>
