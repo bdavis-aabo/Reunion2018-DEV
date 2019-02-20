@@ -466,7 +466,13 @@ html { scroll-behavior: smooth; }
   .map-container { width: 100%; min-height: 375px;
     .map-link { display: block; width: 100%; height: 100%; }
   }
-  .footer-instagram { background: transparent url('../images/footer-dots.jpg') no-repeat left 50%; height: 100%; }
+  .footer-instagram { background: transparent url('../images/footer-dots.jpg') no-repeat left 50%; height: 100%; padding-top: 20px;
+    .feed-item { box-shadow: 0 0 10px rgba(0,0,0,.3); transition: box-shadow 666ms ease-in-out;
+      &:hover  { box-shadow: none; }
+    }
+  }
+  
+
   .footer-directions { padding: 10px 0 5px; text-align: center;
     p { margin-bottom: 0; font-size: 1em; line-height: 1.3em;  }
   }

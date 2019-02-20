@@ -17,7 +17,7 @@
       </div>
       <div class="col-12 col-lg-3">
         <div class="footer-instagram">
-          <?php echo do_shortcode('[instagram-feed]') ?>
+          <?php echo do_shortcode('[juicer name="reunionco" per="1" pages="1"]') ?>
         </div>
       </div>
     </div>
