@@ -10,7 +10,7 @@
 
   <?php if(get_field('page_background_image')): $_bg = get_field('page_background_image'); endif; ?>
 
-  <section class="homepage-introduction page-introduction" <?php if($_bg != ''): ?>style="background: url('<?php echo $_bg['url'] ?>') no-repeat right 45%;"<?php endif; ?>>
+  <section class="homepage-introduction page-introduction" <?php if($_bg != ''): ?>style="background: url('<?php echo $_bg['url'] ?>') no-repeat right 45%;"<?php endif; ?> <?php if(is_page('privacy-policy')): ?>style="text-align:left;"<?php endif; ?>>
     <div class="container">
       <div class="row align-items-center">
         <div class="col-12 col-sm-10 offset-sm-1 offset-md-0 col-md-12">
