@@ -28,7 +28,7 @@
   </div>
 
   <div class="footer-copyright">
-    <p>&copy; <?php echo date('Y'); ?> Oakwood Homes <img src="<?php bloginfo('template_directory') ?>/assets/images/eho-icon.jpg" alt="Equal Housing Opportunity" class="alignright" /></p>
+    <p>&copy; <?php echo date('Y'); ?> Oakwood Homes&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/privacy-policy">Privacy Policy</a> <img src="<?php bloginfo('template_directory') ?>/assets/images/eho-icon.jpg" alt="Equal Housing Opportunity" class="alignright" /></p>
   </div>
 </footer>
 
