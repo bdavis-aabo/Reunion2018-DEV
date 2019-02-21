@@ -477,7 +477,11 @@ html { scroll-behavior: smooth; }
   }
   .footer-copyright { background: $white; color: $gray; text-align: right; padding: 10px 20px;
     font-family: 'tradegothic-normal', sans-serif;
-    p { margin-bottom: 0; }
+    p { margin-bottom: 0;
+      a { color: $gold;
+        &:hover { color: $gray; }
+      }
+    }
   }
 }
 
