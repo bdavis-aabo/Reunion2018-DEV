@@ -15,7 +15,7 @@
       <div class="quickmove-table">
         <div class="container">
           <?php while($_homeBuilders->have_posts()): $_homeBuilders->the_post() ?>
-          <div class="row align-items-center">
+          <div class="row align-items-center" id="<?php echo $post->post_name ?>">
             <div class="col-12 col-md-3">
               <div class="builder-logo">
                 <?php $_logo = get_field('homebuilder_logo'); ?>
