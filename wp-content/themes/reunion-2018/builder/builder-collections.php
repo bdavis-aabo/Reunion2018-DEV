@@ -8,7 +8,20 @@
     'orderby' => 'title',
     'name' => $post->post_name
   );
-  $_builders->query($_args);
+  $_args2 = array(
+	'post_type' => 'home_builders',
+    'post_status' => 'publish',
+    'posts_per_page' => 1,
+    'order' => 'asc',
+    'orderby' => 'menu_order',
+    'post__in' => array(144,308,1447,1446)
+  );
+
+  if($post->post_name == 'oakwood-homes'):
+ 	$_builders->query($_args2);
+  else:
+  	$_builders->query($_args);
+  endif;
 ?>
 
 <?php while($_builders->have_posts()): $_builders->the_post() ?>
