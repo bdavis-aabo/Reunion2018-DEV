@@ -8,5 +8,3 @@
 	ga('create', 'UA-2385668-1', 'auto');
 	ga('send', 'pageview');
 </script>
-
-<img alt="" width="1" height="1" src="//insight.adsrvr.org/track/evnt/?adv=ofzkfrcx&amp;ct=0:82jbuccp&amp;fmt=3" style="border-style: none;" />​
