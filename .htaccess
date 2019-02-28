@@ -8,5 +8,63 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
-
 # END WordPress
+
+#Redirect 301	/about-oakwood-homes/		/about-reunion/about-the-developer/
+#Redirect 301	/amenities/					/amenities/
+#Redirect 301	/community-contact/			/stay-connected/
+#Redirect 301	/community-faqs/			/about-reunion/community-faqs
+#Redirect 301	/contact-us/				/stay-connected/
+#Redirect 301	/contact-us/thank-you/		/stay-connected/thank-you/
+#Redirect 301	/driving-directions/		/
+#Redirect 301	/events/					/amenities/events/
+#Redirect 301	/for-reunion-residents/		/district-information
+#Redirect 301	/home-builders/				/home-builders/
+#Redirect 301	/home-video-gallery/		/galleries/model-video-gallery/
+#Redirect 301	/model-directory/			/home-builders/model-directory/
+#Redirect 301	/news/						/community-blog/
+#Redirect 301	/oakwood-homes/				/home-builders/oakwood-homes/
+#Redirect 301	/parks-and-trails/			/amenities/parks-and-trails/
+#Redirect 301	/photo-gallery/				/galleries/photo-gallery/
+#Redirect 301	/privacy/					/privacy-policy/
+#Redirect 301	/quick-move-in-homes/		/home-builders/quick-move-in-homes/
+#Redirect 301	/rec-center/				/amenities/reunion-rec-center/
+#Redirect 301	/richmond-american/			/home-builders/richmond-american-homes/
+#Redirect 301	/shea-spaces/				/home-builders/shea-spaces/
+#Redirect 301	/video-gallery/				/galleries/event-video-gallery/
+#Redirect 301	/important-numbers/			/stay-connected/
+#				
+#Redirect 301	/find-freedom-in-our-remaining-spaces/						/2019/02/21/find-freedom-in-our-remaining-spaces/
+#Redirect 301	/interior-design-trends-be-a-whole-new-brave-in-2019/		/2019/02/21/interior-design-trends-be-a-whole-new-brave-in-2019/
+#Redirect 301	/valentines-day-crafts-made-with-love/						/2019/02/07/valentines-day-crafts-made-with-love/
+#Redirect 301	/find-your-true-passion-this-february/						/2019/01/31/find-your-true-passion-this-february/
+#Redirect 301	/broadmoor-is-a-big-name-in-colorado/						/2018/06/20/broadmoor-is-a-big-name-in-colorado/
+#Redirect 301	/dont-hide-from-the-july-heat-relish-it/					/2018/06/25/dont-hide-from-the-july-heat-relish-it/
+#Redirect 301	/reunions-unboolievable-trunk-or-treat-2018/				/2018/11/24/reunions-unboolievable-trunk-or-treat-2018/
+#Redirect 301	/its-hot-outside-but-its-chill-inside/						/2018/07/02/its-hot-outside-but-its-chill-inside/
+#Redirect 301	/smart-gifts-for-technophiles/								/2018/12/21/smart-gifts-for-technophiles/
+#Redirect 301	/head-into-2019-with-realistic-resolutions/					/2018/12/07/head-into-2019-with-realistic-resolutions/
+#Redirect 301	/its-party-season-bring-your-outfit-game/					/2018/12/01/its-party-season-bring-your-outfit-game/
+#Redirect 301	/coffees-on-at-reunion/										/2018/07/09/coffees-on-at-reunion/
+#Redirect 301	/need-room-need-options-you-need-yampa/						/2018/07/12/need-room-need-options-you-need-yampa/
+#Redirect 301	/getting-through-the-hot-august-nights/						/2018/07/29/getting-through-the-hot-august-nights/
+#Redirect 301	/make-that-playroom-magic/									/2018/08/09/make-that-playroom-magic/
+#Redirect 301	/the-2018-red-white-bluefest-was-a-total-bash/				/2018/08/16/the-2018-red-white-bluefest-was-a-total-bash/
+#Redirect 301	/celebrate-the-dog-days-of-summer-with-your-dog-2/			/2018/08/22/celebrate-the-dog-days-of-summer-with-your-dog/
+#Redirect 301	/get-ready-to-rock-festival-season/							/2018/08/31/get-ready-to-rock-festival-season/
+#Redirect 301	/the-perfect-pumpkin-the-perfect-patch/						/2018/09/07/the-perfect-pumpkin-the-perfect-patch/
+#Redirect 301	/deck-your-halls-with-the-halloween-spirit/					/2018/10/11/deck-your-halls-with-the-halloween-spirit/
+#Redirect 301	/the-kearney-three-beautiful-exteriors/						/2019/01/23/the-kearney-three-beautiful-exteriors/
+#Redirect 301	/crock-pot-classics-for-sweater-weather/					/2018/10/11/crock-pot-classics-for-sweater-weather/
+#Redirect 301	/prost-its-october/											/2018/10/03/prost-its-october/
+#Redirect 301	/dont-overlook-our-overlook-collection-the-oxford/			/2018/09/26/dont-overlook-our-overlook-collection-the-oxford/
+#Redirect 301	/bring-everything-awesome-about-fall-indoors/				/2018/09/14/bring-everything-awesome-about-fall-indoors/
+#Redirect 301	/make-a-splash-with-a-new-kitchen-backsplash/				/2018/12/14/make-a-splash-with-a-new-kitchen-backsplash/
+#Redirect 301	/reunion-elementary-receives-distinguished-award/			/2019/01/10/reunion-elementary-receives-distinguished-award/
+#Redirect 301	/winter-safety-tips-for-dogs/								/2019/01/11/winter-safety-tips-for-dogs/
+#Redirect 301	/hack-your-living-room-space/								/2019/01/18/hack-your-living-room-space/
+#Redirect 301	/the-stanley-more-rooms-more-style/							/2018/11/19/the-stanley-more-rooms-more-style/
+#Redirect 301	/how-to-survive-the-holidays-a-guide/						/2018/11/07/how-to-survive-the-holidays-a-guide/
+#Redirect 301	/drop-a-little-turkey-knowledge-this-thanksgiving/			/2018/11/02/drop-a-little-turkey-knowledge-this-thanksgiving/
+
+#Redirect 301	/reunion-featured-home-the-glenwood/						/home-builders/quick-move-in-homes/
