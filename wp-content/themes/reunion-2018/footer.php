@@ -36,6 +36,10 @@
 
 <?php if(is_page('about-reunion') || is_page('district-information')): ?><div class="page-overlay"></div><?php endif; ?>
 
+
+<?php include_once('assets/_inc/footer-includes.php') ?>
+
+
 <?php wp_footer();  ?>
 
 </body>
