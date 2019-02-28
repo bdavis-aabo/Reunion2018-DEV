@@ -10,12 +10,13 @@
     <?php //get stylesheets from functions.php ?>
 
     <?php include_once('assets/_inc/header-includes.php') ?>
+    <?php include_once('assets/_inc/ga-include.php') ?>
 
     <?php wp_head() ?>
   </head>
   <body>
 
-    <?php include_once('assets/_inc/ga-include.php') ?>
+
 
     <header class="header">
       <?php if(!is_front_page()): ?>
