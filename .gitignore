@@ -38,3 +38,4 @@ wp-config.php
 # Miscellaneous Excludes
 .well-known
 _OLD/
+_email-images/*
