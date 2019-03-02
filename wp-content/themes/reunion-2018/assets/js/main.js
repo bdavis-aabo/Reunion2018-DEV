@@ -174,3 +174,17 @@ if(window.location.pathname === '/about-reunion/' || window.location.pathname ==
     $('.page-overlay').addClass('hide');
   }, 750);
 }
+
+//email to script
+jQuery('input.mailto_check').change(function(){
+		var emailTo = [];
+		var builder = [];
+
+		jQuery.each(jQuery('input.mailto_check:checked'), function(){
+	    emailTo.push(jQuery(this).attr('data-mailto'));
+			builder.push(jQuery(this).attr('data-builder'));
+		});
+
+		jQuery('#mailto').val(emailTo.join(', '));
+		jQuery('#builder').val(builder.join(', '));
+	});
