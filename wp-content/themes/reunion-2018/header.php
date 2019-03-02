@@ -9,8 +9,8 @@
 
     <?php //get stylesheets from functions.php ?>
 
-    <?php //include_once('assets/_inc/header-includes.php') ?>
-    <?php //include_once('assets/_inc/ga-include.php') ?>
+    <?php include_once('assets/_inc/header-includes.php') ?>
+    <?php include_once('assets/_inc/ga-include.php') ?>
 
     <?php wp_head() ?>
   </head>
