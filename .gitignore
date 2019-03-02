@@ -39,3 +39,6 @@ wp-config.php
 .well-known
 _OLD/
 _email-images/*
+wp-content/themes/reunion-2018/assets/_inc/footer-includes.php
+wp-content/themes/reunion-2018/assets/_inc/ga-include.php
+wp-content/themes/reunion-2018/assets/_inc/header-includes.php
