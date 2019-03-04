@@ -148,7 +148,7 @@ img.aligncenter, .aligncenter { float: none; margin: 0 0 15px; }
   &.last { float: right; }
 }
 
-.wpcf7-response-output { clear: both; margin-top: 15px; }
+.wpcf7-response-output { clear: both; margin-top: 2em 0 1em !important; float: left; width: 100%; }
 
 /*** CALENDAR STYLES ***/
 .mec-color,
