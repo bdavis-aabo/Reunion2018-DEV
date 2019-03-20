@@ -66,7 +66,7 @@
             <?php endwhile; else: ?>
               <div class="col-12">
                 <div class="builder-nohome">
-                  <h2>There are no quick move-in inventory homes currently available from this collection. Please call the sales office @ <?php echo get_field('homebuilder_phone') ?> for more information.</h2>
+                  <h2>There are no quick move-in inventory homes currently available from this collection.<br/>Please call the sales office @ <?php echo get_field('homebuilder_phone') ?> for more information.</h2>
                 </div>
               </div>
             <?php endif; wp_reset_query(); ?>
