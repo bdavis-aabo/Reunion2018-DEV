@@ -188,3 +188,5 @@ jQuery('input.mailto_check').change(function(){
 		jQuery('#mailto').val(emailTo.join(', '));
 		jQuery('#builder').val(builder.join(', '));
 	});
+
+//$('select.price:first-child').css('display','none');

@@ -139,7 +139,8 @@ img.aligncenter, .aligncenter { float: none; margin: 0 0 15px; }
       }
     }
   }
-  select.form-control { font-family: 'tradegothic-normal', sans-serif; color: $gray; }
+  select.form-control { font-family: 'tradegothic-normal', sans-serif; color: $gray !important; }
+  select option:first-child { display: none !important; opacity: 0; visibility: hidden; }
   &.builder-group {
       .checkbox-builder { float: left; }
   }

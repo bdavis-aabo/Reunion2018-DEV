@@ -30,7 +30,7 @@ html { scroll-behavior: smooth; }
   .reunion-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 150px; }
   .secondary-links-container { display: none; }
 
-  &.sticky { position: fixed; width: 100%; animation: smoothScroll 1s forwards; z-index: 10;}
+  &.sticky { position: fixed; width: 100%; animation: smoothScroll 1s forwards; z-index: 16; }
 }
 .news-box { padding: 10px; text-align: left; float: left; width: 100%; z-index: 1; position: relative; z-index: 1;
   box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: transform .5s ease-out; top: -15px; left: 0; transform: translateY(-60px);
