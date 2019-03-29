@@ -61,7 +61,7 @@
               <div class="collection-details align-middle">
                 <?php echo get_sub_field('collection_details') ?>
                 <div class="builder-buttons">
-                  <a href="<?php echo get_sub_field('collection_link') ?>" title="<?php the_title() ?>" class="builder-btn">Home  Details</a>
+                  <a href="<?php echo get_sub_field('collection_link') ?>" title="<?php the_title() ?>" class="builder-btn" target="_blank">Home  Details</a>
                   <a href="tel:<?php echo str_replace('-','',get_sub_field('collection_phone')) ?>" onclick="ga('send','event','Click   to Call', 'On Click',  '<?php echo get_sub_field('collection_phone') ?>');" class="builder-phone">
                     <span class="phone-icon">
                       <i class="fas fa-phone fa-inverse"></i>

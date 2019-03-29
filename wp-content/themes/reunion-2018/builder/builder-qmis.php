@@ -26,7 +26,10 @@
               <div class="builder-description">
                 <h2 class="builder-name"><?php the_title() ?></h2>
                 <span class="address"><?php echo str_replace('<br/>', ' | ', get_field('homebuilder_address')) ?></span>
-                <span class="phone"><?php echo get_field('homebuilder_phone') ?></span><br />
+                <span class="phone">
+                  <a href="tel:<?php echo str_replace('-','',get_field('homebuilder_phone')) ?>" onclick="ga('send','event','Click to Call', 'On Click', '<?php echo get_field('homebuilder_phone') ?>');" class="builder-phone"><?php echo get_field('homebuilder_phone') ?></a>
+                </span>
+                <br />
                 <span class="hours">
                   <strong>Sales Office Hours: </strong><br /><?php echo get_field('homebuilder_hours') ?>
                 </span>
