@@ -70,7 +70,7 @@ body { font-family: 'rockwell', sans-serif; font-size: $base-font-size; line-hei
 
 img.alignleft, .alignleft     { float: left; margin: 0 15px 15px 0; }
 img.alignright, .alignright   { float: right; margin: 0 0 15px 15px; }
-img.aligncenter, .aligncenter { float: none; margin: 0 0 15px; }
+img.aligncenter, .aligncenter { float: none; margin: 0 auto 15px; display: inherit; }
 
 /*** BUTTONS ***/
 .btn { border-radius: 0; padding: 7px 15px 4px; transition: all .3s ease-in-out;
