@@ -24,7 +24,10 @@
   </div>
 
   <div class="footer-directions blue-bg">
-    <p>Parks, Trails, Lakes, Pools, Rec Center | Reunion is located west of Tower Rd. on 104th</p>
+    <p>
+      Parks, Trails, Lakes, Pools, Rec Center | Reunion is located west of Tower Rd. on 104th<br/>
+      <span class="phone-numbers">Reunion Rec Center 303-288-5431 &bull; Reunion Information Center 303-486-8842</span>
+    </p>
   </div>
 
   <div class="footer-copyright">

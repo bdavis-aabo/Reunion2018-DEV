@@ -13,8 +13,8 @@
 
     <div class="main-menu-information">
       <img src="<?php bloginfo('template_directory') ?>/assets/images/metro-logo.svg" alt="Reunion Metro District" class="hero-logo right-hero-logo" />
-      <h2>Reunion Information Center</h2>
-      <p class="phone">303.486.8842</p>
+      <h2>Reunion Recreation Center</h2>
+      <p class="phone">303.288.5431</p>
       <ul class="social-btns">
         <li class="icon"><a href="https://www.facebook.com/ReunionCO" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
         <li class="icon"><a href="http://www.pinterest.com/ReunionCO/" target="_blank"><i class="fab fa-pinterest-square"></i></a></li>
