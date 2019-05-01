@@ -12,10 +12,17 @@ namespace Envira\Utils;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
-
 	exit;
-
 }
+
+/**
+ * Import class.
+ *
+ * @since 1.0.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Team
+ */
 class Import {
 
 	/**
@@ -55,11 +62,11 @@ class Import {
 		// Import a gallery.
 		$this->import_gallery();
 
-		// Import a gallery via Envira Import
+		// Import a gallery via Envira Import.
 		add_action( 'init', array( $this, 'import_gallery' ) );
 		add_action( 'admin_notices', array( $this, 'notices' ) );
 
-		// WordPress XML Import
+		// WordPress XML Import.
 		add_action( 'import_post_meta', array( $this, 'change_xml_import' ), 10, 3 );
 
 	}
@@ -73,17 +80,17 @@ class Import {
 	 */
 	public function change_xml_import( $post_id, $key, $value ) {
 
-		if ( $key != '_eg_gallery_data' || empty( $value ) || empty( $value['gallery'] ) ) {
+		if ( $key !== '_eg_gallery_data' || empty( $value ) || empty( $value['gallery'] ) ) {
 			return;
 		}
 
-		// we should be changing the url in the meta_data
+		// we should be changing the url in the meta_data.
 		foreach ( $value['gallery'] as $id => $item_data ) {
 			$value['gallery'][ $id ]['src']  = $this->parse_import_url( $value['gallery'][ $id ]['src'] );
 			$value['gallery'][ $id ]['link'] = $this->parse_import_url( $value['gallery'][ $id ]['link'] );
 		}
 
-		// update the meta data
+		// update the meta data.
 		update_post_meta( $post_id, $key, $value );
 
 	}
@@ -100,7 +107,7 @@ class Import {
 		$parsed_src_array = explode( '/', $url );
 		$old_wp_url       = array();
 		foreach ( $parsed_src_array as $segment ) {
-			if ( $segment == 'wp-content' ) {
+			if ( $segment === 'wp-content' ) {
 				break;
 			} else {
 				$old_wp_url[] = $segment;
@@ -193,16 +200,19 @@ class Import {
 		// Unset any unncessary data from the final gallery holder.
 		unset( $gallery['in_gallery'] );
 
-		// Update the post title and slug itself
+		// Update the post title and slug itself.
 		$gallery_post = array(
 			'ID' => $post_id,
 		);
 
-		// Add filter in case developer or plugin wants to modify the imported data
+		// Add action so third party plugins can do things while importing (like tags addon adding categories).
+		do_action( 'envira_import_gallery_end', $data, $post_id );
+
+		// Add filter in case developer or plugin wants to modify the imported data.
 		$gallery_post = apply_filters( 'envira_import_gallery_post_data', $gallery_post );
 		$gallery      = apply_filters( 'envira_import_gallery_metadata', $gallery );
 
-		// Update the post into the database
+		// Update the post into the database.
 		wp_update_post( $gallery_post );
 
 		// Update the meta for the post that is receiving the gallery.
@@ -250,7 +260,7 @@ class Import {
 	 *
 	 * @param int   $id        The image attachment ID from the import file.
 	 * @param array $item    Data for the item being imported.
-	 * @param array $gallery Array of gallery data being imported.
+	 * @param array $data Array of gallery data being imported.
 	 * @param int   $post_id   The post ID the gallery is being imported to.
 	 * @return array $data   Modified gallery data based on import status of image.
 	 */
@@ -294,7 +304,7 @@ class Import {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $url       The URL of the remote image to stream and import.
+	 * @param string $src       The URL of the remote image to stream and import.
 	 * @param array  $data       The data to use for importing the remote image.
 	 * @param array  $item       The gallery image item to import.
 	 * @param int    $post_id      The post ID receiving the remote image.
@@ -346,7 +356,7 @@ class Import {
 			}
 
 			// If only streaming, return the error.
-			if ( $stream_only && isset( $stream['response']['code'] ) && $stream['response']['code'] == 401 ) {
+			if ( $stream_only && isset( $stream['response']['code'] ) && $stream['response']['code'] === 401 ) {
 				return envira_wp_error( 'envira_gallery_import_remote_image_error', __( '401 Error (Unauthorized) when attempting to retrieve  ' . $src . '. This site might be behind a firewall or password-protected area.', 'envira-gallery' ) );
 			} elseif ( $stream_only ) {
 				return envira_wp_error( 'envira_gallery_import_remote_image_error', __( 'Could not retrieve a valid image from the URL ' . $src . '.', 'envira-gallery' ) );
@@ -369,7 +379,7 @@ class Import {
 			} else {
 				// Check if the $item has title, caption, alt specified
 				// If so, store those values against the attachment so they're included in the Gallery
-				// If not, fallback to the defaults
+				// If not, fallback to the defaults.
 				$attachment = array(
 					'post_title'     => ( ( isset( $item['title'] ) && ! empty( $item['title'] ) ) ? $item['title'] : urldecode( $filename ) ), // Title
 					'post_mime_type' => $type,
@@ -415,7 +425,7 @@ class Import {
 				// Maybe update the image's link, if the original image's link is an image
 				// This ensures that links to pages, videos etc do not get 'lost' in the import
 				// process.
-				if ( $item['src'] == $item['link'] ) {
+				if ( $item['src'] === $item['link'] ) {
 					$item['src']  = $image_url[0];
 					$item['link'] = $image_url[0];
 				} else {
@@ -612,7 +622,7 @@ class Import {
 	public function maybe_save_draft( $post_id ) {
 
 		$post = get_post( $post_id );
-		if ( 'auto-draft' == $post->post_status ) {
+		if ( 'auto-draft' === $post->post_status ) {
 			$draft = array(
 				'ID'          => $post_id,
 				'post_status' => 'draft',
@@ -677,8 +687,6 @@ class Import {
 	 * Helper method to return the max execution time for scripts.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param int $time The max execution time available for PHP scripts.
 	 */
 	public function get_max_execution_time() {
 

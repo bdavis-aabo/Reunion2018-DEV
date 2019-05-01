@@ -25,23 +25,57 @@ $settings = $this->main->get_settings();
             if(!isset($label['style']) or (isset($label['style']) and !trim($label['style']))) continue;
             if ( $label['style']  == 'mec-label-featured' )
             {
-                $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite' );
+                $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite');
             } 
             elseif ( $label['style']  == 'mec-label-canceled' )
             {
-                $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite' );
+                $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite');
             }
         }
         endif;
+        $speakers = '""';
+        if ( !empty($event->data->speakers)) 
+        {
+            $speakers= [];
+            foreach ($event->data->speakers as $key => $value) {
+                $speakers[] = array(
+                    "@type" 	=> "Person",
+                    "name"		=> $value['name'],
+                    "image"		=> $value['thumbnail'],
+                    "sameAs"	=> $value['facebook'],
+                );
+            } 
+            $speakers = json_encode($speakers);
+        }
         ?>
+            <script type="application/ld+json">
+            {
+                "@context" 		: "http://schema.org",
+                "@type" 		: "Event",
+                "startDate" 	: "<?php echo !empty( $event->data->meta['mec_date']['start']['date'] ) ? $event->data->meta['mec_date']['start']['date'] : '' ; ?>",
+                "endDate" 		: "<?php echo !empty( $event->data->meta['mec_date']['end']['date'] ) ? $event->data->meta['mec_date']['end']['date'] : '' ; ?>",
+                "location" 		:
+                {
+                    "@type" 		: "Place",
+                    "name" 			: "<?php echo (isset($location['name']) ? $location['name'] : ''); ?>",
+                    "image"			: "<?php echo (isset($location['thumbnail']) ? esc_url($location['thumbnail'] ) : '');; ?>",
+                    "address"		: "<?php echo (isset($location['address']) ? $location['address'] : ''); ?>"
+                },
+                "performer": <?php echo $speakers; ?>,
+                "description" 	: "<?php  echo esc_html(preg_replace('/<p>\\s*?(<a .*?><img.*?><\\/a>|<img.*?>)?\\s*<\\/p>/s', '<div class="figure">$1</div>', $event->data->post->post_content)); ?>",
+                "image" 		: "<?php echo !empty($event->data->featured_image['full']) ? esc_html($event->data->featured_image['full']) : '' ; ?>",
+                "name" 			: "<?php esc_html_e($event->data->title); ?>",
+                "url"			: "<?php echo $this->main->get_event_date_permalink($event->data->permalink, $event->date['start']['date']); ?>"
+            }
+            </script>
             <div <?php if ( $this->masonry_like_grid == 1) echo 'data-sort-masonry="'.strtotime($event->date['start']['date']).'"'; ?> class="mec-masonry-item-wrap <?php echo $this->filter_by_classes($event->data->ID); ?>">
                 <div class="mec-masonry">
 
                     <article data-style="<?php echo $label_style; ?>" class="mec-event-article mec-clear <?php echo $this->get_event_classes($event); ?>">
                         <?php if(isset($event->data->featured_image) and $this->masonry_like_grid ): ?>
-                                <div class="mec-masonry-img" ><img src="<?php echo $event->data->featured_image['thumblist']; ?>"></div>
+                                <div class="mec-masonry-img" ><?php echo get_the_post_thumbnail($event->data->ID , 'thumblist'); ?></div>
                         <?php elseif( isset($event->data->featured_image) and isset($event->data->featured_image['full']) and trim($event->data->featured_image['full'])): ?>
-                                <div class="mec-masonry-img" ><img src="<?php echo $event->data->featured_image['full']; ?>"></div>
+                                <div class="mec-masonry-img" ><?php echo get_the_post_thumbnail($event->data->ID , 'full'); ?></div>
                         <?php endif; ?>
 
                         <div class="mec-masonry-content mec-event-grid-modern">
@@ -77,7 +111,7 @@ $settings = $this->main->get_settings();
                                 // Safe Excerpt for UTF-8 Strings
                                 if(!trim($excerpt))
                                 {
-                                    $ex = explode(' ', strip_tags($event->data->post->post_content));
+                                    $ex = explode(' ', strip_tags(strip_shortcodes($event->data->post->post_content)));
                                     $words = array_slice($ex, 0, 9);
 
                                     $excerpt = implode(' ', $words);

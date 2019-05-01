@@ -9,7 +9,6 @@ $current_month_divider = $this->request->getVar('current_month_divider', 0);
     <?php $month_id = date('Ym', strtotime($date)); if($this->month_divider and $month_id != $current_month_divider): $current_month_divider = $month_id; ?>
         <div class="mec-month-divider" data-toggle-divider="mec-toggle-<?php echo date_i18n('Ym', strtotime($date)); ?>-<?php echo $this->id; ?>"><span><?php echo date_i18n('F Y', strtotime($date)); ?></span><i class="mec-sl-arrow-down"></i></div>
     <?php endif; ?>
-
     <div class="mec-events-agenda">
 
         <div class="mec-agenda-date-wrap">
@@ -34,16 +33,49 @@ $current_month_divider = $this->request->getVar('current_month_divider', 0);
                         if(!isset($label['style']) or (isset($label['style']) and !trim($label['style']))) continue;
                         if ( $label['style']  == 'mec-label-featured' )
                         {
-                            $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite' );
+                            $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite');
                         } 
                         elseif ( $label['style']  == 'mec-label-canceled' )
                         {
-                            $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite' );
+                            $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite');
                         }
                     }
                     endif;
+                    $speakers = '""';
+                    if ( !empty($event->data->speakers)) 
+                    {
+                        $speakers= [];
+                        foreach ($event->data->speakers as $key => $value) {
+                            $speakers[] = array(
+                                "@type" 	=> "Person",
+                                "name"		=> $value['name'],
+                                "image"		=> $value['thumbnail'],
+                                "sameAs"	=> $value['facebook'],
+                            );
+                        } 
+                        $speakers = json_encode($speakers);
+                    }
             ?>
-
+                    <script type="application/ld+json">
+                    {
+                        "@context" 		: "http://schema.org",
+                        "@type" 		: "Event",
+                        "startDate" 	: "<?php echo !empty( $event->data->meta['mec_date']['start']['date'] ) ? $event->data->meta['mec_date']['start']['date'] : '' ; ?>",
+                        "endDate" 		: "<?php echo !empty( $event->data->meta['mec_date']['end']['date'] ) ? $event->data->meta['mec_date']['end']['date'] : '' ; ?>",
+                        "location" 		:
+                        {
+                            "@type" 		: "Place",
+                            "name" 			: "<?php echo (isset($location['name']) ? $location['name'] : ''); ?>",
+                            "image"			: "<?php echo (isset($location['thumbnail']) ? esc_url($location['thumbnail'] ) : '');; ?>",
+                            "address"		: "<?php echo (isset($location['address']) ? $location['address'] : ''); ?>"
+                        },
+                        "performer": <?php echo $speakers; ?>,
+                        "description" 	: "<?php  echo esc_html(preg_replace('/<p>\\s*?(<a .*?><img.*?><\\/a>|<img.*?>)?\\s*<\\/p>/s', '<div class="figure">$1</div>', $event->data->post->post_content)); ?>",
+                        "image" 		: "<?php echo !empty($event->data->featured_image['full']) ? esc_html($event->data->featured_image['full']) : '' ; ?>",
+                        "name" 			: "<?php esc_html_e($event->data->title); ?>",
+                        "url"			: "<?php echo $this->main->get_event_date_permalink($event->data->permalink, $event->date['start']['date']); ?>"
+                    }
+                    </script>
                 <?php if($this->style == 'clean'): ?>
                     <div class="mec-agenda-event <?php echo $this->get_event_classes($event); ?>">
                         <i class="mec-sl-clock "></i>

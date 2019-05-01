@@ -108,6 +108,9 @@ class MEC_skin_list extends MEC_skins
         
         // SED Method
         $this->sed_method = isset($this->skin_options['sed_method']) ? $this->skin_options['sed_method'] : '0';
+
+        // Image popup
+        $this->image_popup = isset($this->skin_options['image_popup']) ? $this->skin_options['image_popup'] : 0;
         
         // From Widget
         $this->widget = (isset($this->atts['widget']) and trim($this->atts['widget'])) ? true : false;
@@ -135,7 +138,7 @@ class MEC_skin_list extends MEC_skins
         $this->args['meta_query'] = $this->meta_query();
         
         // Tag
-        $this->args['tag'] = $this->tag_query();
+        //$this->args['tag'] = $this->tag_query();
         
         // Author
         $this->args['author'] = $this->author_query();

@@ -5,7 +5,7 @@
  * Description: Envira Gallery is best responsive WordPress gallery plugin.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.8.4.5
+ * Version:     1.8.5.7
  * Text Domain: envira-gallery
  * Domain Path: languages
  *
@@ -74,7 +74,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '1.8.4.5';
+		public $version = '1.8.5.7';
 
 		/**
 		 * The name of the plugin.
@@ -114,7 +114,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 			if ( is_plugin_active( 'envira-albums/envira-albums.php' ) ) {
 
-				// We need to define a constant so Albums can still work
+				// We need to define a constant so Albums can still work.
 				if ( ! defined( 'ENVIRA_STANDALONE_PLUGIN_NAME' ) ) {
 
 					define( 'ENVIRA_STANDALONE_PLUGIN_NAME', 'Envira Gallery - Standalone Integrated' );
@@ -130,6 +130,9 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 			// Load the plugin.
 			add_action( 'init', array( $this, 'init' ), 0 );
+
+			// Gutenberg.
+			add_action( 'updated_post_meta', array( $this, 'envira_gutenberg_update_meta_data' ), 99, 4 );
 
 		}
 
@@ -208,7 +211,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 			// Load the legacy fallbacks.
 			$this->load_legacy();
 
-			// Kick off the frontend
+			// Kick off the frontend.
 			$public = new Envira\Frontend\Frontend_Container();
 
 			// Load admin only components.
@@ -216,7 +219,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 				$this->require_admin();
 
-				// Kick off the Admin
+				// Kick off the Admin.
 				$admin = new Envira\Admin\Admin_Container();
 
 				$this->require_updater();
@@ -264,7 +267,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 			}
 
-			// Check if supersize plugin is active
+			// Check if supersize plugin is active.
 			if ( is_plugin_active( 'envira-supersize/envira-supersize.php' ) ) {
 				set_transient( 'envira_supersize_notice', true, 12 * HOUR_IN_SECONDS );
 				deactivate_plugins( 'envira-supersize/envira-supersize.php' );
@@ -278,7 +281,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 				add_action( 'admin_notices', array( $this, 'supersize_notice' ) );
 			}
 
-			// Check if standalone plugin is active
+			// Check if standalone plugin is active.
 			if ( is_plugin_active( 'envira-standalone/envira-standalone.php' ) ) {
 				update_option( 'envira_gallery_standalone_enabled', true );
 				set_transient( 'envira_standalone_notice', true, 12 * HOUR_IN_SECONDS );
@@ -296,6 +299,12 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 			return true;
 
 		}
+
+		/**
+		 * Determine if there needs to be an update based on Envira version.
+		 *
+		 * @since 1.3.8.2
+		 */
 		public function maybe_run_update() {
 
 			$version = get_option( 'envira_version' );
@@ -318,7 +327,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 			?>
 			<div class="notice notice-error" style="position: relative;padding-right: 38px;">
-				<p><?php _e( 'The Supersize addon was detected on your system. All features have been merged directly into Envira Gallery, so it is no longer necessary. It has been deactivated.', 'envira-gallery' ); ?></p>
+				<p><?php esc_html_e( 'The Supersize addon was detected on your system. All features have been merged directly into Envira Gallery, so it is no longer necessary. It has been deactivated.', 'envira-gallery' ); ?></p>
 				<a href="<?php echo add_query_arg( 'close_supersize_notice', 'true' ); ?>"><button type="button" class="notice-dismiss"><span class="screen-reader-text"><?php _e( 'Dismiss this notice.', 'envira-gallery' ); ?></span></button></a>
 			</div>
 			<?php
@@ -334,7 +343,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 			?>
 			<div class="notice notice-error" style="position: relative;padding-right: 38px;">
-				<p><?php _e( 'The Standalone addon was detected on your system. All features have been merged directly into Envira Gallery, so it is no longer necessary. It has been deactivated.', 'envira-gallery' ); ?></p>
+				<p><?php esc_html_e( 'The Standalone addon was detected on your system. All features have been merged directly into Envira Gallery, so it is no longer necessary. It has been deactivated.', 'envira-gallery' ); ?></p>
 				<a href="<?php echo add_query_arg( 'close_standalone_notice', 'true' ); ?>"><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></a>
 			</div>
 			<?php
@@ -506,7 +515,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 		 *
 		 * @param   bool   $skip_empty         Skip empty sliders.
 		 * @param   bool   $ignore_cache       Ignore Transient cache.
-		 * @param   string $search_terms       Search for specified Galleries by Title
+		 * @param   string $search_terms       Search for specified Galleries by Title.
 		 *
 		 * @return array|bool                   Array of gallery data or false if none found.
 		 */
@@ -522,7 +531,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 		 * @since 1.7.0
 		 *
 		 * @param bool   $skip_empty     Skip Empty Galleries.
-		 * @param string $search_terms   Search for specified Galleries by Title
+		 * @param string $search_terms   Search for specified Galleries by Title.
 		 * @return mixed                    Array of gallery data or false if none found.
 		 */
 		public function _get_galleries( $skip_empty = true, $search_terms = '' ) {
@@ -553,12 +562,14 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 		}
 
 		/**
-		 * replaces mb_substr
+		 * Replaces mb_substr
 		 *
 		 * @access public
 		 * @static
-		 * @param mixed $class
-		 * @return void
+		 * @param string $string The string.
+		 * @param int    $offset The offset.
+		 * @param int    $length The length.
+		 * @return string
 		 */
 		public static function envira_mb_substr( $string, $offset, $length ) {
 
@@ -569,11 +580,11 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 		}
 
 		/**
-		 * autoload function.
+		 * Autoload function.
 		 *
 		 * @access public
 		 * @static
-		 * @param mixed $class
+		 * @param mixed $class The class.
 		 * @return void
 		 */
 		public static function autoload( $class ) {
@@ -614,12 +625,12 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 			global $wp_version;
 
-			// Deactivate lite
+			// Deactivate lite.
 			deactivate_plugins( 'envira-gallery-lite/envira-gallery-lite.php' );
 
 			if ( version_compare( $wp_version, '4.4.0', '<' ) && ! defined( 'ENVIRA_FORCE_ACTIVATION' ) ) {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
-				wp_die( sprintf( __( 'Sorry, but your version of WordPress does not meet Envira Gallery\'s required version of <strong>4.0.0</strong> to run properly. The plugin has been deactivated. <a href="%s">Click here to return to the Dashboard</a>.', 'envira-gallery' ), get_admin_url() ) );
+				wp_die( sprintf( __( 'Sorry, but your version of WordPress does not meet Envira Gallery\'s required version of <strong>4.4.0</strong> to run properly. The plugin has been deactivated. <a href="%s">Click here to return to the Dashboard</a>.', 'envira-gallery' ), get_admin_url() ) );
 			}
 
 			if ( is_multisite() && $network_wide ) {
@@ -643,9 +654,47 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 				}
 			}
 
-			// Clear Envira transients
+			// Clear Envira transients.
 			if ( function_exists( 'envira_flush_all_cache' ) ) {
 				envira_flush_all_cache();
+			}
+
+			add_action( 'activated_plugin', array( 'Envira_Gallery', 'activation_redirect' ) );
+
+		}
+
+		/**
+		 * Redirect user to Envira Welcome Screen on activation.
+		 *
+		 * @since 1.8.5
+		 *
+		 * @param object $plugin Slug of plugin.
+		 */
+		public static function activation_redirect( $plugin ) {
+
+			if ( plugin_basename( __FILE__ ) === $plugin ) {
+
+				/* If there is a global variable disabling welcome, then don't do this. */
+
+				if ( ( ! defined( 'ENVIRA_WELCOME_SCREEN' ) || false === ENVIRA_WELCOME_SCREEN ) || apply_filters( 'envira_whitelabel', false ) === true ) {
+					return;
+				}
+
+				$query_args = array();
+
+				// default is the getting started page.
+				$page    = 'envira-gallery-get-started';
+				$version = get_option( 'envira_version' );
+
+				// no galleries? redirect to the welcome page and set transient.
+				if ( ! $version ) {
+					set_transient( '_envira_is_new_install', true, 30 );
+					$query_args['is_new_install'] = 'true';
+					$page                         = 'envira-gallery-welcome';
+				}
+
+				wp_safe_redirect( add_query_arg( $query_args, admin_url( 'edit.php?post_type=envira&page=' . $page ) ) );
+				exit;
 			}
 
 		}
@@ -658,11 +707,11 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 		 * @param boolean $network_wide True if WPMU superadmin uses "Network Activate" action, false otherwise.
 		 */
 		public static function deactivate( $network_wide ) {
-			// Flush rewrite rules
+			// Flush rewrite rules.
 			flush_rewrite_rules();
 			envira_flush_all_cache();
 
-			// Set flag = false in options
+			// Set flag = false in options.
 			update_option( 'envira-standalone-flushed', false );
 
 		}
@@ -672,9 +721,9 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 		 *
 		 * @since 1.7.0
 		 *
-		 * @global object $wpdb The WordPress database object.
+		 * @param object $network_wide Placeholder.
 		 */
-		function uninstall( $network_wide ) {
+		public function uninstall( $network_wide ) {
 
 			if ( is_multisite() ) {
 				$site_list = wp_get_sites();
@@ -710,7 +759,7 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 		}
 
-		// DEPRICATED
+		// DEPRICATED!
 		/**
 		 * Returns the license key for Envira.
 		 *
@@ -765,12 +814,69 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 
 		}
 
+		/**
+		 * Clears gallery cache when Gutenberg updates.
+		 *
+		 * @since 1.8.5
+		 *
+		 * @param int $meta_id The metadata ID.
+		 * @param int $object_id The Object ID.
+		 * @param int $meta_key Meta key value.
+		 * @param int $_meta_value Meta Value.
+		 */
+		public function envira_gutenberg_update_meta_data( $meta_id, $object_id, $meta_key, $_meta_value ) {
+
+			if ( ( defined( 'ENVIRA_GUTENBERG_DEBUG' ) && true === ENVIRA_GUTENBERG_DEBUG ) || ( defined( 'ENVIRA_DEBUG' ) && true === ENVIRA_DEBUG ) ) {
+				error_log( 'delete transient start' ); // will be deleted.
+				error_log( $meta_key ); // will be deleted.
+			}
+
+			if ( 'envira_gallery_gutenberg_data' !== $meta_key ) {
+				return;
+			}
+
+			if ( ( defined( 'ENVIRA_GUTENBERG_DEBUG' ) && true === ENVIRA_GUTENBERG_DEBUG ) || ( defined( 'ENVIRA_DEBUG' ) && true === ENVIRA_DEBUG ) ) {
+				error_log( 'meta_id: ' . $meta_id );
+				error_log( 'object_id: ' . $object_id );
+				error_log( 'meta_key: ' . $meta_key );
+				error_log( $_meta_value );
+			}
+
+			// clear envira cache, but we need to clear the transient of the gallery id...
+			// and not the the post, which is what $object_id likely is.
+			if ( empty( $_meta_value ) ) {
+				return;
+			}
+			$gutenberg_data = json_decode( $_meta_value, true );
+			if ( ( defined( 'ENVIRA_GUTENBERG_DEBUG' ) && true === ENVIRA_GUTENBERG_DEBUG ) || ( defined( 'ENVIRA_DEBUG' ) && true === ENVIRA_DEBUG ) ) {
+				error_log( print_r( $gutenberg_data, true ) );
+			}
+			if ( empty( $gutenberg_data['galleryId'] ) ) {
+				return;
+			}
+			$gallery_id = esc_html( $gutenberg_data['galleryId'] );
+			if ( ( defined( 'ENVIRA_GUTENBERG_DEBUG' ) && true === ENVIRA_GUTENBERG_DEBUG ) || ( defined( 'ENVIRA_DEBUG' ) && true === ENVIRA_DEBUG ) ) {
+				error_log( 'gallery_id: ' . $gallery_id );
+			}
+
+			// Delete both transients.
+			delete_transient( '_eg_fragment_mobile_' . $gallery_id );
+			delete_transient( '_eg_fragment_' . $gallery_id );
+
+			if ( ( defined( 'ENVIRA_GUTENBERG_DEBUG' ) && true === ENVIRA_GUTENBERG_DEBUG ) || ( defined( 'ENVIRA_DEBUG' ) && true === ENVIRA_DEBUG ) ) {
+				// Logging.
+				error_log( 'delete transient: _eg_fragment_mobile_' . $gallery_id );
+				error_log( 'delete transient: _eg_fragment_' . $gallery_id );
+			}
+
+		}
+
 	}
 
 	spl_autoload_register( 'Envira_Gallery::autoload' );
 
 	/**
-	 * envira_gallery_init function.
+	 * Envira Gallery init function.
 	 *
 	 * @access public
 	 * @return object
@@ -785,3 +891,4 @@ if ( ! class_exists( 'Envira_Gallery' ) ) :
 	add_action( 'plugins_loaded', 'envira' );
 
 endif;
+

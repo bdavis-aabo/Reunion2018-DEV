@@ -87,7 +87,7 @@ class Shortcode {
 	public $index = array();
 
 	/**
-	 * is_mobile
+	 * Is mobile
 	 *
 	 * @var mixed
 	 * @access public
@@ -95,7 +95,7 @@ class Shortcode {
 	public $is_mobile;
 
 	/**
-	 *
+	 * Holds album markup.
 	 *
 	 * @var string
 	 */
@@ -110,6 +110,13 @@ class Shortcode {
 	 */
 	public $album_sort = array();
 
+	/**
+	 * Holds the album data.
+	 *
+	 * @since 1.5.6
+	 *
+	 * @var array
+	 */
 	public $album_data = array();
 
 
@@ -131,6 +138,11 @@ class Shortcode {
 
 	}
 
+	/**
+	 * Register scripts.
+	 *
+	 * @since 1.0.0
+	 */
 	public function register_scripts() {
 		wp_register_script( ENVIRA_ALBUMS_SLUG . '-script', plugins_url( 'assets/js/min/envira-albums-min.js', ENVIRA_ALBUMS_FILE ), array( 'jquery' ), ENVIRA_ALBUMS_VERSION, true );
 		wp_register_style( ENVIRA_ALBUMS_SLUG . '-style', plugins_url( 'assets/css/albums-style.css', ENVIRA_ALBUMS_FILE ), array(), ENVIRA_ALBUMS_VERSION );
@@ -184,13 +196,13 @@ class Shortcode {
 
 		// Get Envira Albums Dynamic ID.
 		$album_dynamic_id = get_option( 'envira_dynamic_album' );
-		$album_is_dynamic = ( isset( $data['config']['type'] ) && $data['config']['type'] == 'dynamic' ) ? true : false;
+		$album_is_dynamic = ( isset( $data['config']['type'] ) && 'dynamic' === $data['config']['type'] ) ? true : false;
 		$main_id          = $album_is_dynamic ? $album_dynamic_id : $data['id'];
 
 		// This filter detects if something needs to be displayed BEFORE a gallery is displayed, such as a password form.
 		$pre_album_html = apply_filters( 'envira_abort_album_output', false, $data, $album_id, $atts );
 
-		if ( $pre_album_html !== false ) {
+		if ( false !== $pre_album_html ) {
 
 			// If there is HTML, then we stop trying to display the gallery and return THAT HTML.
 			return apply_filters( 'envira_gallery_output', $pre_album_html, $data );
@@ -217,7 +229,7 @@ class Shortcode {
 		}
 
 		// If this is a dynamic gallery and there are no gallery IDs and the user is requesting "all", then let's grab all eligable ones.
-		if ( ( ! isset( $this->album_data['galleryIDs'] ) || empty( $this->album_data['galleryIDs'] ) && $this->album_data['galleries'] != 'all' && $this->album_data['type'] == 'dynamic' ) ) {
+		if ( ( ! isset( $this->album_data['galleryIDs'] ) || empty( $this->album_data['galleryIDs'] ) && 'all' !== $this->album_data['galleries'] && 'dynamic' !== $this->album_data['type'] ) ) {
 
 			if ( class_exists( 'Envira_Dynamic_Album_Shortcode' ) ) {
 				$galleries = \ Envira_Dynamic_Album_Shortcode::get_instance()->get_galleries( $this->album_data, $this->album_data['id'], $this->album_data, null );
@@ -253,11 +265,11 @@ class Shortcode {
 		// This can be used in the Lightbox later on to build the Galleries and Images to display.
 		$this->unfiltered_albums[ $this->album_data['id'] ] = $this->album_data;
 
-		// Change the album order, if specified.
-		$this->album_data = $this->maybe_sort_album( $this->album_data, $album_id );
-
 		// Allow the data to be filtered before it is stored and used to create the album output.
 		$this->album_data = apply_filters( 'envira_albums_pre_data', $this->album_data, $album_id );
+
+		// Change the album order, if specified. Moving this BELOW the envira_albums_pre_data filter so things can get sorted, in theory.
+		$this->album_data = $this->maybe_sort_album( $this->album_data, $album_id );
 
 		// If there is no data to output or the gallery is inactive, do nothing.
 		if ( ! $this->album_data || empty( $this->album_data['galleryIDs'] ) ) {
@@ -327,11 +339,11 @@ class Shortcode {
 			// We should be using this instead (one use case is the CSS addon).
 			$this->album_markup = apply_filters( 'envira_albums_output_start', $this->album_markup, $this->album_data );
 			// Build out the album HTML.
-			$this->album_markup    .= '<div id="envira-gallery-wrap-' . sanitize_html_class( $this->album_data['id'] ) . '" class="envira-album-wrap ' . $this->get_album_classes( $this->album_data ) . '" ' . $this->get_custom_width( $this->album_data ) . '>';
-			$this->album_markup = apply_filters( 'envira_albums_output_before_container', $this->album_markup, $this->album_data );
+			$this->album_markup .= '<div id="envira-gallery-wrap-' . sanitize_html_class( $this->album_data['id'] ) . '" class="envira-album-wrap ' . $this->get_album_classes( $this->album_data ) . '" ' . $this->get_custom_width( $this->album_data ) . '>';
+			$this->album_markup  = apply_filters( 'envira_albums_output_before_container', $this->album_markup, $this->album_data );
 
 			// Description.
-			if ( isset( $this->album_data['config']['description_position'] ) && $this->album_data['config']['description_position'] == 'above' ) {
+			if ( isset( $this->album_data['config']['description_position'] ) && 'above' === $this->album_data['config']['description_position'] ) {
 				$this->album_markup = $this->description( $this->album_markup, $this->album_data );
 			}
 
@@ -342,21 +354,21 @@ class Shortcode {
 				$extra_css = false;
 			}
 
-			// add a CSS class for lazy-loading
-			$extra_css .= envira_albums_get_config( 'lazy_loading', $data ) == 1 ? ' envira-lazy ' : ' envira-no-lazy ';
+			// add a CSS class for lazy-loading.
+			$extra_css            .= envira_albums_get_config( 'lazy_loading', $data ) == 1 ? ' envira-lazy ' : ' envira-no-lazy ';
 			$album_config          = "data-album-config='" . envira_get_album_config( $main_id, false, $album_is_dynamic, $data['id'] ) . "'";
 			$album_lightbox_config = " data-lightbox-theme='" . htmlentities( envira_album_load_lightbox_config( $main_id ) ) . "'";
 			$album_galleries_json  = " data-album-galleries='" . envira_get_album_galleries( $this->album_data['album_id'] ) . "'";
-			$this->album_markup .= '<div ' . $album_config . $album_lightbox_config . $album_galleries_json . ' id="envira-gallery-' . sanitize_html_class( $this->album_data['id'] ) . '" class="envira-album-public ' . $extra_css . ' envira-gallery-' . sanitize_html_class( envira_albums_get_config( 'columns', $this->album_data ) ) . '-columns envira-clear' . ( envira_albums_get_config( 'isotope', $this->album_data ) && envira_albums_get_config( 'columns', $this->album_data ) > 0 ? ' enviratope' : '' ) . '" data-envira-columns="' . envira_albums_get_config( 'columns', $this->album_data ) . '">';
+			$this->album_markup   .= '<div ' . $album_config . $album_lightbox_config . $album_galleries_json . ' id="envira-gallery-' . sanitize_html_class( $this->album_data['id'] ) . '" class="envira-album-public ' . $extra_css . ' envira-gallery-' . sanitize_html_class( envira_albums_get_config( 'columns', $this->album_data ) ) . '-columns envira-clear' . ( envira_albums_get_config( 'isotope', $this->album_data ) && envira_albums_get_config( 'columns', $this->album_data ) > 0 ? ' enviratope' : '' ) . '" data-envira-columns="' . envira_albums_get_config( 'columns', $this->album_data ) . '">';
 
 			foreach ( $this->album_data['galleryIDs'] as $key => $id ) {
 
-				// Skip gallery if its not published
+				// Skip gallery if its not published.
 				if ( get_post_status( $id ) !== 'publish' ) {
 					continue;
 				}
 
-				// Add the album item to the markup
+				// Add the album item to the markup.
 				$this->album_markup = $this->generate_album_item_markup( $this->album_markup, $this->album_data, $id, $i );
 
 				// Increment the iterator.
@@ -366,8 +378,8 @@ class Shortcode {
 
 			$this->album_markup .= '</div>';
 
-			// Description
-			if ( isset( $this->album_data['config']['description_position'] ) && $this->album_data['config']['description_position'] == 'below' ) {
+			// Description.
+			if ( isset( $this->album_data['config']['description_position'] ) && 'below' === $this->album_data['config']['description_position'] ) {
 				$this->album_markup = $this->description( $this->album_markup, $this->album_data );
 			}
 
@@ -384,7 +396,7 @@ class Shortcode {
 			if ( $no_js ) {
 				$no_js = '<noscript>' . $no_js . '</noscript>';
 			}
-			 $this->album_markup .= $no_js;
+			$this->album_markup .= $no_js;
 			$transient            = set_transient( '_eg_fragment_albums_' . $this->album_data['album_id'], $this->album_markup, DAY_IN_SECONDS );
 
 		}
@@ -402,24 +414,24 @@ class Shortcode {
 	 *
 	 * @since 1.1.0.1
 	 *
-	 * @param string $gallery Gallery HTML
-	 * @param array  $data Gallery Data
+	 * @param string $gallery Gallery HTML.
+	 * @param array  $data Gallery Data.
 	 * @return string Gallery HTML
 	 */
 	public function maybe_add_back_link_prepend( $gallery, $data ) {
 
-		// Check if the user was referred from an Album
+		// Check if the user was referred from an Album.
 		if ( ! isset( $_SERVER['HTTP_REFERER'] ) && ! isset( $_REQUEST['album_id'] ) ) {
 			return $gallery;
 		}
 
-		$gallery_backup    = $gallery; // save a copy of $gallery
+		$gallery_backup    = $gallery; // save a copy of $gallery.
 		$referer_url       = false;
 		$referer_url_parts = array();
 
 		if ( isset( $_SERVER['HTTP_REFERER'] ) && ! isset( $_REQUEST['album_id'] ) ) {
 
-			// If first part of referrer URL matches the Envira Album slug, the visitor clicked on a gallery from an album
+			// If first part of referrer URL matches the Envira Album slug, the visitor clicked on a gallery from an album.
 			$referer_url       = str_replace( get_bloginfo( 'url' ), '', $_SERVER['HTTP_REFERER'] );
 			$referer_url_parts = array_values( array_filter( explode( '/', $referer_url ) ) );
 
@@ -436,7 +448,7 @@ class Shortcode {
 			$maybe_album_page = get_posts( $args );
 
 			if ( ! $maybe_album_page ) {
-				// Giving up, if there is a page it's not published
+				// Giving up, if there is a page it's not published.
 				return $gallery;
 			}
 		}
@@ -444,7 +456,7 @@ class Shortcode {
 		$slug = envira_standalone_get_the_slug( 'albums' );
 		if ( ( ! empty( $referer_url_parts ) && $referer_url_parts[0] != $slug ) || ( isset( $_REQUEST['album_id'] ) ) ) {
 
-			// This might be a regular WordPress page the user has embedded an album into, so let's check
+			// This might be a regular WordPress page the user has embedded an album into, so let's check.
 			if ( isset( $_REQUEST['album_id'] ) ) {
 				$album_id = intval( $_REQUEST['album_id'] );
 
@@ -466,33 +478,33 @@ class Shortcode {
 			}
 
 			if ( ! $maybe_album_page ) {
-				// Giving up, if there is a page it's not published
+				// Giving up, if there is a page it's not published.
 				return $gallery;
 			}
 
-			// If it's an album standalone, we move on
-			if ( ( $maybe_album_page[0]->post_type == 'page' || $maybe_album_page[0]->post_type == 'post' ) && ! has_shortcode( $maybe_album_page[0]->post_content, 'envira-album' ) ) {
-				// no shortcode, so this won't get a back link
+			// If it's an album standalone, we move on.
+			if ( ( 'page' === $maybe_album_page[0]->post_type || 'post' === $maybe_album_page[0]->post_type ) && ! has_shortcode( $maybe_album_page[0]->post_content, 'envira-album' ) ) {
+				// no shortcode, so this won't get a back link.
 				return $gallery;
 			}
 
-			if ( $maybe_album_page[0]->post_type == 'page' || $maybe_album_page[0]->post_type == 'post' ) {
+			if ( 'page' === $maybe_album_page[0]->post_type || 'post' === $maybe_album_page[0]->post_type ) {
 
-				// If there is a shortcode, parse it for the album ID and get the album data from that
+				// If there is a shortcode, parse it for the album ID and get the album data from that.
 				$regex_pattern = get_shortcode_regex();
 				preg_match( '/' . $regex_pattern . '/s', $maybe_album_page[0]->post_content, $regex_matches );
 
-				if ( $regex_matches[2] == 'envira-album' ) :
+				if ( 'envira-album' == $regex_matches[2] ) :
 					// Found the album, now need to find out the ID
-					// Turn the attributes into a URL parm string
-					$attribureStr = str_replace( ' ', '&', trim( $regex_matches[3] ) );
-					$attribureStr = str_replace( '"', '', $attribureStr );
+					// Turn the attributes into a URL parm string.
+					$attribure_str = str_replace( ' ', '&', trim( $regex_matches[3] ) );
+					$attribure_str = str_replace( '"', '', $attribure_str );
 
-					// Parse the attributes
+					// Parse the attributes.
 					$defaults   = array(
 						'preview' => '1',
 					);
-					$attributes = wp_parse_args( $attribureStr, $defaults );
+					$attributes = wp_parse_args( $attribure_str, $defaults );
 					if ( isset( $attributes['id'] ) ) {
 						$album_data = _envira_get_album( $attributes['id'] );
 					} elseif ( isset( $attributes['slug'] ) ) {
@@ -501,7 +513,7 @@ class Shortcode {
 						return $gallery;
 					}
 
-					// Ok, determine if the current gallery is IN the album... if not, then return
+					// Ok, determine if the current gallery is IN the album... if not, then return.
 					if ( isset( $data['id'] ) && ! array_key_exists( $data['id'], $album_data['galleries'] ) ) {
 						return $gallery;
 					}
@@ -510,11 +522,11 @@ class Shortcode {
 
 				if ( ! envira_albums_get_config( 'back_location', $album_data ) || envira_albums_get_config( 'back_location', $album_data ) == 'above' || envira_albums_get_config( 'back_location', $album_data ) == 'above-below' ) {
 
-					// Prepend Back to Album Button
+					// Prepend Back to Album Button.
 					$gallery = '<a href="' . esc_url( $_SERVER['HTTP_REFERER'] ) . '" title="' . envira_albums_get_config( 'back_label', $album_data ) . '" class="envira-back-link">' . envira_albums_get_config( 'back_label', $album_data ) . '</a>' . $gallery;
 
 				}
-			} elseif ( $maybe_album_page[0]->post_type == 'envira_album' ) {
+			} elseif ( 'envira_album' == $maybe_album_page[0]->post_type ) {
 
 				$album_data = _envira_get_album( $album_id );
 
@@ -523,13 +535,13 @@ class Shortcode {
 				}
 
 				if ( ! envira_albums_get_config( 'back_location', $album_data ) || envira_albums_get_config( 'back_location', $album_data ) == 'above' || envira_albums_get_config( 'back_location', $album_data ) == 'above-below' ) {
-					// Prepend Back to Album Button
+					// Prepend Back to Album Button.
 					$gallery = '<a href="' . get_permalink( $album_id ) . '" title="' . envira_albums_get_config( 'back_label', $album_data ) . '" class="envira-back-link">' . envira_albums_get_config( 'back_label', $album_data ) . '</a>' . $gallery;
 				}
 			}
 		} else {
 			// Referred from an Envira Album
-			// Check that Album exists
+			// Check that Album exists.
 			$album_data = envira_get_album_by_slug( $referer_url_parts[1] );
 			if ( ! $album_data ) {
 				return $gallery;
@@ -538,12 +550,12 @@ class Shortcode {
 			$album_id = $album_data['id'];
 
 			if ( ! envira_albums_get_config( 'back_location', $album_data ) || envira_albums_get_config( 'back_location', $album_data ) == 'above' || envira_albums_get_config( 'back_location', $album_data ) == 'above-below' ) {
-				// Prepend Back to Album Button
+				// Prepend Back to Album Button.
 				$gallery = '<a href="' . get_permalink( $album_id ) . '" title="' . envira_albums_get_config( 'back_label', $album_data ) . '" class="envira-back-link">' . envira_albums_get_config( 'back_label', $album_data ) . '</a>' . $gallery;
 			}
 		}
 
-		// Check that Album has "Back to Album" functionality enabled
+		// Check that Album has "Back to Album" functionality enabled.
 		if ( ! envira_albums_get_config( 'back', $album_data ) ) {
 			return $gallery_backup;
 		}
@@ -558,24 +570,24 @@ class Shortcode {
 	 *
 	 * @since 1.1.0.1
 	 *
-	 * @param string $gallery Gallery HTML
-	 * @param array  $data Gallery Data
+	 * @param string $gallery Gallery HTML.
+	 * @param array  $data Gallery Data.
 	 * @return string Gallery HTML
 	 */
 	public function maybe_add_back_link_append( $gallery, $data ) {
 
-		// Check if the user was referred from an Album
+		// Check if the user was referred from an Album.
 		if ( ! isset( $_SERVER['HTTP_REFERER'] ) && ! isset( $_REQUEST['album_id'] ) ) {
 			return $gallery;
 		}
 
-		$gallery_backup    = $gallery; // save a copy of $gallery
+		$gallery_backup    = $gallery; // save a copy of $gallery.
 		$referer_url       = false;
 		$referer_url_parts = array();
 
 		if ( isset( $_SERVER['HTTP_REFERER'] ) && ! isset( $_REQUEST['album_id'] ) ) {
 
-			// If first part of referrer URL matches the Envira Album slug, the visitor clicked on a gallery from an album
+			// If first part of referrer URL matches the Envira Album slug, the visitor clicked on a gallery from an album.
 			$referer_url       = str_replace( get_bloginfo( 'url' ), '', $_SERVER['HTTP_REFERER'] );
 			$referer_url_parts = array_values( array_filter( explode( '/', $referer_url ) ) );
 
@@ -592,7 +604,7 @@ class Shortcode {
 			$maybe_album_page = get_posts( $args );
 
 			if ( ! $maybe_album_page ) {
-				// Giving up, if there is a page it's not published
+				// Giving up, if there is a page it's not published.
 				return $gallery;
 			}
 		}
@@ -600,7 +612,7 @@ class Shortcode {
 		$slug = envira_standalone_get_the_slug( 'albums' );
 		if ( ( ! empty( $referer_url_parts ) && $referer_url_parts[0] != $slug ) || ( isset( $_REQUEST['album_id'] ) ) ) {
 
-			// This might be a regular WordPress page the user has embedded an album into, so let's check
+			// This might be a regular WordPress page the user has embedded an album into, so let's check.
 			if ( isset( $_REQUEST['album_id'] ) ) {
 				$album_id = intval( $_REQUEST['album_id'] );
 
@@ -622,33 +634,33 @@ class Shortcode {
 			}
 
 			if ( ! $maybe_album_page ) {
-				// Giving up, if there is a page it's not published
+				// Giving up, if there is a page it's not published.
 				return $gallery;
 			}
 
-			// If it's an album standalone, we move on
-			if ( ( $maybe_album_page[0]->post_type == 'page' || $maybe_album_page[0]->post_type == 'post' ) && ! has_shortcode( $maybe_album_page[0]->post_content, 'envira-album' ) ) {
-				// no shortcode, so this won't get a back link
+			// If it's an album standalone, we move on.
+			if ( ( 'page' === $maybe_album_page[0]->post_type || 'post' === $maybe_album_page[0]->post_type ) && ! has_shortcode( $maybe_album_page[0]->post_content, 'envira-album' ) ) {
+				// no shortcode, so this won't get a back link.
 				return $gallery;
 			}
 
-			if ( $maybe_album_page[0]->post_type == 'page' || $maybe_album_page[0]->post_type == 'post' ) {
+			if ( 'page' === $maybe_album_page[0]->post_type || 'post' === $maybe_album_page[0]->post_type ) {
 
-				// If there is a shortcode, parse it for the album ID and get the album data from that
+				// If there is a shortcode, parse it for the album ID and get the album data from that.
 				$regex_pattern = get_shortcode_regex();
 				preg_match( '/' . $regex_pattern . '/s', $maybe_album_page[0]->post_content, $regex_matches );
 
-				if ( $regex_matches[2] == 'envira-album' ) :
+				if ( 'envira-album' === $regex_matches[2] ) :
 					// Found the album, now need to find out the ID
-					// Turn the attributes into a URL parm string
-					$attribureStr = str_replace( ' ', '&', trim( $regex_matches[3] ) );
-					$attribureStr = str_replace( '"', '', $attribureStr );
+					// Turn the attributes into a URL parm string.
+					$attribure_str = str_replace( ' ', '&', trim( $regex_matches[3] ) );
+					$attribure_str = str_replace( '"', '', $attribure_str );
 
-					// Parse the attributes
+					// Parse the attributes.
 					$defaults   = array(
 						'preview' => '1',
 					);
-					$attributes = wp_parse_args( $attribureStr, $defaults );
+					$attributes = wp_parse_args( $attribure_str, $defaults );
 					if ( isset( $attributes['id'] ) ) {
 						$album_data = _envira_get_album( $attributes['id'] );
 					} elseif ( isset( $attributes['slug'] ) ) {
@@ -657,7 +669,7 @@ class Shortcode {
 						return $gallery;
 					}
 
-					// Ok, determine if the current gallery is IN the album... if not, then return
+					// Ok, determine if the current gallery is IN the album... if not, then return.
 					if ( isset( $data['id'] ) && ! array_key_exists( $data['id'], $album_data['galleries'] ) ) {
 						return $gallery;
 					}
@@ -665,10 +677,10 @@ class Shortcode {
 				endif;
 
 				if ( envira_albums_get_config( 'back_location', $album_data ) == 'below' || envira_albums_get_config( 'back_location', $album_data ) == 'above-below' ) {
-						// Append Back to Album Button
+						// Append Back to Album Button.
 						$gallery = $gallery . '<a href="' . get_permalink( $album_id ) . '" title="' . envira_albums_get_config( 'back_label', $album_data ) . '" class="envira-back-link">' . envira_albums_get_config( 'back_label', $album_data ) . '</a>';
 				}
-			} elseif ( $maybe_album_page[0]->post_type == 'envira_album' ) {
+			} elseif ( 'envira_album' == $maybe_album_page[0]->post_type ) {
 
 				$album_data = _envira_get_album( $album_id );
 
@@ -677,13 +689,13 @@ class Shortcode {
 				}
 
 				if ( envira_albums_get_config( 'back_location', $album_data ) == 'below' || envira_albums_get_config( 'back_location', $album_data ) == 'above-below' ) {
-						// Append Back to Album Button
+						// Append Back to Album Button.
 						$gallery = $gallery . '<a href="' . get_permalink( $album_id ) . '" title="' . envira_albums_get_config( 'back_label', $album_data ) . '" class="envira-back-link">' . envira_albums_get_config( 'back_label', $album_data ) . '</a>';
 				}
 			}
 		} else {
 			// Referred from an Envira Album
-			// Check that Album exists
+			// Check that Album exists.
 			$album_data = envira_get_album_by_slug( $referer_url_parts[1] );
 			if ( ! $album_data ) {
 				return $gallery;
@@ -692,12 +704,12 @@ class Shortcode {
 			$album_id = $album_data['id'];
 
 			if ( envira_albums_get_config( 'back_location', $album_data ) == 'below' || envira_albums_get_config( 'back_location', $album_data ) == 'above-below' ) {
-					// Append Back to Album Button
+					// Append Back to Album Button.
 					$gallery = $gallery . '<a href="' . get_permalink( $album_id ) . '" title="' . envira_albums_get_config( 'back_label', $album_data ) . '" class="envira-back-link">' . envira_albums_get_config( 'back_label', $album_data ) . '</a>';
 			}
 		}
 
-		// Check that Album has "Back to Album" functionality enabled
+		// Check that Album has "Back to Album" functionality enabled.
 		if ( ! envira_albums_get_config( 'back', $album_data ) ) {
 			return $gallery_backup;
 		}
@@ -711,15 +723,15 @@ class Shortcode {
 	 *
 	 * @since 1.2.5.0
 	 *
-	 * @param    string $album      Album HTML
-	 * @param    array  $data       Album Config
-	 * @param    int    $id         Album Gallery ID
-	 * @param    int    $i          Index
+	 * @param    string $album      Album HTML.
+	 * @param    array  $data       Album Config.
+	 * @param    int    $id         Album Gallery ID.
+	 * @param    int    $i          Index.
 	 * @return   string              Album HTML
 	 */
 	public function generate_album_item_markup( $album, $data, $id, $i ) {
 
-		// Skip blank entries
+		// Skip blank entries.
 		if ( empty( $id ) ) {
 
 			return $album;
@@ -728,19 +740,19 @@ class Shortcode {
 
 		$gallery_data = envira_get_gallery( $id );
 
-		// Get some config values that we'll reuse for each gallery
+		// Get some config values that we'll reuse for each gallery.
 		$padding = absint( round( envira_albums_get_config( 'gutter', $data ) / 2 ) );
 
-		// Get Gallery
+		// Get Gallery.
 		$item = $data['galleries'][ $id ];
 		$item = apply_filters( 'envira_albums_output_item_data', $item, $id, $data, $i );
 
-		// Get image
+		// Get image.
 		$imagesrc         = $this->get_image_src( $item['cover_image_id'], $item, $data );
-		$image_src_retina = $this->get_image_src( $item['cover_image_id'], $item, $data, false, true ); // copied from gallery shortcode
+		$image_src_retina = $this->get_image_src( $item['cover_image_id'], $item, $data, false, true ); // copied from gallery shortcode.
 		$placeholder      = wp_get_attachment_image_src( $item['cover_image_id'], 'medium' ); // $placeholder is null because $id is 0 for instagram? // copied from gallery shortcode
 
-		// Get Link New Window Only When Lightbox Isn't Available For The Album
+		// Get Link New Window Only When Lightbox Isn't Available For The Album.
 		$link_new_window = false;
 
 		if ( empty( $data['gallery_lightbox'] ) && ! empty( $item['link_new_window'] ) ) {
@@ -753,11 +765,11 @@ class Shortcode {
 
 		$output = '<div id="envira-gallery-item-' . sanitize_html_class( $id ) . '" class="' . $this->get_gallery_item_classes( $item, $i, $data ) . '" style="padding-left: ' . $padding . 'px; padding-bottom: ' . envira_albums_get_config( 'margin', $data ) . 'px; padding-right: ' . $padding . 'px;" ' . apply_filters( 'envira_albums_output_item_attr', '', $id, $item, $data, $i ) . '>';
 
-			// Display Gallery Description (Above)
-		if ( isset( $data['config']['gallery_description_display'] ) && $data['config']['gallery_description_display'] == 'display-above' && (int) $data['config']['columns'] !== 0 && isset( $item['id'] ) ) {
+		// Display Gallery Description (Above).
+		if ( isset( $data['config']['gallery_description_display'] ) && 'display-above' === $data['config']['gallery_description_display'] && 0 !== (int) $data['config']['columns'] && isset( $item['id'] ) ) {
 			$output = apply_filters( 'envira_albums_output_before_gallery_description', $output, $id, $item, $data, $i );
 
-			// Get description
+			// Get description.
 			if ( isset( $gallery_data['config']['description'] ) && $gallery_data['config']['description'] ) {
 
 				$gallery_description = wp_kses( $gallery_data['config']['description'], envira_get_allowed_tags() );
@@ -766,13 +778,13 @@ class Shortcode {
 			$output = apply_filters( 'envira_albums_output_before_gallery_description', $output, $id, $item, $data, $i );
 		}
 
-			// Display Title.
-			// Note: We added the ability to add titles ABOVE in addition to below, but we still need to honor the deprecated setting.
-		if ( isset( $data['config']['display_titles'] ) && $data['config']['display_titles'] === 'above' && (int) $data['config']['columns'] !== 0 ) {
+		// Display Title.
+		// Note: We added the ability to add titles ABOVE in addition to below, but we still need to honor the deprecated setting.
+		if ( isset( $data['config']['display_titles'] ) && 'above' === $data['config']['display_titles'] && 0 !== (int) $data['config']['columns'] ) {
 
 			$new_window = $link_new_window ? 'target="_blank" ' : '';
 
-			$album_title = ( ! empty( $item['link_title_gallery'] ) && $item['link_title_gallery'] == 1 ) ? '<a ' . $new_window . ' href="' . get_permalink( $id ) . '">' . htmlspecialchars_decode( $item['title'] ) . '</a>' : htmlspecialchars_decode( $item['title'] );
+			$album_title = ( ! empty( $item['link_title_gallery'] ) && 1 == $item['link_title_gallery'] ) ? '<a ' . $new_window . ' href="' . get_permalink( $id ) . '">' . htmlspecialchars_decode( $item['title'] ) . '</a>' : htmlspecialchars_decode( $item['title'] );
 
 			$album_title = apply_filters( 'envira_albums_album_title', $album_title, $id, $item, $data, $i );
 
@@ -827,21 +839,23 @@ class Shortcode {
 			$gallery_images_data               = envira_get_gallery_images( $id, null, null, true, true );
 			$gallery_images                    = $gallery_images_data['gallery_images'];
 			$sorted_ids                        = $gallery_images_data['sorted_ids'];
-			$css                               = isset( $item['gallery_lightbox'] ) && $item['gallery_lightbox'] != 1 ? '' : 'envira-gallery-link'; // check for override (located in modal).
+			$css                               = isset( $item['gallery_lightbox'] ) && 1 != $item['gallery_lightbox'] ? '' : 'envira-gallery-link'; // check for override (located in modal).
 			$css                               = envira_albums_get_config( 'lightbox', $data ) == 0 ? '' : $css; // check for override (located in modal).
 			$gallery_images_attribute          = "data-gallery-images='" . $gallery_images . "' ";
 			$gallery_images_sort_ids_attribute = "data-gallery-sort-ids='" . $sorted_ids . "' ";
 
 			if ( strpos( $gallery_images, 'cdninstagram' ) !== false ) {
-				// todo: we need a better check for instagram but since album data is saved in the database without hooks, this is the best way for backwards compataiblity
+				// todo: we need a better check for instagram but since album data is saved in the database without hooks, this is the best way for backwards compataiblity.
 				$gallery_images_array = json_decode( $gallery_images, true );
 				if ( ( empty( $gallery_images_array ) ) ) {
-					$gallery_images_attribute = $css = false;
+					$gallery_images_attribute = false;
+					$css = false;
 				} else {
 					$first_element = reset( $gallery_images_array );
 					if ( ( empty( $first_element ) || empty( $first_element['link'] ) ) ) {
 						// checks to see if this is an instagram gallery and if there's a link in the first element (if not, likely user has selected 'no link' in the gallery settings).
-						$gallery_images_attribute = $css = false;
+						$gallery_images_attribute = false;
+						$css = false;
 					}
 					$first_element = false;
 				}
@@ -851,19 +865,19 @@ class Shortcode {
 
 		}
 
-			// Image
-			$output        = apply_filters( 'envira_albums_output_before_image', $output, $id, $item, $data, $i );
-			$gallery_theme = envira_albums_get_config( 'columns', $data ) == 0 ? ' envira-' . envira_albums_get_config( 'justified_gallery_theme', $data ) : '';
+		// Image.
+		$output        = apply_filters( 'envira_albums_output_before_image', $output, $id, $item, $data, $i );
+		$gallery_theme = envira_albums_get_config( 'columns', $data ) == 0 ? ' envira-' . envira_albums_get_config( 'justified_gallery_theme', $data ) : '';
 
-			// Captions (for automatic layout)
-			$item_caption = false;
+		// Captions (for automatic layout).
+		$item_caption = false;
 
-			// Don't assume there is one
+		// Don't assume there is one.
 		if ( empty( $item['caption'] ) ) {
 			$item['caption'] = ''; }
 
-			// If the user has choosen to display Gallery Description, then it's a complete override
-		if ( isset( $data['config']['gallery_description_display'] ) && $data['config']['gallery_description_display'] && (int) $data['config']['columns'] === 0 && ! empty( $gallery_data['config']['description'] ) && isset( $item['id'] ) ) {
+		// If the user has choosen to display Gallery Description, then it's a complete override.
+		if ( isset( $data['config']['gallery_description_display'] ) && $data['config']['gallery_description_display'] && 0 === (int) $data['config']['columns'] && ! empty( $gallery_data['config']['description'] ) && isset( $item['id'] ) ) {
 
 				$item_caption = sanitize_text_field( $gallery_data['config']['description'] );
 
@@ -885,15 +899,15 @@ class Shortcode {
 			$item_caption           = implode( $item_caption_seperator, $caption_array );
 
 			// Add Image Count To Captions (for automatic layout).
-			if ( isset( $data['config']['display_image_count'] ) && $data['config']['display_image_count'] === 1 && (int) $data['config']['columns'] == 0 ) {
+			if ( isset( $data['config']['display_image_count'] ) && 1 === $data['config']['display_image_count'] && 0 === (int) $data['config']['columns'] ) {
 
 				// Note: We are providing a unique filter here just for automatic layout.
 				$item_caption = apply_filters( 'envira_albums_output_automatic_before_image_count', $item_caption, $id, $item, $data, $i );
 
 				// Get count.
-				if ( $data['config']['type'] !== 'fc' ) {
+				if ( 'fc' !== $data['config']['type'] ) {
 					$count = envira_get_gallery_image_count( str_replace( $id . '_' . $this->counter, '', $id ) );
-				} elseif ( $data['config']['type'] == 'fc' ) {
+				} elseif ( 'fc' === $data['config']['type'] ) {
 					$fc    = \ Envira_Featured_Content_Shortcode::get_instance();
 					$count = $fc->get_fc_data_total( $id, $data );
 				}
@@ -947,7 +961,7 @@ class Shortcode {
 			$output_width = $placeholder[1];
 		} elseif ( ! empty( $item['cover_image_url'] ) && strpos( $item['cover_image_url'], 'cdninstagram' ) !== false ) {
 			// if this is an instagram image, @getimagesize might not work
-			// therefore we should try to extract the size from the url itself
+			// therefore we should try to extract the size from the url itself.
 			if ( strpos( $item['cover_image_url'], '150x150' ) ) {
 				$output_width = '150';
 			} else {
@@ -973,12 +987,12 @@ class Shortcode {
 
 		if ( envira_albums_get_config( 'columns', $data ) == 0 ) {
 
-			// Automatic
+			// Automatic.
 			$output_item = '<img id="envira-gallery-image-' . sanitize_html_class( $id ) . '" class="envira-gallery-image envira-gallery-image-' . $i . $gallery_theme . ' ' . $envira_lazy_load . '" src="' . esc_url( $imagesrc ) . '" width="' . envira_albums_get_config( 'crop_width', $data ) . '" height="' . envira_albums_get_config( 'crop_height', $data ) . '" data-envira-width="' . $output_width . '" data-envira-height="' . $output_height . '" data-envira-src="' . esc_url( $output_src ) . '" data-caption="' . htmlentities( $item_caption ) . '" data-envira-item-id="' . $id . '" data-automatic-caption="' . $item_caption . '" data-envira-album-id="' . $data['id'] . '" data-envira-gallery-id="' . sanitize_html_class( $id ) . '" alt="' . esc_attr( $item['alt'] ) . '" title="' . strip_tags( htmlspecialchars_decode( $item['title'] ) ) . '" ' . apply_filters( 'envira_albums_output_image_attr', '', $item['cover_image_id'], $item, $data, $i ) . ' srcset="' . ( ( $envira_lazy_load ) ? 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' : esc_url( $image_src_retina ) . ' 2x' ) . '" data-safe-src="' . ( ( $envira_lazy_load ) ? 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' : esc_url( $output_src ) ) . '" />';
 
 		} else {
 
-			// Legacy
+			// Legacy.
 			$output_item = false;
 
 			if ( $envira_lazy_load ) {
@@ -986,7 +1000,7 @@ class Shortcode {
 				if ( $output_height > 0 && $output_width > 0 ) {
 					$padding_bottom = ( $output_height / $output_width ) * 100;
 				} else {
-					// this shouldn't be happening, but this avoids a debug message
+					// this shouldn't be happening, but this avoids a debug message.
 					$padding_bottom = 100;
 				}
 				if ( $padding_bottom > 100 ) {
@@ -1007,7 +1021,7 @@ class Shortcode {
 
 			$output_item = apply_filters( 'envira_albums_output_image', $output_item, $id, $item, $data, $i, $album );
 
-			// Add image to output
+			// Add image to output.
 			$output .= $output_item;
 			$output  = apply_filters( 'envira_albums_output_after_image', $output, $id, $item, $data, $i );
 
@@ -1018,9 +1032,9 @@ class Shortcode {
 
 			// Display Title For Legacy.
 			// Note: We added the ability to add titles ABOVE in addition to below, but we still need to honor the deprecated setting.
-		if ( isset( $data['config']['display_titles'] ) && ( $data['config']['display_titles'] == 1 || $data['config']['display_titles'] === 'below' ) && (int) $data['config']['columns'] !== 0 ) {
+		if ( isset( $data['config']['display_titles'] ) && ( 1 === $data['config']['display_titles'] || 'below' === $data['config']['display_titles'] ) && 0 !== (int) $data['config']['columns'] ) {
 			$output      = apply_filters( 'envira_albums_output_before_title', $output, $id, $item, $data, $i );
-			$album_title = ( ! empty( $item['link_title_gallery'] ) && $item['link_title_gallery'] == 1 ) ? '<a ' . $new_window . ' href="' . get_permalink( $id ) . '">' . htmlspecialchars_decode( $item['title'] ) . '</a>' : htmlspecialchars_decode( $item['title'] );
+			$album_title = ( ! empty( $item['link_title_gallery'] ) && 1 === $item['link_title_gallery'] ) ? '<a ' . $new_window . ' href="' . get_permalink( $id ) . '">' . htmlspecialchars_decode( $item['title'] ) . '</a>' : htmlspecialchars_decode( $item['title'] );
 
 			$album_title = apply_filters( 'envira_albums_album_title', $album_title, $id, $item, $data, $i );
 
@@ -1031,12 +1045,12 @@ class Shortcode {
 			$output = apply_filters( 'envira_albums_output_after_title', $output, $id, $item, $data, $i );
 		}
 
-			// Display Caption For Legacy
-		if ( isset( $data['config']['display_captions'] ) && $data['config']['display_captions'] === 1 && (int) $data['config']['columns'] !== 0 ) {
+			// Display Caption For Legacy.
+		if ( isset( $data['config']['display_captions'] ) && 1 === $data['config']['display_captions'] && 0 !== (int) $data['config']['columns'] ) {
 			$output        = apply_filters( 'envira_albums_output_before_caption', $output, $id, $item, $data, $i );
 			$gallery_theme = envira_albums_get_config( 'gallery_theme', $data );
 
-			// add a <br> if there's a line break
+			// add a <br> if there's a line break.
 			$item['caption'] = str_replace(
 				'
 	',
@@ -1051,13 +1065,13 @@ class Shortcode {
 			$output .= '</div>';
 
 			// Display Gallery Description (Below).
-		if ( isset( $data['config']['gallery_description_display'] ) && $data['config']['gallery_description_display'] === 'display-below' && (int) $data['config']['columns'] !== 0 && isset( $item['id'] ) ) {
+		if ( isset( $data['config']['gallery_description_display'] ) && 'display-below' === $data['config']['gallery_description_display'] && 0 !== (int) $data['config']['columns'] && isset( $item['id'] ) ) {
 			$output = apply_filters( 'envira_albums_output_before_gallery_description', $output, $id, $item, $data, $i );
 
 			// Extract description from gallery.
 			// Note that this doesn't care if the gallery is enabled to display on the gallery or not.
 			$gallery_data = envira_get_gallery( $item['id'] );
-			// Get description
+			// Get description.
 			if ( isset( $gallery_data['config']['description'] ) && $gallery_data['config']['description'] ) {
 
 				$gallery_description = wp_kses( $gallery_data['config']['description'], envira_get_allowed_tags() );
@@ -1067,18 +1081,18 @@ class Shortcode {
 		}
 
 			// Display Image Count.
-		if ( isset( $data['config']['display_image_count'] ) && $data['config']['display_image_count'] === 1 && (int) $data['config']['columns'] !== 0 ) {
+		if ( isset( $data['config']['display_image_count'] ) && $data['config']['display_image_count'] === 1 && intval( $data['config']['columns'] ) !== 0 ) {
 			$output = apply_filters( 'envira_albums_output_before_image_count', $output, $id, $item, $data, $i );
 
 			// Get count.
-			if ( $data['config']['type'] !== 'fc' ) {
+			if ( 'fc' !== $data['config']['type'] ) {
 				$count = envira_get_gallery_image_count( $id );
-			} elseif ( $data['config']['type'] === 'fc' && class_exists( 'Envira_Featured_Content_Shortcode' ) ) {
+			} elseif ( 'fc' === $data['config']['type'] && class_exists( 'Envira_Featured_Content_Shortcode' ) ) {
 				$fc    = \ Envira_Featured_Content_Shortcode::get_instance();
 				$count = $fc->get_fc_data_total( $id, $data );
 			}
 
-			// Filter count label
+			// Filter count label.
 			$label   = $count . ' ' . _n( 'Photo', 'Photos', $count, 'envira-albums' );
 			$output .= '<div class="envira-album-image-count">' . apply_filters( 'envira_albums_output_image_count', $label, $count ) . '</div>';
 
@@ -1103,8 +1117,8 @@ class Shortcode {
 	 *
 	 * @since 1.2.4.4
 	 *
-	 * @param   array $data       Album Config
-	 * @param   int   $gallery_id Album ID
+	 * @param   array $data       Album Config.
+	 * @param   int   $album_id   Album ID.
 	 * @return  array               Album Config
 	 */
 	public function maybe_sort_album( $data, $album_id ) {
@@ -1113,33 +1127,33 @@ class Shortcode {
 			return $data;
 		}
 
-		// return if there's already a sorting method being passed into the shortcode (see dynamic addon - shortcode-album.php)
+		// return if there's already a sorting method being passed into the shortcode (see dynamic addon - shortcode-album.php).
 		if ( ! empty( $data['config']['shortcode_orderby'] ) || ! empty( $data['config']['shortcode_order'] ) ) {
 			return $data;
 		}
 
-		// Get sorting method
+		// Get sorting method.
 		$sorting_method    = (string) envira_albums_get_config( 'sorting', $data );
 		$sorting_direction = envira_albums_get_config( 'sorting_direction', $data );
 
-		// Sort images based on method
+		// Sort images based on method.
 		switch ( $sorting_method ) {
 			/**
 			* Random
 			*/
 			case '1':
 			case 'random':
-				// Shuffle keys
+				// Shuffle keys.
 				$keys = array_keys( $data['galleries'] );
 				shuffle( $keys );
 
-				// Rebuild array in new order
+				// Rebuild array in new order.
 				$new = array();
 				foreach ( $keys as $key ) {
 					$new[ $key ] = $data['galleries'][ $key ];
 				}
 
-				// Assign back to gallery
+				// Assign back to gallery.
 				$data['galleries'] = $new;
 				break;
 
@@ -1151,7 +1165,7 @@ class Shortcode {
 			case 'alt':
 			case 'date':
 			case 'publish_date':
-				// Get metadata
+				// Get metadata.
 				$keys = array();
 				if ( empty( $data['galleries'] ) ) {
 					break;
@@ -1163,32 +1177,32 @@ class Shortcode {
 					* to the latest version of this Addon and hasn't saved their Album, this data might not be available yet
 					*/
 					if ( ! isset( $item[ $sorting_method ] ) || empty( $item[ $sorting_method ] ) ) {
-						if ( $sorting_method === 'title' ) {
+						if ( 'title' === $sorting_method ) {
 							$item[ $sorting_method ] = get_the_title( $id );
 						}
-						if ( $sorting_method === 'publish_date' || $sorting_method === 'date' ) {
+						if ( 'publish_date' === $sorting_method || 'date' === $sorting_method ) {
 							$item[ $sorting_method ] = get_the_date( 'Y-m-d', $id );
 						}
 					}
 
-					// Sort
+					// Sort.
 					$keys[ $id ] = strip_tags( $item[ $sorting_method ] );
 				}
 
-				// Sort titles / captions
-				if ( $sorting_direction === 'ASC' ) {
+				// Sort titles / captions.
+				if ( 'ASC' === $sorting_direction ) {
 					asort( $keys );
 				} else {
 					arsort( $keys );
 				}
 
-				// Iterate through sorted items, rebuilding gallery
+				// Iterate through sorted items, rebuilding gallery.
 				$new = array();
 				foreach ( $keys as $key => $title ) {
 					$new[ $key ] = $data['galleries'][ $key ];
 				}
 
-				// Assign back to gallery
+				// Assign back to gallery.
 				$data['galleries'] = $new;
 				break;
 
@@ -1209,7 +1223,7 @@ class Shortcode {
 
 		}
 
-		// Rebuild the galleryIDs array so it matches the new sort order
+		// Rebuild the galleryIDs array so it matches the new sort order.
 		$data['galleryIDs'] = array();
 
 		if ( ! empty( $data['galleries'] ) ) {
@@ -1227,8 +1241,8 @@ class Shortcode {
 	 *
 	 * @since 1.6.0
 	 *
-	 * @param string $album Album HTML
-	 * @param array  $data Data
+	 * @param string $album Album HTML.
+	 * @param array  $data Data.
 	 * @return HTML
 	 */
 	public function description( $album, $data ) {
@@ -1250,7 +1264,7 @@ class Shortcode {
 			$description = wpautop( $description );
 			$description = prepend_attachment( $description );
 
-			// Requires WordPress 4.4+
+			// Requires WordPress 4.4+.
 		if ( function_exists( 'wp_make_content_images_responsive' ) ) {
 			$description = wp_make_content_images_responsive( $description );
 		}
@@ -1277,25 +1291,25 @@ class Shortcode {
 	 */
 	public function get_lightbox_src( $id, $item, $data ) {
 
-		// Check gallery config
+		// Check gallery config.
 		$image_size = envira_albums_get_config( 'lightbox_image_size', $data );
 
-		// check if the url is a valid image if not return it
+		// check if the url is a valid image if not return it.
 		if ( ! envira_is_image( $item['link'] ) ) {
 			return $item;
 		}
 
-		// Get media library attachment at requested size
+		// Get media library attachment at requested size.
 		$image = wp_get_attachment_image_src( $id, $image_size );
 
 		if ( ! is_array( $image ) ) {
 			return $item;
 		}
 
-		// Inject new image size into $item
+		// Inject new image size into $item.
 		$item['link'] = $image[0];
 
-		// Return
+		// Return.
 		return $item;
 
 	}
@@ -1403,18 +1417,18 @@ class Shortcode {
 	public function get_image_src( $id, $item, $data, $mobile = false ) {
 
 		// Detect if user is on a mobile device - if so, override $mobile flag which may be manually set
-		// by out of date addons or plugins
+		// by out of date addons or plugins.
 		$type = envira_mobile_detect()->isMobile() && envira_albums_get_config( 'mobile', $data ) ? 'mobile' : 'crop'; // 'crop' is misleading here - it's the key that stores the thumbnail width + height
 		// Get the full image src. If it does not return the data we need, return the image link instead.
 		$image = ( isset( $item['cover_image_url'] ) ? $item['cover_image_url'] : '' );
 
-		// Fallback to image ID
+		// Fallback to image ID.
 		if ( empty( $image ) ) {
 			$src   = wp_get_attachment_image_src( $id, 'full' );
 			$image = ! empty( $src[0] ) ? $src[0] : false;
 		}
 
-		// Fallback to item source
+		// Fallback to item source.
 		if ( ! $image ) {
 			$image = ! empty( $item['src'] ) ? $item['src'] : false;
 			if ( ! $image ) {
@@ -1424,7 +1438,7 @@ class Shortcode {
 
 		$crop = envira_albums_get_config( 'crop', $data );
 
-		if ( $crop || $type === 'mobile' ) {
+		if ( $crop || 'mobile' === $type ) {
 
 			$args = apply_filters(
 				'envira_gallery_crop_image_args',
@@ -1437,7 +1451,7 @@ class Shortcode {
 				)
 			);
 
-			// Filter
+			// Filter.
 			$args = apply_filters( 'envira_gallery_crop_image_args', $args );
 
 			// Make sure we're grabbing the full image to crop.
@@ -1463,7 +1477,7 @@ class Shortcode {
 
 			}
 		}
-		// return full image
+		// return full image.
 		return apply_filters( 'envira_albums_image_src', $image, $id, $item, $data );
 
 	}
@@ -1495,12 +1509,12 @@ class Shortcode {
 	 */
 	public function do_feed_output( $data ) {
 
-		// Check the album has galleries
+		// Check the album has galleries.
 		if ( ! isset( $data['galleries'] ) || count( $data['galleries'] ) === 0 ) {
 			return '';
 		}
 
-		// Iterate through albums, getting the first image of the first gallery
+		// Iterate through albums, getting the first image of the first gallery.
 		$gallery = '<div class="envira-gallery-feed-output">';
 		foreach ( $data['galleries'] as $id => $item ) {
 			$imagesrc = $this->get_image_src( $item['cover_image_id'], $item, $data );

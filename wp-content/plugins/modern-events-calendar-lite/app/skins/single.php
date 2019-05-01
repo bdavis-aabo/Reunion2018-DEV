@@ -234,6 +234,38 @@ class MEC_skin_single extends MEC_skins
      * @param object $event
      * @return void
      */
+    public function show_other_locations($event)
+    {
+        $additional_locations_status = (!isset($this->settings['additional_locations']) or (isset($this->settings['additional_locations']) and $this->settings['additional_locations'])) ? true : false;
+        if(!$additional_locations_status) return;
+
+        $locations = array();
+        foreach($event->data->locations as $o) if($o['id'] != $event->data->meta['mec_location_id']) $locations[] = $o;
+
+        if(!count($locations)) return;
+        ?>
+        <div class="mec-single-event-additional-locations">
+            <?php $i = 2 ?>
+            <?php foreach($locations as $location): if($location['id'] == $event->data->meta['mec_location_id']) continue; ?>
+                <div class="mec-single-event-location">
+                    <?php if($location['thumbnail']): ?>
+                    <img class="mec-img-location" src="<?php echo esc_url($location['thumbnail'] ); ?>" alt="<?php echo (isset($location['name']) ? $location['name'] : ''); ?>">
+                    <?php endif; ?>
+                    <i class="mec-sl-location-pin"></i>
+                    <h3 class="mec-events-single-section-title mec-location"><?php echo $this->main->m('taxonomy_location', __('Location', 'modern-events-calendar-lite')); ?> <?php echo $i; ?></h3>
+                    <dd class="author fn org"><?php echo (isset($location['name']) ? $location['name'] : ''); ?></dd>
+                    <dd class="location"><address class="mec-events-address"><span class="mec-address"><?php echo (isset($location['address']) ? $location['address'] : ''); ?></span></address></dd>
+                </div>
+                <?php $i++ ?>
+            <?php endforeach; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * @param object $event
+     * @return void
+     */
     public function show_hourly_schedules($event)
     {
         if(isset($event->data->hourly_schedules) and is_array($event->data->hourly_schedules) and count($event->data->hourly_schedules)):
@@ -243,7 +275,7 @@ class MEC_skin_single extends MEC_skins
         $speakers = array();
         ?>
         <div class="mec-event-schedule mec-frontbox">
-            <h3 class="mec-schedule-head mec-frontbox-title"><?php _e('Hourly Schedule','modern-events-calendar-lite'); ?></h3>
+            <h3 class="mec-schedule-head mec-frontbox-title"><?php _e('Hourly Schedule', 'modern-events-calendar-lite'); ?></h3>
             <?php foreach($event->data->hourly_schedules as $day): ?>
                 <?php if(count($event->data->hourly_schedules) > 1 and isset($day['title'])): ?>
                     <h4 class="mec-schedule-part"><?php echo $day['title']; ?></h4>

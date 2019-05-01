@@ -7,8 +7,17 @@
  * @package Envira_Albums
  * @author  Envira Team
  */
+
 namespace Envira\Albums\Admin;
 
+/**
+ * WP List Table Admin Class.
+ *
+ * @since 1.3.0
+ *
+ * @package Envira_Albums
+ * @author  Envira Team
+ */
 class Table {
 
 	/**
@@ -40,7 +49,7 @@ class Table {
 		add_filter( 'manage_edit-envira_album_columns', array( $this, 'columns' ) );
 		add_action( 'manage_envira_album_posts_custom_column', array( $this, 'custom_columns' ), 10, 2 );
 
-		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 51 ); // upped to 51 because of Event Calendar plugin.
 
 		// Expand search with IDs in addition to WordPress default of post/album titles.
 		add_action( 'posts_where', array( $this, 'enable_search_by_album_id' ), 10 );
@@ -48,10 +57,11 @@ class Table {
 	}
 
 	/**
-	 * Enables search by ID for galleries in table overview screen
+	 * Enables Search By Album ID
 	 *
 	 * @since 1.6.4.1
 	 *
+	 * @param  string $where Search.
 	 * @return null Return early if not on the proper value.
 	 */
 	public function enable_search_by_album_id( $where ) {
@@ -62,7 +72,7 @@ class Table {
 		}
 
 		// Bail if this is not the envira page.
-		if ( empty( $_GET['post_type'] ) || $_GET['post_type'] !== 'envira_album' ) {
+		if ( empty( $_GET['post_type'] ) || 'envira_album' !== $_GET['post_type'] ) {
 			return $where;
 		}
 
@@ -75,7 +85,7 @@ class Table {
 
 			$where = str_replace( '(' . $wpdb->posts . '.post_title LIKE', '(' . $wpdb->posts . '.ID = ' . $search_string . ') OR (' . $wpdb->posts . '.post_title LIKE', $where );
 
-		} elseif ( preg_match( '/^(\d+)(,\s*\d+)*$/', $search_string ) ) { // string of post IDs
+		} elseif ( preg_match( '/^(\d+)(,\s*\d+)*$/', $search_string ) ) { // string of post IDs.
 
 			$where = str_replace( '(' . $wpdb->posts . '.post_title LIKE', '(' . $wpdb->posts . '.ID in (' . $search_string . ')) OR (' . $wpdb->posts . '.post_title LIKE', $where );
 		}
@@ -84,6 +94,13 @@ class Table {
 
 	}
 
+	/**
+	 * Get Posts
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param  array $query Query.
+	 */
 	public function pre_get_posts( $query ) {
 
 		if ( is_admin() && 'edit.php' === $GLOBALS['pagenow']
@@ -104,6 +121,14 @@ class Table {
 
 	}
 
+	/**
+	 * Customize the Stickies
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param  array $data Data.
+	 * @return array $data Data.
+	 */
 	public function custom_stickies( $data ) {
 
 		if ( count( $this->stickies ) > 0 ) {
@@ -115,6 +140,16 @@ class Table {
 		return $data;
 	}
 
+	/**
+	 * Customize the CSS
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array   $classes Array of classes.
+	 * @param string  $class   Class Name.
+	 * @param integer $id      Class ID.
+	 * @return array $classes CSS.
+	 */
 	public function post_class( $classes, $class, $id ) {
 
 		if ( in_array( $id, $this->stickies, true ) ) {
@@ -162,8 +197,8 @@ class Table {
 	 * @since 1.3.0
 	 *
 	 * @global object $post  The current post object
-	 * @param string $column The name of the custom column
-	 * @param int    $post_id   The current post ID
+	 * @param string $column The name of the custom column.
+	 * @param int    $post_id   The current post ID.
 	 */
 	public function custom_columns( $column, $post_id ) {
 
@@ -176,9 +211,9 @@ class Table {
 			case 'shortcode':
 				echo '
 				<div class="envira-code">
-					<textarea class="code-textfield" id="envira_shortcode_' . $post_id . '">[envira-album id=&quot;' . $post_id . '&quot;]</textarea>
-					<a href="#" title="' . __( 'Copy Shortcode to Clipboard', 'envira-album' ) . '" data-clipboard-target="#envira_shortcode_' . $post_id . '" class="dashicons dashicons-clipboard envira-clipboard">
-						<span>' . __( 'Copy to Clipboard', 'envira-album' ) . '</span>
+					<textarea class="code-textfield" id="envira_shortcode_' . sanitize_html_class( $post_id ) . '">[envira-album id=&quot;' . sanitize_html_class( $post_id ) . '&quot;]</textarea>
+					<a href="#" title="' . esc_html__( 'Copy Shortcode to Clipboard', 'envira-album' ) . '" data-clipboard-target="#envira_shortcode_' . sanitize_html_class( $post_id ) . '" class="dashicons dashicons-clipboard envira-clipboard">
+						<span>' . esc_html__( 'Copy to Clipboard', 'envira-album' ) . '</span>
 					</a>
 				</div>';
 				break;

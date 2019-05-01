@@ -10,8 +10,30 @@
 
 namespace Envira\Admin;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+
+	exit;
+
+}
+
+/**
+ * WP List Table Admin Class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Table {
 
+	/**
+	 * Holds the stickies.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @var string
+	 */
 	public $stickies = array();
 
 	/**
@@ -34,9 +56,9 @@ class Table {
 		add_action( 'bulk_edit_custom_box', array( $this, 'bulk_edit_custom_box' ), 10, 2 ); // Multiple Items.
 		add_action( 'post_updated', array( $this, 'bulk_edit_save' ) );
 
-		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 51 ); // upped to 51 because of Event Calendar plugin
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 51 ); // upped to 51 because of Event Calendar plugin.
 
-		// Expand search with IDs in addition to WordPress default of post/gallery titles
+		// Expand search with IDs in addition to WordPress default of post/gallery titles.
 		add_action( 'posts_where', array( $this, 'enable_search_by_gallery_id' ), 10 );
 
 	}
@@ -45,18 +67,19 @@ class Table {
 	 * Enables search by ID for galleries in table overview screen
 	 *
 	 * @since 1.8.4.1
+	 * @param string $where MYSQL.
 	 *
-	 * @return null Return early if not on the proper value.
+	 * @return string Revised Where.
 	 */
 	public function enable_search_by_gallery_id( $where ) {
 
-		// Bail if we are not in the admin area or not doing a search
+		// Bail if we are not in the admin area or not doing a search.
 		if ( ! is_admin() || ! is_search() ) {
 			return $where;
 		}
 
-		// Bail if this is not the envira page
-		if ( empty( $_GET['post_type'] ) || $_GET['post_type'] !== 'envira' ) {
+		// Bail if this is not the envira page.
+		if ( empty( $_GET['post_type'] ) || 'envira' !== $_GET['post_type'] ) {
 			return $where;
 		}
 
@@ -69,7 +92,7 @@ class Table {
 
 			$where = str_replace( '(' . $wpdb->posts . '.post_title LIKE', '(' . $wpdb->posts . '.ID = ' . $search_string . ') OR (' . $wpdb->posts . '.post_title LIKE', $where );
 
-		} elseif ( preg_match( '/^(\d+)(,\s*\d+)*$/', $search_string ) ) { // string of post IDs
+		} elseif ( preg_match( '/^(\d+)(,\s*\d+)*$/', $search_string ) ) { // string of post IDs.
 
 			$where = str_replace( '(' . $wpdb->posts . '.post_title LIKE', '(' . $wpdb->posts . '.ID in (' . $search_string . ')) OR (' . $wpdb->posts . '.post_title LIKE', $where );
 		}
@@ -78,6 +101,14 @@ class Table {
 
 	}
 
+	/**
+	 * Pre Get Posts.
+	 *
+	 * @since 1.8.4.1
+	 * @param array $query Query.
+	 *
+	 * @return void
+	 */
 	public function pre_get_posts( $query ) {
 
 		if ( is_admin() && 'edit.php' === $GLOBALS['pagenow']
@@ -104,6 +135,14 @@ class Table {
 
 	}
 
+	/**
+	 * Get the stickies.
+	 *
+	 * @since 1.8.4.1
+	 * @param array $data Gallery data.
+	 *
+	 * @return array
+	 */
 	public function custom_stickies( $data ) {
 
 		if ( count( $this->stickies ) > 0 ) {
@@ -115,6 +154,16 @@ class Table {
 		return $data;
 	}
 
+	/**
+	 * Get the class.
+	 *
+	 * @since 1.8.4.1
+	 * @param array  $classes Array of CSS.
+	 * @param string $class CSS Class.
+	 * @param int    $id Id.
+	 *
+	 * @return array
+	 */
 	public function post_class( $classes, $class, $id ) {
 
 		if ( in_array( $id, $this->stickies, true ) ) {
@@ -180,12 +229,12 @@ class Table {
 			return;
 		}
 
-		// Load necessary admin scripts
+		// Load necessary admin scripts.
 		wp_register_script( ENVIRA_SLUG . '-clipboard-script', plugins_url( 'assets/js/min/clipboard-min.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION );
 		wp_enqueue_script( ENVIRA_SLUG . '-clipboard-script' );
 
 		// Gallery / Album Selection
-		// Just register and localize the script; if a third party Addon wants to use this, they can use both functions:
+		// Just register and localize the script; if a third party Addon wants to use this, they can use both functions.
 		wp_register_script( ENVIRA_SLUG . '-gallery-select-script', plugins_url( 'assets/js/gallery-select.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION, true );
 		wp_localize_script(
 			ENVIRA_SLUG . '-gallery-select-script',
@@ -226,7 +275,7 @@ class Table {
 			'date'      => __( 'Date', 'envira-gallery' ),
 		);
 
-		// Allow filtering of columns
+		// Allow filtering of columns.
 		$envira_columns = apply_filters( 'envira_gallery_table_columns', $envira_columns, $columns );
 
 		// Return merged column set.  This allows plugins to output their columns (e.g. Yoast SEO),
@@ -241,8 +290,8 @@ class Table {
 	 * @since 1.7.0
 	 *
 	 * @global object $post  The current post object
-	 * @param string $column The name of the custom column
-	 * @param int    $post_id   The current post ID
+	 * @param string $column The name of the custom column.
+	 * @param int    $post_id   The current post ID.
 	 */
 	public function envira_custom_columns( $column, $post_id ) {
 
@@ -260,7 +309,7 @@ class Table {
 				// Get Gallery Images.
 				$gallery_data = get_post_meta( $post_id, '_eg_gallery_data', true );
 				if ( ! empty( $gallery_data['gallery'] ) && is_array( $gallery_data['gallery'] ) ) {
-					// Display the first image
+					// Display the first image.
 					$images = $gallery_data['gallery'];
 					reset( $images );
 					$key = key( $images );
@@ -270,7 +319,7 @@ class Table {
 						$thumb = array( $image['src'] );
 					}
 
-					echo '<img src="' . $thumb[0] . '" width="75" /><br />';
+					echo '<img src="' . esc_url( $thumb[0] ) . '" width="75" /><br />';
 					printf( _n( '%d Image', '%d Images', count( $gallery_data['gallery'] ), 'envira-gallery' ), count( $gallery_data['gallery'] ) );
 				}
 				break;
@@ -282,9 +331,9 @@ class Table {
 				echo '
 				<div class="envira-code">
 
-					<textarea class="code-textfield" id="envira_shortcode_' . $post_id . '">[envira-gallery id=&quot;' . $post_id . '&quot;]</textarea>
+					<textarea class="code-textfield" id="envira_shortcode_' . esc_html( $post_id ) . '">[envira-gallery id=&quot;' . esc_html( $post_id ) . '&quot;]</textarea>
 
-					<a href="#" title="' . __( 'Copy Shortcode to Clipboard', 'envira-gallery' ) . '" data-clipboard-target="#envira_shortcode_' . $post_id . '" class="dashicons dashicons-clipboard envira-clipboard">
+					<a href="#" title="' . __( 'Copy Shortcode to Clipboard', 'envira-gallery' ) . '" data-clipboard-target="#envira_shortcode_' . esc_html( $post_id ) . '" class="dashicons dashicons-clipboard envira-clipboard">
 						<span>' . __( 'Copy to Clipboard', 'envira-gallery' ) . '</span>
 					</a>
 				</div>';
@@ -293,28 +342,30 @@ class Table {
 				if ( isset( $gallery['config']['columns']['columns'] ) ) {
 
 					// Hidden fields are for Quick Edit
-					// class is used by assets/js/admin.js to remove these fields when a search is about to be submitted, so we dont' get long URLs
-					echo '<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[columns]" value="' . envira_get_config( 'columns', $gallery['config']['columns'] ) . '" />
-				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[gallery_theme]" value="' . envira_get_config( 'gallery_theme', $gallery['config']['type'] ) . '" />
-				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[gutter]" value="' . envira_get_config( 'gutter', $gallery['config']['type'] ) . '" />
-				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[margin]" value="' . envira_get_config( 'margin', $gallery['config']['type'] ) . '" />
-				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[crop_width]" value="' . envira_get_config( 'crop_width', $gallery['config']['type'] ) . '" />
-				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[crop_height]" value="' . envira_get_config( 'crop_height', $gallery['config']['type'] ) . '" />';
+					// class is used by assets/js/admin.js to remove these fields when a search is about to be submitted, so we dont' get long URLs.
+					echo '<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[columns]" value="' . esc_html( envira_get_config( 'columns', $gallery['config']['columns'] ) ) . '" />
+				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[gallery_theme]" value="' . esc_html( envira_get_config( 'gallery_theme', $gallery['config']['type'] ) ) . '" />
+				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[gutter]" value="' . esc_html( envira_get_config( 'gutter', $gallery['config']['type'] ) ) . '" />
+				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[margin]" value="' . esc_html( envira_get_config( 'margin', $gallery['config']['type'] ) ) . '" />
+				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[crop_width]" value="' . esc_html( envira_get_config( 'crop_width', $gallery['config']['type'] ) ) . '" />
+				<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[crop_height]" value="' . esc_html( envira_get_config( 'crop_height', $gallery['config']['type'] ) ) . '" />';
 					break;
 
 				} else {
 
 					// Hidden fields are for Quick Edit
-					// class is used by assets/js/admin.js to remove these fields when a search is about to be submitted, so we dont' get long URLs
-					echo '<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[columns]" value="' . envira_get_config( 'columns', $gallery ) . '" />
-					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[gallery_theme]" value="' . envira_get_config( 'gallery_theme', $gallery ) . '" />
-					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[gutter]" value="' . envira_get_config( 'gutter', $gallery ) . '" />
-					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[margin]" value="' . envira_get_config( 'margin', $gallery ) . '" />
-					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[crop_width]" value="' . envira_get_config( 'crop_width', $gallery ) . '" />
-					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[crop_height]" value="' . envira_get_config( 'crop_height', $gallery ) . '" />';
+					// class is used by assets/js/admin.js to remove these fields when a search is about to be submitted, so we dont' get long URLs.
+					echo '<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[columns]" value="' . esc_html( envira_get_config( 'columns', $gallery ) ) . '" />
+					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[gallery_theme]" value="' . esc_html( envira_get_config( 'gallery_theme', $gallery ) ) . '" />
+					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[gutter]" value="' . esc_html( envira_get_config( 'gutter', $gallery ) ) . '" />
+					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[margin]" value="' . esc_html( envira_get_config( 'margin', $gallery ) ) . '" />
+					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[crop_width]" value="' . esc_html( envira_get_config( 'crop_width', $gallery ) ) . '" />
+					<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . esc_html( $post_id ) . '[crop_height]" value="' . esc_html( envira_get_config( 'crop_height', $gallery ) ) . '" />';
 					break;
 
 				}
+
+				break;
 
 				/**
 				* Posts
@@ -323,7 +374,7 @@ class Table {
 				$posts = get_post_meta( $post_id, '_eg_in_posts', true );
 				if ( is_array( $posts ) ) {
 					foreach ( $posts as $in_post_id ) {
-						echo '<a href="' . get_permalink( $in_post_id ) . '" target="_blank">' . get_the_title( $in_post_id ) . '</a><br />';
+						echo '<a href="' . esc_url( get_permalink( $in_post_id ) ) . '" target="_blank">' . get_the_title( $in_post_id ) . '</a><br />';
 					}
 				}
 				break;
@@ -343,13 +394,13 @@ class Table {
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param string $column_name Column Name
-	 * @param string $post_type Post Type
+	 * @param string $column_name Column Name.
+	 * @param string $post_type Post Type.
 	 * @return HTML
 	 */
 	public function quick_edit_custom_box( $column_name, $post_type ) {
 
-		// Check post type is Envira
+		// Check post type is Envira.
 		if ( 'envira' !== $post_type ) {
 			return;
 		}
@@ -359,38 +410,38 @@ class Table {
 			case 'shortcode':
 				?>
 				<fieldset class="inline-edit-col-left inline-edit-envira-gallery">
-					<div class="inline-edit-col inline-edit-<?php echo $column_name; ?>">
+					<div class="inline-edit-col inline-edit-<?php echo esc_attr( $column_name ); ?>">
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Number of Columns', 'envira-gallery' ); ?></span>
+							<span class="title"><?php esc_html_e( 'Number of Columns', 'envira-gallery' ); ?></span>
 							<select name="_envira_gallery[columns]">
 								<?php foreach ( (array) envira_get_columns() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Gallery Theme', 'envira-gallery' ); ?></span>
+							<span class="title"><?php esc_html_e( 'Gallery Theme', 'envira-gallery' ); ?></span>
 							<select name="_envira_gallery[gallery_theme]">
 								<?php foreach ( (array) envira_get_gallery_themes() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Column Gutter Width', 'envira-gallery' ); ?></span>
+							<span class="title"><?php esc_html_e( 'Column Gutter Width', 'envira-gallery' ); ?></span>
 							<input type="number" name="_envira_gallery[gutter]" value="" />
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Margin Below Each Image', 'envira-gallery' ); ?></span>
+							<span class="title"><?php esc_html_e( 'Margin Below Each Image', 'envira-gallery' ); ?></span>
 							<input type="number" name="_envira_gallery[margin]" value="" />
 							px
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Image Dimensions', 'envira-gallery' ); ?></span>
+							<span class="title"><?php esc_html_e( 'Image Dimensions', 'envira-gallery' ); ?></span>
 							<input type="number" name="_envira_gallery[crop_width]" value="" />
 							x
 							<input type="number" name="_envira_gallery[crop_height]" value="" />
@@ -411,18 +462,18 @@ class Table {
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param string $column_name Column Name
-	 * @param string $post_type Post Type
+	 * @param string $column_name Column Name.
+	 * @param string $post_type Post Type.
 	 * @return HTML
 	 */
 	public function bulk_edit_custom_box( $column_name, $post_type ) {
 
-		// Check post type is Envira
+		// Check post type is Envira.
 		if ( 'envira' !== $post_type ) {
 			return;
 		}
 
-		// Only apply to shortcode column
+		// Only apply to shortcode column.
 		if ( 'shortcode' !== $column_name ) {
 			return;
 		}
@@ -431,44 +482,44 @@ class Table {
 			case 'shortcode':
 				?>
 				<fieldset class="inline-edit-col-left inline-edit-envira-gallery">
-					<div class="inline-edit-col inline-edit-<?php echo $column_name; ?>">
+					<div class="inline-edit-col inline-edit-<?php echo esc_html( $column_name ); ?>">
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Number of Columns', 'envira-gallery' ); ?></span>
+							<span class="title"><?php esc_html_e( 'Number of Columns', 'envira-gallery' ); ?></span>
 							<select name="_envira_gallery[columns]">
-								<option value="-1" selected><?php _e( '— No Change —', 'envira-gallery' ); ?></option>
+								<option value="-1" selected><?php esc_html_e( '— No Change —', 'envira-gallery' ); ?></option>
 
 								<?php foreach ( (array) envira_get_columns() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Gallery Theme', 'envira-gallery' ); ?></span>
+							<span class="title"><?php esc_html_e( 'Gallery Theme', 'envira-gallery' ); ?></span>
 							<select name="_envira_gallery[gallery_theme]">
-								<option value="-1" selected><?php _e( '— No Change —', 'envira-gallery' ); ?></option>
+								<option value="-1" selected><?php esc_html_e( '— No Change —', 'envira-gallery' ); ?></option>
 
 								<?php foreach ( (array) envira_get_gallery_themes() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Column Gutter Width', 'envira-gallery' ); ?></span>
-							<input type="number" name="_envira_gallery[gutter]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
+							<span class="title"><?php esc_html_e( 'Column Gutter Width', 'envira-gallery' ); ?></span>
+							<input type="number" name="_envira_gallery[gutter]" value="" placeholder="<?php esc_html_e( '— No Change —', 'envira-gallery' ); ?>" />
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Margin Below Each Image', 'envira-gallery' ); ?></span>
-							<input type="number" name="_envira_gallery[margin]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
+							<span class="title"><?php esc_html_e( 'Margin Below Each Image', 'envira-gallery' ); ?></span>
+							<input type="number" name="_envira_gallery[margin]" value="" placeholder="<?php esc_html_e( '— No Change —', 'envira-gallery' ); ?>" />
 						</label>
 
 						<label class="inline-edit-group">
-							<span class="title"><?php _e( 'Image Dimensions', 'envira-gallery' ); ?></span>
-							<input type="number" name="_envira_gallery[crop_width]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
+							<span class="title"><?php esc_html_e( 'Image Dimensions', 'envira-gallery' ); ?></span>
+							<input type="number" name="_envira_gallery[crop_width]" value="" placeholder="<?php esc_html_e( '— No Change —', 'envira-gallery' ); ?>" />
 							x
-							<input type="number" name="_envira_gallery[crop_height]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
+							<input type="number" name="_envira_gallery[crop_height]" value="" placeholder="<?php esc_html_e( '— No Change —', 'envira-gallery' ); ?>" />
 							px
 						</label>
 					</div>
@@ -490,11 +541,11 @@ class Table {
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param int $post_ID Post ID
+	 * @param int $post_ID Post ID.
 	 */
 	public function bulk_edit_save( $post_ID ) {
 
-		 // Check we are performing a Bulk Edit
+		 // Check we are performing a Bulk Edit.
 		if ( ! isset( $_REQUEST['bulk_edit'] ) ) {
 			 return;
 		}
@@ -504,16 +555,16 @@ class Table {
 			return;
 		}
 
-		// Check Post IDs have been submitted
+		// Check Post IDs have been submitted.
 		$post_ids = ( ! empty( $_REQUEST['post'] ) ) ? $_REQUEST['post'] : array();
 		if ( empty( $post_ids ) || ! is_array( $post_ids ) ) {
 			return;
 		}
 
-		// Iterate through post IDs, updating settings
+		// Iterate through post IDs, updating settings.
 		foreach ( $post_ids as $post_id ) {
 
-			// Get settings
+			// Get settings.
 			 $settings = get_post_meta( $post_id, '_eg_gallery_data', true );
 
 			if ( empty( $settings ) ) {
@@ -522,9 +573,9 @@ class Table {
 
 			}
 
-			 // Update Settings, if they have values
-			if ( ! empty( $_REQUEST['_envira_gallery']['columns'] ) && $_REQUEST['_envira_gallery']['columns'] != -1 ) {
-				 $settings['config']['columns'] = preg_replace( '#[^a-z0-9-_]#', '', $_REQUEST['_envira_gallery']['columns'] );
+			 // Update Settings, if they have values.
+			if ( ! empty( $_REQUEST['_envira_gallery']['columns'] ) && -1 !== $_REQUEST['_envira_gallery']['columns'] ) {
+				 $settings['config']['columns'] = preg_replace( '#[^a-z0-9-_]#', '', santitize_text_field( wp_unslash( $_REQUEST['_envira_gallery']['columns'] ) ) );
 			}
 			if ( ! empty( $_REQUEST['_envira_gallery']['gallery_theme'] ) && $_REQUEST['_envira_gallery']['gallery_theme'] != -1 ) {
 				$settings['config']['gallery_theme'] = preg_replace( '#[^a-z0-9-_]#', '', $_REQUEST['_envira_gallery']['gallery_theme'] );

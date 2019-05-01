@@ -131,6 +131,13 @@ class Metaboxes {
 	}
 
 
+	/**
+	 * Adds admin warning.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	public function admin_notice_warnings() {
 
 		$notices = new Notices();
@@ -140,10 +147,10 @@ class Metaboxes {
 			$duplicate_post_id = intval( $_GET['envira_album_slug_exists'] );
 			if ( $duplicate_post_id ) {
 				$duplicate_post = get_edit_post_link( $duplicate_post_id );
-				// Add a notice for the user that this changed, but saving anyway
+				// Add a notice for the user that this changed, but saving anyway.
 				$message = sprintf( __( '<strong>Envira Gallery</strong>: There was <a target="_blank" href="' . $duplicate_post . '">already a post on your site</a> with the same slug. Envira generated a unique slug for this album.</a>', 'envira-gallery' ) );
 			} else {
-				// Add a notice for the user that this changed, but saving anyway
+				// Add a notice for the user that this changed, but saving anyway.
 				$message = sprintf( __( '<strong>Envira Gallery</strong>: There was already a post on your site with the same slug. Envira generated a unique slug for this album.</a>', 'envira-gallery' ) );
 			}
 
@@ -337,7 +344,7 @@ class Metaboxes {
 			add_meta_box( 'envira-albums', __( 'Envira Albums', 'envira-albums' ), array( $this, 'meta_box_album_callback' ), 'envira_album', 'normal', 'high' );
 		}
 
-		// Settings Metabox
+		// Settings Metabox.
 		add_meta_box( 'envira-albums-settings', __( 'Envira Album Settings', 'envira-albums' ), array( $this, 'meta_box_callback' ), 'envira_album', 'normal', 'high' );
 
 		// If the default addon is active, check to see if this the default gallery - we don't need this screen on there!
@@ -357,7 +364,7 @@ class Metaboxes {
 		}
 
 		// Display the Gallery Code metabox if we're editing an existing Gallery.
-		if ( $post->post_status != 'auto-draft' ) {
+		if ( 'auto-draft' !== $post->post_status ) {
 			add_meta_box( 'envira-albums-code', __( 'Envira Album Code', 'envira-albums' ), array( $this, 'meta_box_album_code_callback' ), 'envira_album', 'side', 'default' );
 		}
 
@@ -369,7 +376,7 @@ class Metaboxes {
 	 * @since 1.0.0
 	 *
 	 * @global array $wp_meta_boxes Array of registered metaboxes.
-	 * @return smile $for_my_buyers Happy customers with no spammy metaboxes!
+	 * smile $for_my_buyers Happy customers with no spammy metaboxes!
 	 */
 	public function remove_all_the_metaboxes() {
 
@@ -452,7 +459,7 @@ class Metaboxes {
 	 */
 	public function meta_box_album_callback( $post ) {
 
-		// Get all album data
+		// Get all album data.
 		$album_data = get_post_meta( $post->ID, '_eg_album_data', true );
 
 		?>
@@ -460,7 +467,7 @@ class Metaboxes {
 		<div id="envira-types">
 			<!-- Native Envira Album - Drag and Drop Galleries -->
 			<div id="envira-album-native" class="envira-tab envira-clear<?php echo ( ( envira_albums_get_config( 'type', $album_data ) === 'default' ) ? ' envira-active' : '' ); ?>">
-				<input type="hidden" name="galleryIDs" value="<?php echo ( ( isset( $album_data['galleryIDs'] ) ? implode( ',', $album_data['galleryIDs'] ) : '' ) ); ?>" />
+				<input type="hidden" name="galleryIDs" value="<?php echo esc_html( ( ( isset( $album_data['galleryIDs'] ) ? implode( ',', $album_data['galleryIDs'] ) : '' ) ) ); ?>" />
 
 				<!-- Galleries -->
 				<ul id="envira-album-drag-drop-area" class="envira-gallery-images-output">
@@ -602,7 +609,7 @@ class Metaboxes {
 		echo '<div id="envira-albums-main" class="envira-clear">';
 
 		// Allow Addons to display a WordPress-style notification message.
-		echo apply_filters( 'envira_albums_galleries_tab_notice', '', $post );
+		echo esc_html( apply_filters( 'envira_albums_galleries_tab_notice', '', $post ) );
 
 		// Output the tab panel for the Gallery Type.
 		$this->galleries_display( envira_albums_get_config( 'type', $album_data ), $post );
@@ -622,7 +629,7 @@ class Metaboxes {
 	public function galleries_display( $type = 'default', $post ) {
 
 		// Output a unique hidden field for settings save testing for each type of slider.
-		echo '<input type="hidden" name="_eg_album_data[type_' . $type . ']" value="1" />';
+		echo '<input type="hidden" name="_eg_album_data[type_' . esc_attr( $type ) . ']" value="1" />';
 
 		// Output the display based on the type of slider available.
 		switch ( $type ) {
@@ -650,7 +657,7 @@ class Metaboxes {
 		$album_data = get_post_meta( $post->ID, '_eg_album_data', true );
 
 		// Output all other galleries not assigned to this album.
-		// Build arguments
+		// Build arguments.
 		$arguments = array(
 			'post_type'      => 'envira',
 			'post_status'    => 'publish',
@@ -703,20 +710,20 @@ class Metaboxes {
 		?>
 		<ul id="envira-albums-output" class="envira-gallery-images-output">
 			<?php
-			// Output Available Galleries
+			// Output Available Galleries.
 			if ( count( $galleries->posts ) > 0 ) {
 				foreach ( $galleries->posts as $gallery ) {
 
-					// Get Gallery
+					// Get Gallery.
 					$data = envira_get_gallery( $gallery->ID );
 
 					if ( ! $data ) {
 						// there is no data information - possibly a result of an auto-save without the user saving/publishing the post?
-						// generate the $item with just the data from the post itself
+						// generate the $item with just the data from the post itself.
 						$gallery_post = get_post( $gallery->ID );
 
 						if ( trim( $gallery_post->post_title ) == '' ) {
-							// if there is no title, assign "(no title)" as the title
+							// if there is no title, assign "(no title)" as the title.
 							$item_title = __( '(no title)', 'envira-albums' );
 						} else {
 							$item_title = $gallery_post->post_title;
@@ -732,7 +739,7 @@ class Metaboxes {
 
 						// Skip Default and Dynamic Galleries.
 						if ( isset( $data['config']['type'] ) ) {
-							if ( $data['config']['type'] === 'dynamic' || $data['config']['type'] === 'defaults' ) {
+							if ( 'dynamic' === $data['config']['type'] || 'defaults' === $data['config']['type'] ) {
 								continue;
 							}
 						}
@@ -755,7 +762,7 @@ class Metaboxes {
 
 					}
 
-					// Output <li> element
+					// Output <li> element.
 					$this->output_gallery_li( $gallery->ID, $item, $post->ID );
 
 				}
@@ -777,10 +784,9 @@ class Metaboxes {
 	 * Outputs the <li> element for a gallery
 	 *
 	 * @param int   $gallery_id     The ID of the item to retrieve.
-	 * @param array $item           The item data (i.e. album gallery metadata)
-	 * @param int   $post_id        Album ID
-	 * @return string                   The HTML output for the gallery item.
-	 * @return null
+	 * @param array $item           The item data (i.e. album gallery metadata).
+	 * @param int   $album_id       Album ID.
+	 * @return void
 	 */
 	public function output_gallery_li( $gallery_id, $item, $album_id ) {
 
@@ -820,9 +826,9 @@ class Metaboxes {
 		$item['title'] = htmlspecialchars( $item['title'], ENT_NOQUOTES );
 		$gallery_model = json_encode( $item, JSON_HEX_APOS );
 
-		// Output
+		// Output.
 		?>
-		<li id="envira-gallery-<?php echo $gallery_id; ?>" class="envira-gallery-image" data-envira-gallery="<?php echo $gallery_id; ?>" data-envira-album-gallery-model='<?php echo $gallery_model; ?>'>
+		<li id="envira-gallery-<?php echo esc_attr( $gallery_id ); ?>" class="envira-gallery-image" data-envira-gallery="<?php echo esc_html( $gallery_id ); ?>" data-envira-album-gallery-model='<?php echo esc_html( $gallery_model ); ?>'>
 			<?php
 			if ( is_null( $thumbnail[0] ) ) {
 				?>
@@ -835,7 +841,7 @@ class Metaboxes {
 			}
 			?>
 			<div class="meta">
-				<div class="title"><?php echo $item['title']; ?></div>
+				<div class="title"><?php echo esc_html( $item['title'] ); ?></div>
 			</div>
 
 			<a href="#" class="check"><div class="media-modal-icon"></div></a>
@@ -854,7 +860,7 @@ class Metaboxes {
 	 *
 	 * @since 1.2.4.3
 	 *
-	 * @param int $gallery_id     Gallery ID
+	 * @param int $gallery_id     Gallery ID.
 	 * @return array                 Gallery
 	 */
 	public function get_gallery_data( $gallery_id ) {
@@ -865,7 +871,7 @@ class Metaboxes {
 		// Allow Addons to filter the information.
 		$data = apply_filters( 'envira_albums_metaboxes_get_gallery_data', $data, $gallery_id );
 
-		// Return
+		// Return.
 		return $data;
 
 	}
@@ -877,7 +883,7 @@ class Metaboxes {
 	 *
 	 * @since 1.2.4.3
 	 *
-	 * @param array $item           Album Gallery Data
+	 * @param array $item           Album Gallery Data.
 	 * @return int                   Image ID
 	 */
 	public function get_gallery_cover_image_id( $item ) {
@@ -887,13 +893,13 @@ class Metaboxes {
 			return $item['cover_image_id'];
 		}
 
-		// Get Gallery
+		// Get Gallery.
 		$gallery_data = envira_get_gallery( $item['id'] );
 
 		// Get the first available image from the gallery, in case we need to use it.
-		// as the cover image
+		// as the cover image.
 		if ( isset( $gallery_data['gallery'] ) && ! empty( $gallery_data['gallery'] ) ) {
-			// Get the first image
+			// Get the first image.
 			$images = $gallery_data['gallery'];
 			reset( $images );
 			$key = key( $images );
@@ -913,33 +919,33 @@ class Metaboxes {
 	 *
 	 * @since 1.3.0
 	 *
-	 * @param array $item           Album Gallery Data
+	 * @param array $item           Album Gallery Data.
 	 * @return string                Image URL
 	 */
 	public function get_gallery_cover_image_url( $item ) {
 
-		// If the Gallery within the Album already has a cover image URL defined, return that
+		// If the Gallery within the Album already has a cover image URL defined, return that.
 		if ( isset( $item['cover_image_url'] ) && ! empty( $item['cover_image_url'] ) ) {
 			return $item['cover_image_url'];
 		}
 
-		// Get Gallery
+		// Get Gallery.
 		$gallery_data = envira_get_gallery( $item['id'] );
 
 		// Allow External Galleries (Instagram, Featured Content) to inject images into the gallery array.
 		// This ensures that a cover image URL can be found / chosen.
 		$gallery_data['gallery'] = apply_filters( 'envira_albums_metabox_gallery_inject_images', ( isset( $gallery_data['gallery'] ) ? $gallery_data['gallery'] : array() ), $item['id'], $gallery_data );
 
-		// Get the first available image from the gallery, as we need to use that
+		// Get the first available image from the gallery, as we need to use that.
 		if ( isset( $gallery_data['gallery'] ) && ! empty( $gallery_data['gallery'] ) ) {
-			// Get the first image
+			// Get the first image.
 			$images = $gallery_data['gallery'];
 			reset( $images );
 			$key   = key( $images );
 			$image = $images[ $key ];
 		}
 
-		// Return the first image's URL
+		// Return the first image's URL.
 		if ( isset( $image ) ) {
 			return $image['src'];
 		}
@@ -991,7 +997,7 @@ class Metaboxes {
 
 			// determine if this is a dynamic gallery - if so, add the type variable so that
 			// it says probably along with the rest of the settings
-			// get option
+			// get option.
 			$dynamic_id = get_option( 'envira_dynamic_album' );
 
 			if ( $dynamic_id && $dynamic_id == $post->ID ) :
@@ -1010,7 +1016,7 @@ class Metaboxes {
 						<td>
 							<select id="envira-config-columns" name="_eg_album_data[config][columns]">
 								<?php foreach ( (array) envira_get_columns() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'columns', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'columns', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 							<p class="description"><?php esc_html_e( 'Determines the number of columns in the gallery. Automatic will attempt to fill each row as much as possible before moving on to the next row.', 'envira-albums' ); ?></p>
@@ -1018,7 +1024,7 @@ class Metaboxes {
 					</tr>
 				</tbody>
 			</table>
-			<?php // New Automatic Layout / Justified Layout Options ?>
+			<?php // New Automatic Layout / Justified Layout Options. ?>
 			<div id="envira-config-album-justified-settings-box">
 				<table class="form-table" style="margin-bottom: 0;">
 					<tbody>
@@ -1027,7 +1033,7 @@ class Metaboxes {
 								<label for="envira-config-justified-row-height"><?php esc_html_e( 'Automatic Layout: Row Height', 'envira-gallery' ); ?></label>
 							</th>
 							<td>
-								<input id="envira-config-justified-row-height" type="number" name="_eg_album_data[config][justified_row_height]" value="<?php echo envira_albums_get_config( 'justified_row_height', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
+								<input id="envira-config-justified-row-height" type="number" name="_eg_album_data[config][justified_row_height]" value="<?php echo esc_html( envira_albums_get_config( 'justified_row_height', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
 								<p class="description"><?php esc_html_e( 'Determines how high (in pixels) each row will be. 150px is default. ', 'envira-gallery' ); ?></p>
 							</td>
 						</tr>
@@ -1036,7 +1042,7 @@ class Metaboxes {
 								<label for="envira-config-justified-margins"><?php esc_html_e( 'Automatic Layout: Margins', 'envira-gallery' ); ?></label>
 							</th>
 							<td>
-								<input id="envira-config-justified-margins" type="number" name="_eg_album_data[config][justified_margins]" value="<?php echo envira_albums_get_config( 'justified_margins', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
+								<input id="envira-config-justified-margins" type="number" name="_eg_album_data[config][justified_margins]" value="<?php echo esc_html( envira_albums_get_config( 'justified_margins', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
 								<p class="description"><?php esc_html_e( 'Sets the space between the images (defaults to 1)', 'envira-gallery' ); ?></p>
 							</td>
 						</tr>
@@ -1047,7 +1053,7 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-gallery-last-row" name="_eg_album_data[config][justified_last_row]">
 									<?php foreach ( (array) envira_get_justified_last_row() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'justified_last_row', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'justified_last_row', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
 								<p class="description"><?php esc_html_e( 'Sets how the last row is displayed.', 'envira-gallery' ); ?></p>
@@ -1083,7 +1089,7 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-album-back-location" name="_eg_album_data[config][back_location]">
 									<?php foreach ( (array) envira_back_to_album_locations() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'back_location', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'back_location', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
 								<p class="description"><?php esc_html_e( 'Sets where the link is displayed.', 'envira-albums' ); ?></p>
@@ -1096,13 +1102,13 @@ class Metaboxes {
 							<label for="envira-config-back-label"><?php esc_html_e( 'Back to Album Label', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-back-label" type="text" name="_eg_album_data[config][back_label]" value="<?php echo envira_albums_get_config( 'back_label', $album_data ); ?>" />
+							<input id="envira-config-back-label" type="text" name="_eg_album_data[config][back_label]" value="<?php echo esc_html( envira_albums_get_config( 'back_label', $album_data ) ); ?>" />
 						</td>
 					</tr>
 
 					<?php
 
-					if ( ! isset( $post ) || $post->post_status === 'auto-draft' ) {
+					if ( ! isset( $post ) || 'auto-draft' === $post->post_status ) {
 						// make the lazy loading checkbox "checked", otherwise if this is a previous post don't force it.
 						?>
 					<tr id="envira-config-lazy-loading-box">
@@ -1110,7 +1116,7 @@ class Metaboxes {
 							<label for="envira-config-lazy-loading"><?php esc_html_e( 'Enable Lazy Loading?', 'envira-gallery' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-lazy-loading" type="checkbox" name="_eg_album_data[config][lazy_loading]" value="<?php echo envira_albums_get_config( 'lazy_loading', $album_data ); ?>" <?php checked( envira_albums_get_config( 'lazy_loading', $album_data ), 1 ); ?> />
+							<input id="envira-config-lazy-loading" type="checkbox" name="_eg_album_data[config][lazy_loading]" value="<?php echo esc_html( envira_albums_get_config( 'lazy_loading', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'lazy_loading', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables lazy loading, which helps with performance by loading thumbnails only when they are visible. See our documentation for more information.', 'envira-gallery' ); ?></span>
 						</td>
 					</tr>
@@ -1122,7 +1128,7 @@ class Metaboxes {
 							<label for="envira-config-lazy-loading"><?php esc_html_e( 'Enable Lazy Loading?', 'envira-gallery' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-lazy-loading" type="checkbox" name="_eg_album_data[config][lazy_loading]" value="<?php echo envira_albums_get_config( 'lazy_loading', $album_data ); ?>" <?php checked( envira_albums_get_config( 'lazy_loading', $album_data ), 1 ); ?> />
+							<input id="envira-config-lazy-loading" type="checkbox" name="_eg_album_data[config][lazy_loading]" value="<?php echo esc_html( envira_albums_get_config( 'lazy_loading', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'lazy_loading', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables lazy loading, which helps with performance by loading thumbnails only when they are visible. See our documentation for more information.', 'envira-gallery' ); ?></span>
 						</td>
 					</tr>
@@ -1136,7 +1142,7 @@ class Metaboxes {
 							<label for="envira-config-lazy-loading-delay"><?php esc_html_e( 'Lazy Loading Delay', 'envira-gallery' ); ?></label>
 						</th>
 							<td>
-								<input id="envira-config-lazy-loading-delay" type="number" name="_eg_album_data[config][lazy_loading_delay]" value="<?php echo envira_albums_get_config( 'lazy_loading_delay', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'milliseconds', 'envira-gallery' ); ?></span>
+								<input id="envira-config-lazy-loading-delay" type="number" name="_eg_album_data[config][lazy_loading_delay]" value="<?php echo esc_html( envira_albums_get_config( 'lazy_loading_delay', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'milliseconds', 'envira-gallery' ); ?></span>
 								<p class="description"><?php esc_html_e( 'Set a delay when new images are loaded', 'envira-gallery' ); ?></p>
 							</td>
 					</tr>
@@ -1148,7 +1154,7 @@ class Metaboxes {
 						<td>
 							<select id="envira-config-album-alignment" name="_eg_album_data[config][album_alignment]">
 								<?php foreach ( (array) $this->get_album_alignment_options() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'album_alignment', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'album_alignment', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 							<p class="description"><?php esc_html_e( 'Choose an alignment for this album. This will add a CSS class to the \'envira-album-wrap\' div.', 'envira-albums' ); ?></p>
@@ -1161,7 +1167,7 @@ class Metaboxes {
 							<label for="envira-config-album-width"><?php esc_html_e( 'Album Width', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-album-width" type="number" name="_eg_album_data[config][album_width]" value="<?php echo envira_albums_get_config( 'album_width', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( '%', 'envira-albums' ); ?></span>
+							<input id="envira-config-album-width" type="number" name="_eg_album_data[config][album_width]" value="<?php echo esc_html( envira_albums_get_config( 'album_width', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( '%', 'envira-albums' ); ?></span>
 							<p class="description"><?php esc_html_e( 'Overrides the default album width of 100%, especially useful if you are defining a left or right alignment for the album.', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1173,7 +1179,7 @@ class Metaboxes {
 						<td>
 							<select id="envira-config-album-theme" name="_eg_album_data[config][gallery_theme]">
 								<?php foreach ( (array) envira_get_gallery_themes() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'gallery_theme', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'gallery_theme', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 							<p class="description"><?php esc_html_e( 'Sets the theme for the gallery display.', 'envira-albums' ); ?></p>
@@ -1188,7 +1194,7 @@ class Metaboxes {
 						<td>
 							<select id="envira-config-display-description" name="_eg_album_data[config][description_position]">
 								<?php foreach ( (array) envira_get_display_description_options() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'description_position', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'description_position', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 							<p class="description"><?php esc_html_e( 'Choose to display a description above or below this album\'s galleries.', 'envira-albums' ); ?></p>
@@ -1238,7 +1244,7 @@ class Metaboxes {
 
 								foreach ( (array) envira_get_title_placement_options() as $i => $data ) {
 									?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $display_title_config ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], $display_title_config ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php
 								}
 								?>
@@ -1279,7 +1285,7 @@ class Metaboxes {
 						<td>
 							<select id="envira-config-gallery-description" name="_eg_album_data[config][gallery_description_display]">
 								<?php foreach ( (array) envira_get_gallery_description_options() as $i => $data ) : ?>
-									<option value="<?php echo $i; ?>"<?php selected( $i, envira_albums_get_config( 'gallery_description_display', $album_data ) ); ?>><?php echo $data; ?></option>
+									<option value="<?php echo esc_html( $i ); ?>"<?php selected( $i, envira_albums_get_config( 'gallery_description_display', $album_data ) ); ?>><?php echo esc_html( $data ); ?></option>
 								<?php endforeach; ?>
 							</select>
 							<p class="description"><?php esc_html_e( 'Allows you to display gallery description. For automatic layouts, the description overrides the image caption.', 'envira-albums' ); ?></p>
@@ -1303,7 +1309,7 @@ class Metaboxes {
 							<label for="envira-config-gutter"><?php esc_html_e( 'Column Gutter Width', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-gutter" type="number" name="_eg_album_data[config][gutter]" value="<?php echo envira_albums_get_config( 'gutter', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
+							<input id="envira-config-gutter" type="number" name="_eg_album_data[config][gutter]" value="<?php echo esc_html( envira_albums_get_config( 'gutter', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
 							<p class="description"><?php esc_html_e( 'Sets the space between the columns (defaults to 10).', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1312,7 +1318,7 @@ class Metaboxes {
 							<label for="envira-config-margin"><?php esc_html_e( 'Margin Below Each Image', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-margin" type="number" name="_eg_album_data[config][margin]" value="<?php echo envira_albums_get_config( 'margin', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
+							<input id="envira-config-margin" type="number" name="_eg_album_data[config][margin]" value="<?php echo esc_html( envira_albums_get_config( 'margin', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
 							<p class="description"><?php esc_html_e( 'Sets the space below each item in the album.', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1327,7 +1333,7 @@ class Metaboxes {
 								<?php
 								foreach ( (array) envira_get_sorting_options( true ) as $i => $data ) {
 									?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'sorting', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'sorting', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php
 								}
 								?>
@@ -1344,7 +1350,7 @@ class Metaboxes {
 								<?php
 								foreach ( (array) envira_get_sorting_directions() as $i => $data ) {
 									?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'sorting_direction', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'sorting_direction', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php
 								}
 								?>
@@ -1358,7 +1364,7 @@ class Metaboxes {
 							<label for="envira-config-crop-width"><?php esc_html_e( 'Image Dimensions', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-crop-width" type="number" name="_eg_album_data[config][crop_width]" value="<?php echo envira_albums_get_config( 'crop_width', $album_data ); ?>" /> &#215; <input id="envira-config-crop-height" type="number" name="_eg_album_data[config][crop_height]" value="<?php echo envira_albums_get_config( 'crop_height', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
+							<input id="envira-config-crop-width" type="number" name="_eg_album_data[config][crop_width]" value="<?php echo esc_html( envira_albums_get_config( 'crop_width', $album_data ) ); ?>" /> &#215; <input id="envira-config-crop-height" type="number" name="_eg_album_data[config][crop_height]" value="<?php echo esc_html( envira_albums_get_config( 'crop_height', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
 							<p class="description"><?php esc_html_e( 'You should adjust these dimensions based on the number of columns in your album.', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1367,7 +1373,7 @@ class Metaboxes {
 							<label for="envira-config-crop"><?php esc_html_e( 'Crop Images?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-crop" type="checkbox" name="_eg_album_data[config][crop]" value="<?php echo envira_albums_get_config( 'crop', $album_data ); ?>" <?php checked( envira_albums_get_config( 'crop', $album_data ), 1 ); ?> />
+							<input id="envira-config-crop" type="checkbox" name="_eg_album_data[config][crop]" value="<?php echo esc_html( envira_albums_get_config( 'crop', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'crop', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'If enabled, forces images to exactly match the sizes defined above for Image Dimensions.', 'envira-albums' ); ?></span>
 							<span class="description"><?php esc_html_e( 'If disabled, images will be resized to maintain their aspect ratio.', 'envira-albums' ); ?></span>
 
@@ -1378,7 +1384,7 @@ class Metaboxes {
 							<label for="envira-config-isotope"><?php esc_html_e( 'Enable Isotope?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-isotope" type="checkbox" name="_eg_album_data[config][isotope]" value="<?php echo envira_albums_get_config( 'isotope', $album_data ); ?>" <?php checked( envira_albums_get_config( 'isotope', $album_data ), 1 ); ?> />
+							<input id="envira-config-isotope" type="checkbox" name="_eg_album_data[config][isotope]" value="<?php echo esc_html( envira_albums_get_config( 'isotope', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'isotope', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables isotope/masonry layout support for the main gallery images.', 'envira-albums' ); ?></span>
 						</td>
 					</tr>
@@ -1458,10 +1464,22 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-lightbox-theme" name="_eg_album_data[config][lightbox_theme]">
 									<?php foreach ( (array) envira_get_lightbox_themes() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'lightbox_theme', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'lightbox_theme', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
 								<p class="description"><?php esc_html_e( 'Sets the theme for the album lightbox display.', 'envira-albums' ); ?></p>
+							</td>
+						</tr>
+						<tr id="envira-config-lightbox-additional-title-caption">
+							<th scope="row">
+								<label for="envira-config-title-caption"><?php esc_html_e( 'Show Title Or Caption?', 'envira-gallery' ); ?></label>
+							</th>
+							<td>
+								<select id="envira-config-lightbox-title-caption" name="_eg_album_data[config][lightbox_title_caption]">
+									<?php foreach ( (array) envira_get_additional_copy_options() as $option_value => $option_name ) : ?>
+										<option value="<?php echo $option_value; ?>" <?php selected( $option_value, envira_albums_get_config( 'lightbox_title_caption', $album_data ) ); ?>><?php echo $option_name; ?></option>
+									<?php endforeach; ?>
+								</select><br>
 							</td>
 						</tr>
 						<tr id="envira-config-lightbox-title-display-box">
@@ -1471,7 +1489,7 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-lightbox-title-display" name="_eg_album_data[config][title_display]">
 									<?php foreach ( (array) envira_get_title_displays() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'title_display', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'title_display', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
 								<p class="description"><?php esc_html_e( 'Sets the display of the lightbox image\'s caption.', 'envira-albums' ); ?></p>
@@ -1493,7 +1511,7 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-lightbox-arrows-position" name="_eg_album_data[config][arrows_position]">
 									<?php foreach ( (array) envira_get_arrows_positions() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'arrows_position', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'arrows_position', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
 								<p class="description"><?php esc_html_e( 'Sets the position of the gallery lightbox navigation arrows.', 'envira-albums' ); ?></p>
@@ -1513,7 +1531,7 @@ class Metaboxes {
 								<label for="envira-config-lightbox-toolbar-title"><?php esc_html_e( 'Display Title in Gallery Toolbar?', 'envira-albums' ); ?></label>
 							</th>
 							<td>
-								<input id="envira-config-lightbox-toolbar-title" type="checkbox" name="_eg_album_data[config][toolbar_title]" value="<?php echo envira_albums_get_config( 'toolbar_title', $album_data ); ?>" <?php checked( envira_albums_get_config( 'toolbar_title', $album_data ), 1 ); ?> />
+								<input id="envira-config-lightbox-toolbar-title" type="checkbox" name="_eg_album_data[config][toolbar_title]" value="<?php echo esc_html( envira_albums_get_config( 'toolbar_title', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'toolbar_title', $album_data ), 1 ); ?> />
 								<span class="description"><?php esc_html_e( 'Display the gallery title in the lightbox toolbar.', 'envira-albums' ); ?></span>
 							</td>
 						</tr>
@@ -1524,7 +1542,7 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-lightbox-toolbar-position" name="_eg_album_data[config][toolbar_position]">
 									<?php foreach ( (array) envira_get_toolbar_positions() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'toolbar_position', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'toolbar_position', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
 								<p class="description"><?php esc_html_e( 'Sets the position of the lightbox toolbar.', 'envira-albums' ); ?></p>
@@ -1535,7 +1553,7 @@ class Metaboxes {
 								<label for="envira-config-lightbox-aspect"><?php esc_html_e( 'Keep Aspect Ratio?', 'envira-albums' ); ?></label>
 							</th>
 							<td>
-								<input id="envira-config-lightbox-toolbar" type="checkbox" name="_eg_album_data[config][aspect]" value="<?php echo envira_albums_get_config( 'aspect', $album_data ); ?>" <?php checked( envira_albums_get_config( 'aspect', $album_data ), 1 ); ?> />
+								<input id="envira-config-lightbox-toolbar" type="checkbox" name="_eg_album_data[config][aspect]" value="<?php echo esc_html( envira_albums_get_config( 'aspect', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'aspect', $album_data ), 1 ); ?> />
 								<span class="description"><?php esc_html_e( 'If enabled, images will always resize based on the original aspect ratio.', 'envira-albums' ); ?></span>
 							</td>
 						</tr>
@@ -1544,7 +1562,7 @@ class Metaboxes {
 								<label for="envira-config-lightbox-loop"><?php esc_html_e( 'Loop Gallery Navigation?', 'envira-albums' ); ?></label>
 							</th>
 							<td>
-								<input id="envira-config-lightbox-loop" type="checkbox" name="_eg_album_data[config][loop]" value="<?php echo envira_albums_get_config( 'loop', $album_data ); ?>" <?php checked( envira_albums_get_config( 'loop', $album_data ), 1 ); ?> />
+								<input id="envira-config-lightbox-loop" type="checkbox" name="_eg_album_data[config][loop]" value="<?php echo esc_html( envira_albums_get_config( 'loop', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'loop', $album_data ), 1 ); ?> />
 								<span class="description"><?php esc_html_e( 'Enables or disables infinite navigation cycling of the lightbox gallery.', 'envira-albums' ); ?></span>
 							</td>
 						</tr>
@@ -1556,10 +1574,10 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-lightbox-open-close-effect" name="_eg_album_data[config][lightbox_open_close_effect]">
 									<?php
-									// Standard Effects
+									// Standard Effects.
 									foreach ( (array) envira_get_envirabox_open_effects() as $i => $data ) {
 										?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'lightbox_open_close_effect', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'lightbox_open_close_effect', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 										<?php
 									}
 									?>
@@ -1567,6 +1585,9 @@ class Metaboxes {
 								<p class="description"><?php esc_html_e( 'Type of transition when opening and closing the lightbox.', 'envira-albums' ); ?></p>
 							</td>
 						</tr>
+
+
+
 						<tr id="envira-config-lightbox-effect-box">
 							<th scope="row">
 								<label for="envira-config-lightbox-effect"><?php esc_html_e( 'Lightbox Transition Effect', 'envira-albums' ); ?></label>
@@ -1576,10 +1597,10 @@ class Metaboxes {
 									<?php
 									$effect = envira_get_config( 'lightbox_open_close_effect', $data ) === 'zomm-in-out' ? 'zoom-in-out' : envira_get_config( 'lightbox_open_close_effect', $data );
 
-									// Standard Effects
+									// Standard Effects.
 									foreach ( (array) envira_get_transition_effects() as $i => $data ) {
 										?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'effect', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'effect', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 										<?php
 									}
 
@@ -1595,10 +1616,10 @@ class Metaboxes {
 							<td>
 								<select id="envira-config-gallery-sort" name="_eg_album_data[config][gallery_sort]">
 									<?php
-									// Standard Effects
+									// Standard Effects.
 									foreach ( (array) envira_get_gallery_lightbox_sort_effects() as $i => $data ) {
 										?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'gallery_sort', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'gallery_sort', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 										<?php
 									}
 									?>
@@ -1611,7 +1632,7 @@ class Metaboxes {
 								<label for="envira-config-supersize"><?php esc_html_e( 'Enable Lightbox Supersize?', 'envira-albums' ); ?></label>
 							</th>
 							<td>
-								<input id="envira-config-supersize" type="checkbox" name="_eg_album_data[config][supersize]" value="<?php echo envira_albums_get_config( 'supersize', $album_data ); ?>" <?php checked( envira_albums_get_config( 'supersize', $album_data ), 1 ); ?> />
+								<input id="envira-config-supersize" type="checkbox" name="_eg_album_data[config][supersize]" value="<?php echo esc_html( envira_albums_get_config( 'supersize', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'supersize', $album_data ), 1 ); ?> />
 								<span class="description"><?php esc_html_e( 'Enables or disables supersize mode for gallery lightbox images.', 'envira-albums' ); ?></span>
 							</td>
 						</tr>
@@ -1622,7 +1643,7 @@ class Metaboxes {
 								<label for="envira-config-margin"><?php esc_html_e( 'Enable Image Counter?', 'envira-gallery' ); ?></label>
 							</th>
 								<td>
-									<input id="envira-config-lightbox-image-counter" type="checkbox" name="_eg_album_data[config][image_counter]" value="<?php echo envira_albums_get_config( 'image_counter', $album_data ); ?>" <?php checked( envira_albums_get_config( 'image_counter', $album_data ), 1 ); ?> />
+									<input id="envira-config-lightbox-image-counter" type="checkbox" name="_eg_album_data[config][image_counter]" value="<?php echo esc_html( envira_albums_get_config( 'image_counter', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'image_counter', $album_data ), 1 ); ?> />
 									<span class="description"><?php esc_html_e( 'Adds \'Image X of X\' after your caption.', 'envira-gallery' ); ?></span>
 								</td>
 
@@ -1656,9 +1677,11 @@ class Metaboxes {
 								$custom = envira_get_config( 'thumbnails_custom_size', $album_data );
 								$width  = envira_get_config( 'thumbnails_width', $album_data );
 								$height = envira_get_config( 'thumbnails_height', $album_data );
+
 								/*
 								 If the user has a pre-existing gallery with width/height that were NOT once before the defaults
-								/* - which are likely 75px width and 50px height - then auto check the custom width/height box */
+								/* - which are likely 75px width and 50px height - then auto check the custom width/height box
+								*/
 					if ( empty( $custom ) &&
 									! empty( $width ) &&
 									( envira_get_config( 'thumbnails_width', $album_data ) !== envira_get_config_default( 'thumbnails_width' ) ) &&
@@ -1675,7 +1698,7 @@ class Metaboxes {
 							<label for="envira-config-thumbnails-custom-size"><?php esc_html_e( 'Use Custom Width/Height?', 'envira-gallery' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-thumbnails-custom-size" type="checkbox" name="_eg_album_data[config][thumbnails_custom_size]" value="<?php echo envira_albums_get_config( 'thumbnails_custom_size', $album_data ); ?>" <?php echo $checked; ?> />
+							<input id="envira-config-thumbnails-custom-size" type="checkbox" name="_eg_album_data[config][thumbnails_custom_size]" value="<?php echo esc_html( envira_albums_get_config( 'thumbnails_custom_size', $album_data ) ); ?>" <?php echo esc_html( $checked ); ?> />
 							<span class="description"><?php esc_html_e( 'This enables you to enter a custom width and height, overriding Envira\'s automatic settings.', 'envira-gallery' ); ?></span>
 						</td>
 					</tr>
@@ -1684,7 +1707,7 @@ class Metaboxes {
 							<label for="envira-config-thumbnails-width"><?php esc_html_e( 'Gallery Thumbnails Width', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-thumbnails-width" type="number" name="_eg_album_data[config][thumbnails_width]" value="<?php echo envira_albums_get_config( 'thumbnails_width', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
+							<input id="envira-config-thumbnails-width" type="number" name="_eg_album_data[config][thumbnails_width]" value="<?php echo esc_html( envira_albums_get_config( 'thumbnails_width', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
 							<p class="description"><?php esc_html_e( 'Sets the width of each lightbox thumbnail.', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1693,7 +1716,7 @@ class Metaboxes {
 							<label for="envira-config-thumbnails-height"><?php esc_html_e( 'Gallery Thumbnails Height', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-thumbnails-height" type="number" name="_eg_album_data[config][thumbnails_height]" value="<?php echo envira_albums_get_config( 'thumbnails_height', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
+							<input id="envira-config-thumbnails-height" type="number" name="_eg_album_data[config][thumbnails_height]" value="<?php echo esc_html( envira_albums_get_config( 'thumbnails_height', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
 							<p class="description"><?php esc_html_e( 'Sets the height of each lightbox thumbnail.', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1704,7 +1727,7 @@ class Metaboxes {
 						<td>
 							<select id="envira-config-thumbnails-position" name="_eg_album_data[config][thumbnails_position]">
 								<?php foreach ( (array) envira_get_thumbnail_positions() as $i => $data ) : ?>
-									<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], envira_albums_get_config( 'thumbnails_position', $album_data ) ); ?>><?php echo $data['name']; ?></option>
+									<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], envira_albums_get_config( 'thumbnails_position', $album_data ) ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 							<p class="description"><?php esc_html_e( 'Sets the position of the lightbox thumbnails.', 'envira-albums' ); ?></p>
@@ -1763,7 +1786,7 @@ class Metaboxes {
 							<label for="envira-config-mobile"><?php esc_html_e( 'Create Mobile Album Images?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile" type="checkbox" name="_eg_album_data[config][mobile]" value="<?php echo envira_albums_get_config( 'mobile', $album_data ); ?>" <?php checked( envira_albums_get_config( 'mobile', $album_data ), 1 ); ?> />
+							<input id="envira-config-mobile" type="checkbox" name="_eg_album_data[config][mobile]" value="<?php echo esc_html( envira_albums_get_config( 'mobile', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'mobile', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables creating specific images for mobile devices.', 'envira-albums' ); ?></span>
 						</td>
 					</tr>
@@ -1772,7 +1795,7 @@ class Metaboxes {
 							<label for="envira-config-mobile-width"><?php esc_html_e( 'Mobile Dimensions', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile-width" type="number" name="_eg_album_data[config][mobile_width]" value="<?php echo envira_albums_get_config( 'mobile_width', $album_data ); ?>" /> &#215; <input id="envira-config-mobile-height" type="number" name="_eg_album_data[config][mobile_height]" value="<?php echo envira_albums_get_config( 'mobile_height', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
+							<input id="envira-config-mobile-width" type="number" name="_eg_album_data[config][mobile_width]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_width', $album_data ) ); ?>" /> &#215; <input id="envira-config-mobile-height" type="number" name="_eg_album_data[config][mobile_height]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_height', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-albums' ); ?></span>
 							<p class="description"><?php esc_html_e( 'These will be the sizes used for images displayed on mobile devices.', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1795,7 +1818,7 @@ class Metaboxes {
 							<label for="envira-config-mobile-lightbox"><?php esc_html_e( 'Enable Lightbox?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile-lightbox" type="checkbox" name="_eg_album_data[config][mobile_lightbox]" value="<?php echo envira_albums_get_config( 'mobile_lightbox', $album_data ); ?>" <?php checked( envira_albums_get_config( 'mobile_lightbox', $album_data ), 1 ); ?> />
+							<input id="envira-config-mobile-lightbox" type="checkbox" name="_eg_album_data[config][mobile_lightbox]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_lightbox', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'mobile_lightbox', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables the gallery lightbox on mobile devices.', 'envira-albums' ); ?></span>
 						</td>
 					</tr>
@@ -1804,7 +1827,7 @@ class Metaboxes {
 							<label for="envira-config-mobile-arrows"><?php esc_html_e( 'Enable Gallery Arrows?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile-arrows" type="checkbox" name="_eg_album_data[config][mobile_arrows]" value="<?php echo envira_albums_get_config( 'mobile_arrows', $album_data ); ?>" <?php checked( envira_albums_get_config( 'mobile_arrows', $album_data ), 1 ); ?> />
+							<input id="envira-config-mobile-arrows" type="checkbox" name="_eg_album_data[config][mobile_arrows]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_arrows', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'mobile_arrows', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables the gallery lightbox navigation arrows on mobile devices.', 'envira-albums' ); ?></span>
 						</td>
 					</tr>
@@ -1813,7 +1836,7 @@ class Metaboxes {
 							<label for="envira-config-mobile-toolbar"><?php esc_html_e( 'Enable Gallery Toolbar?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile-toolbar" type="checkbox" name="_eg_album_data[config][mobile_toolbar]" value="<?php echo envira_albums_get_config( 'mobile_toolbar', $album_data ); ?>" <?php checked( envira_albums_get_config( 'mobile_toolbar', $album_data ), 1 ); ?> />
+							<input id="envira-config-mobile-toolbar" type="checkbox" name="_eg_album_data[config][mobile_toolbar]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_toolbar', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'mobile_toolbar', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables the gallery lightbox toolbar on mobile devices.', 'envira-albums' ); ?></span>
 						</td>
 					</tr>
@@ -1822,7 +1845,7 @@ class Metaboxes {
 							<label for="envira-config-mobile-thumbnails"><?php esc_html_e( 'Enable Gallery Thumbnails?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile-thumbnails" type="checkbox" name="_eg_album_data[config][mobile_thumbnails]" value="<?php echo envira_albums_get_config( 'mobile_thumbnails', $album_data ); ?>" <?php checked( envira_albums_get_config( 'mobile_thumbnails', $album_data ), 1 ); ?> />
+							<input id="envira-config-mobile-thumbnails" type="checkbox" name="_eg_album_data[config][mobile_thumbnails]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_thumbnails', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'mobile_thumbnails', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables the gallery lightbox thumbnails on mobile devices.', 'envira-albums' ); ?></span>
 						</td>
 					</tr>
@@ -1831,7 +1854,7 @@ class Metaboxes {
 							<label for="envira-config-mobile-thumbnails-width"><?php esc_html_e( 'Gallery Thumbnails Width', 'envira-gallery' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile-thumbnails-width" type="number" name="_eg_album_data[config][mobile_thumbnails_width]" value="<?php echo envira_albums_get_config( 'mobile_thumbnails_width', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
+							<input id="envira-config-mobile-thumbnails-width" type="number" name="_eg_album_data[config][mobile_thumbnails_width]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_thumbnails_width', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
 							<p class="description"><?php esc_html_e( 'Sets the width of each lightbox thumbnail when on mobile devices.', 'envira-gallery' ); ?></p>
 						</td>
 					</tr>
@@ -1840,7 +1863,7 @@ class Metaboxes {
 							<label for="envira-config-mobile-thumbnails-height"><?php esc_html_e( 'Gallery Thumbnails Height', 'envira-gallery' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-mobile-thumbnails-height" type="number" name="_eg_album_data[config][mobile_thumbnails_height]" value="<?php echo envira_albums_get_config( 'mobile_thumbnails_height', $album_data ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
+							<input id="envira-config-mobile-thumbnails-height" type="number" name="_eg_album_data[config][mobile_thumbnails_height]" value="<?php echo esc_html( envira_albums_get_config( 'mobile_thumbnails_height', $album_data ) ); ?>" /> <span class="envira-unit"><?php esc_html_e( 'px', 'envira-gallery' ); ?></span>
 							<p class="description"><?php esc_html_e( 'Sets the height of each lightbox thumbnail when on mobile devices.', 'envira-gallery' ); ?></p>
 						</td>
 					</tr>
@@ -1878,7 +1901,7 @@ class Metaboxes {
 							<label for="envira-config-slug"><?php esc_html_e( 'Album Slug', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-slug" type="text" name="_eg_album_data[config][slug]" value="<?php echo envira_albums_get_config( 'slug', $album_data ); ?>" />
+							<input id="envira-config-slug" type="text" name="_eg_album_data[config][slug]" value="<?php echo esc_html( envira_albums_get_config( 'slug', $album_data ) ); ?>" />
 							<p class="description"><?php esc_html_e( 'Unique internal album slug for identification and advanced album queries.', 'envira-albums' ); ?></p>
 						</td>
 					</tr>
@@ -1898,10 +1921,10 @@ class Metaboxes {
 								admin_url( 'post.php' )
 							) : add_query_arg( 'envira-album-imported', true );
 							?>
-							<form action="<?php echo $import_url; ?>" id="envira-config-import-album-form" class="envira-albums-import-form" method="post" enctype="multipart/form-data">
+							<form action="<?php echo esc_url( $import_url ); ?>" id="envira-config-import-album-form" class="envira-albums-import-form" method="post" enctype="multipart/form-data">
 								<input id="envira-config-import-album" type="file" name="envira_import_album" />
 								<input type="hidden" name="envira_albums_import" value="1" />
-								<input type="hidden" name="envira_post_id" value="<?php echo $post->ID; ?>" />
+								<input type="hidden" name="envira_post_id" value="<?php echo esc_html( $post->ID ); ?>" />
 								<?php wp_nonce_field( 'envira-albums-import', 'envira-albums-import' ); ?>
 								<?php submit_button( __( 'Import Album', 'envira-albums' ), 'secondary', 'envira-albums-import-submit', false ); ?>
 								<span class="spinner envira-gallery-spinner"></span>
@@ -1911,7 +1934,7 @@ class Metaboxes {
 
 							<form id="envira-config-export-album-form" method="post">
 								<input type="hidden" name="envira_export" value="1" />
-								<input type="hidden" name="envira_post_id" value="<?php echo $post->ID; ?>" />
+								<input type="hidden" name="envira_post_id" value="<?php echo esc_html( $post->ID ); ?>" />
 								<?php wp_nonce_field( 'envira-albums-export', 'envira-albums-export' ); ?>
 								<?php submit_button( __( 'Export Album', 'envira-albums' ), 'secondary', 'envira-albums-export-submit', false ); ?>
 							</form>
@@ -1922,7 +1945,7 @@ class Metaboxes {
 							<label for="envira-config-rtl"><?php esc_html_e( 'Enable RTL Support?', 'envira-albums' ); ?></label>
 						</th>
 						<td>
-							<input id="envira-config-rtl" type="checkbox" name="_eg_album_data[config][rtl]" value="<?php echo envira_albums_get_config( 'rtl', $album_data ); ?>" <?php checked( envira_albums_get_config( 'rtl', $album_data ), 1 ); ?> />
+							<input id="envira-config-rtl" type="checkbox" name="_eg_album_data[config][rtl]" value="<?php echo esc_html( envira_albums_get_config( 'rtl', $album_data ) ); ?>" <?php checked( envira_albums_get_config( 'rtl', $album_data ), 1 ); ?> />
 							<span class="description"><?php esc_html_e( 'Enables or disables RTL support in Envira for right-to-left languages.', 'envira-albums' ); ?></span>
 						</td>
 					</tr>
@@ -1973,11 +1996,11 @@ class Metaboxes {
 							</th>
 							<td>
 								<?php if ( ! empty( $templates ) ) : ?>
-								<select id="envira-config-standalone-template" name="<?php echo $key; ?>[standalone_template]">
+								<select id="envira-config-standalone-template" name="<?php echo esc_html( $key ); ?>[standalone_template]">
 									<option value="">(Default)</option>
 									<?php foreach ( (array) $templates as $name => $filename ) : ?>
 
-									<option value="<?php echo $filename; ?>"<?php selected( $filename, envira_albums_get_config( 'standalone_template', $album_data ) ); ?>><?php echo $name; ?></option>
+									<option value="<?php echo esc_html( $filename ); ?>"<?php selected( $filename, envira_albums_get_config( 'standalone_template', $album_data ) ); ?>><?php echo esc_html( $name ); ?></option>
 									<?php endforeach; ?>
 								</select>
 								<p class="description"><?php esc_html_e( 'By default we use single.php, which is the default template of the single blog post in your theme.', 'envira-albums' ); ?></p>
@@ -2089,12 +2112,12 @@ class Metaboxes {
 			return;
 		}
 
-		// Get the existing settings
+		// Get the existing settings.
 		$settings = get_post_meta( $post_id, '_eg_album_data', true );
 
-		if ( ! is_array( $settings ) || $settings === false ) {
+		if ( ! is_array( $settings ) || false === $settings ) {
 			// there are no settings, so start with an array
-			// also, this "resets" any "bad" data in this metadata
+			// also, this "resets" any "bad" data in this metadata.
 			$settings = array();
 		}
 
@@ -2106,7 +2129,7 @@ class Metaboxes {
 		// Build $settings array, comprising of
 		// - galleryIDs - an array of gallery IDs to include in this album
 		// - config - general configuration for this album
-		// Convert gallery IDs to array
+		// Convert gallery IDs to array.
 		if ( empty( $_POST['galleryIDs'] ) ) {
 			unset( $settings['galleryIDs'] );
 			unset( $settings['galleries'] );
@@ -2115,20 +2138,20 @@ class Metaboxes {
 			$settings['galleryIDs'] = array_filter( $settings['galleryIDs'] );
 		}
 
-		// Never have width equal zero, even if the user removes the value
+		// Never have width equal zero, even if the user removes the value.
 		$album_width = absint( $_POST['_eg_album_data']['config']['album_width'] );
 		if ( ! $album_width ) {
 			$album_width = 100;}
 
-		// Store album config
+		// Store album config.
 		$settings['config']            = array();
 		$settings['config']['type']    = isset( $_POST['_eg_album_data']['config']['type'] ) ? $_POST['_eg_album_data']['config']['type'] : envira_albums_get_config_default( 'type' );
 		$settings['config']['columns'] = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_eg_album_data']['config']['columns'] );
 
-		// Store album title
+		// Store album title.
 		$settings['config']['title'] = sanitize_text_field( esc_attr( $_POST['post_title'] ) );
 
-		// Automatic/Justified
+		// Automatic/Justified.
 		$settings['config']['justified_row_height'] = isset( $_POST['_eg_album_data']['config']['justified_row_height'] ) ? absint( $_POST['_eg_album_data']['config']['justified_row_height'] ) : 150;
 		$settings['config']['justified_margins']    = absint( $_POST['_eg_album_data']['config']['justified_margins'] );
 		$settings['config']['justified_last_row']   = sanitize_text_field( esc_attr( $_POST['_eg_album_data']['config']['justified_last_row'] ) );
@@ -2163,9 +2186,10 @@ class Metaboxes {
 		$settings['config']['lazy_loading_delay'] = absint( $_POST['_eg_album_data']['config']['lazy_loading_delay'] );
 
 		// Lightbox.
-		$settings['config']['lightbox']                   = isset( $_POST['_eg_album_data']['config']['lightbox'] ) ? 1 : 0;
-		$settings['config']['lightbox_theme']             = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_eg_album_data']['config']['lightbox_theme'] );
-		$settings['config']['title_display']              = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_eg_album_data']['config']['title_display'] );
+		$settings['config']['lightbox']               = isset( $_POST['_eg_album_data']['config']['lightbox'] ) ? 1 : 0;
+		$settings['config']['lightbox_theme']         = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_eg_album_data']['config']['lightbox_theme'] );
+		$settings['config']['title_display']          = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_eg_album_data']['config']['title_display'] );
+		$settings['config']['lightbox_title_caption'] = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_eg_album_data']['config']['lightbox_title_caption'] );
 		$settings['config']['arrows']                     = isset( $_POST['_eg_album_data']['config']['arrows'] ) ? 1 : 0;
 		$settings['config']['arrows_position']            = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_eg_album_data']['config']['arrows_position'] );
 		$settings['config']['toolbar']                    = isset( $_POST['_eg_album_data']['config']['toolbar'] ) ? 1 : 0;
@@ -2210,7 +2234,7 @@ class Metaboxes {
 		// Slug.
 		$slug_to_save = $settings['config']['slug'] = isset( $_POST['_eg_album_data']['config']['slug'] ) ? sanitize_title( $_POST['_eg_album_data']['config']['slug'] ) : sanitize_title( $post->post_name );
 
-		// We need to add metadata if the config slug doesn't match
+		// We need to add metadata if the config slug doesn't match.
 		if ( ! empty( $slug_to_save ) && $slug_to_save !== $post->post_name ) {
 
 			$existing_page = get_page_by_path( $slug_to_save, ARRAY_A, array( 'envira', 'envira_album', 'post', 'page' ) );
@@ -2276,6 +2300,7 @@ class Metaboxes {
 	 * Add notice for duplicate slugs
 	 *
 	 * @since 1.8.4
+	 * @param string $location Location.
 	 */
 	public function add_notice_slug_exists( $location ) {
 
@@ -2289,6 +2314,7 @@ class Metaboxes {
 	 * Quick check to see if the slug exists ANYWHERE, not just in Envira custom post types
 	 *
 	 * @since 1.8.4
+	 * @param string $post_name The Slug.
 	 */
 	public function the_slug_exists( $post_name ) {
 

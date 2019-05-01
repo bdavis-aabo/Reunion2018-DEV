@@ -4,7 +4,7 @@ defined('MECEXEC') or die();
 
 /**
  * The Template for displaying all single events
- *
+ * 
  * @author Webnus <info@webnus.biz>
  * @package MEC/Templates
  * @version 1.0.0

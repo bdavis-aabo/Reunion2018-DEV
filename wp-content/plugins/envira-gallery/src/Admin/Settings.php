@@ -12,11 +12,19 @@ namespace Envira\Admin;
 
 use Envira\Utils\Browser;
 
- // Exit if accessed directly.
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Settings class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Settings {
 
 	/**
@@ -46,7 +54,7 @@ class Settings {
 		// Add the settings menu item to the Plugins table.
 		add_filter( 'plugin_action_links_' . plugin_basename( plugin_dir_path( dirname( dirname( __FILE__ ) ) ) . 'envira-gallery.php' ), array( $this, 'settings_link' ) );
 
-		// Add items for debug
+		// Add items for debug.
 		add_action( 'envira_gallery_debug_screen_output', array( $this, 'debug_screen_output' ) );
 		add_action( 'wp_ajax_download_system_info', array( $this, 'debug_download_info' ) );
 
@@ -74,13 +82,13 @@ class Settings {
 			return;
 		}
 
-		// Add all of our settings hooks
+		// Add all of our settings hooks.
 		add_action( 'load-' . $this->hook, array( $this, 'maybe_fix_migration' ) );
 		add_action( 'load-' . $this->hook, array( $this, 'update_image_settings' ) );
 		add_action( 'load-' . $this->hook, array( $this, 'standalone_settings_save' ) );
 		add_action( 'load-' . $this->hook, array( $this, 'enqueue_admin_settings_styles' ) );
 
-		// Add admin Scripts and Styles
+		// Add admin Scripts and Styles.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
@@ -97,7 +105,7 @@ class Settings {
 	 */
 	public function update_image_settings() {
 
-		// Check if user pressed the 'Update' button and nonce is valid
+		// Check if user pressed the 'Update' button and nonce is valid.
 		if ( ! isset( $_POST['envira-gallery-settings-submit'] ) ) {
 			return;
 		}
@@ -105,18 +113,18 @@ class Settings {
 			return;
 		}
 
-		// Update settings
+		// Update settings.
 		envira_update_setting( 'media_position', $_POST['envira_media_position'] );
 		envira_update_setting( 'image_delete', $_POST['envira_image_delete'] );
 		envira_update_setting( 'media_delete', $_POST['envira_media_delete'] );
 
-		// Output an admin notice so the user knows what happened
+		// Output an admin notice so the user knows what happened.
 		add_action( 'envira_gallery_settings_general_tab_notice', array( $this, 'updated_settings' ) );
 
 	}
 
 	/**
-	 * standalone_settings_save function.
+	 * Stand Alone Setting function.
 	 *
 	 * @since 1.7.0
 	 *
@@ -125,17 +133,17 @@ class Settings {
 	 */
 	public function standalone_settings_save() {
 
-		// Check we saved some settings
+		// Check we saved some settings.
 		if ( ! isset( $_POST ) ) {
 			return;
 		}
 
-		// Check nonce exists
+		// Check nonce exists.
 		if ( ! isset( $_POST['envira-standalone-nonce'] ) ) {
 			return;
 		}
 
-		// Check nonce is valid
+		// Check nonce is valid.
 		if ( ! wp_verify_nonce( $_POST['envira-standalone-nonce'], 'envira-standalone-nonce' ) ) {
 			add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_nonce_notice' ) );
 			return;
@@ -143,21 +151,21 @@ class Settings {
 
 		envira_update_setting( 'standalone_enabled', empty( $_POST['envira-standalone-enable'] ) ? 0 : 1 );
 
-		// Get reserved slugs
+		// Get reserved slugs.
 		$slugs = envira_standalone_get_reserved_post_type_slugs();
 
-		// Determine which slug(s) to check - include albums if the Albums addon is enabled
-		$slugsToCheck = array(
+		// Determine which slug(s) to check - include albums if the Albums addon is enabled.
+		$slugs_to_check = array(
 			'gallery',
 		);
 		if ( isset( $_POST['envira-albums-slug'] ) ) {
-			$slugsToCheck[] = 'albums';
+			$slugs_to_check[] = 'albums';
 		}
 
-		// Go through each slug
-		foreach ( $slugsToCheck as $slug ) {
+		// Go through each slug.
+		foreach ( $slugs_to_check as $slug ) {
 
-			// Check slug is valid
+			// Check slug is valid.
 			if ( empty( $_POST[ 'envira-' . $slug . '-slug' ] ) ) {
 				add_action( 'envira_gallery_settings_standalone_tab_notice', 'envira_standalone_settings_slug_notice' );
 				return;
@@ -166,12 +174,12 @@ class Settings {
 				add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_slug_notice' ) );
 				return;
 			}
-			if ( $slug != 'albums' && ( strtolower( $_POST['envira-albums-slug'] ) == strtolower( $_POST[ 'envira-' . $slug . '-slug' ] ) ) ) {
+			if ( 'albums' !== $slug && ( strtolower( $_POST['envira-albums-slug'] ) == strtolower( $_POST[ 'envira-' . $slug . '-slug' ] ) ) ) {
 				add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_unique_slugs' ) );
 				return;
 			}
 
-			// Check slug is not reserved
+			// Check slug is not reserved.
 			if ( ! is_array( $slugs ) ) {
 				add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_slug_notice' ) );
 				return;
@@ -182,16 +190,16 @@ class Settings {
 				return;
 			}
 
-			// If we reach this point, the slugs are good to use
+			// If we reach this point, the slugs are good to use.
 			update_option( 'envira-' . $slug . '-slug', $_POST[ 'envira-' . $slug . '-slug' ] );
 
 		}
 
 		// Set envira-standalone-flushed = false, so on the next page load, rewrite
-		// rules are flushed to prevent 404s
+		// rules are flushed to prevent 404s.
 		update_option( 'envira-standalone-flushed', false );
 
-		// Output success notice
+		// Output success notice.
 		add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_saved_notice' ) );
 	}
 
@@ -264,7 +272,7 @@ class Settings {
 
 		?>
 		<div class="notice updated below-h2">
-			<p><strong><?php _e( 'Settings saved successfully.', 'envira-gallery' ); ?></strong></p>
+			<p><strong><?php esc_html_e( 'Settings saved successfully.', 'envira-gallery' ); ?></strong></p>
 		</div>
 		<?php
 
@@ -306,11 +314,11 @@ class Settings {
 	 */
 	public function enqueue_admin_scripts() {
 
-		// Tabs
+		// Tabs.
 		wp_register_script( ENVIRA_SLUG . '-tabs-script', plugins_url( 'assets/js/tabs.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION, true );
 		wp_enqueue_script( ENVIRA_SLUG . '-tabs-script' );
 
-		// Settings
+		// Settings.
 		wp_register_script( ENVIRA_SLUG . '-settings-script', plugins_url( 'assets/js/settings.js', ENVIRA_FILE ), array( 'jquery', 'jquery-ui-tabs' ), ENVIRA_VERSION, true );
 		wp_enqueue_script( ENVIRA_SLUG . '-settings-script' );
 		wp_localize_script(
@@ -356,7 +364,7 @@ class Settings {
 			foreach ( (array) $this->get_envira_settings_tab_nav() as $id => $title ) {
 				$class = ( 0 === $i ? 'envira-active' : '' );
 				?>
-				<a class="nav-tab <?php echo $class; ?>" href="#envira-tab-<?php echo $id; ?>" title="<?php echo $title; ?>"><?php echo $title; ?></a>
+				<a class="nav-tab <?php echo esc_html( $class ); ?>" href="#envira-tab-<?php echo $id; ?>" title="<?php echo $title; ?>"><?php echo $title; ?></a>
 				<?php
 				$i++;
 			}
@@ -405,8 +413,7 @@ class Settings {
 		$tabs = apply_filters( 'envira_gallery_settings_tab_nav', $tabs );
 
 		// Make sure debug is always last
-		$tabs['debug'] = __( 'System Info', 'envira-gallery' );
-
+		// $tabs['debug'] = __( 'System Info', 'envira-gallery' );.
 		return $tabs;
 
 	}
@@ -453,10 +460,10 @@ class Settings {
 						<td>
 							<form id="envira-settings-key-type" method="post">
 								<span class="envira-license-type"><?php printf( __( 'Your license key type for this site is <strong>%s.</strong>', 'envira-gallery' ), envira_get_license_key_type() ); ?>
-								<input type="hidden" name="envira-license-key" value="<?php echo envira_get_license_key(); ?>" />
+								<input type="hidden" name="envira-license-key" value="<?php echo esc_html( envira_get_license_key() ); ?>" />
 								<?php wp_nonce_field( 'envira-gallery-key-nonce', 'envira-gallery-key-nonce' ); ?>
 								<?php submit_button( __( 'Refresh Key', 'envira-gallery' ), 'primary', 'envira-gallery-refresh-submit', false ); ?>
-								<p class="description"><?php _e( 'Your license key type (handles updates and Addons). Click refresh if your license has been upgraded or the type is incorrect.', 'envira-gallery' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Your license key type (handles updates and Addons). Click refresh if your license has been upgraded or the type is incorrect.', 'envira-gallery' ); ?></p>
 							</form>
 						</td>
 					</tr>
@@ -465,7 +472,7 @@ class Settings {
 					<!-- Fix Broken Migration -->
 					<tr id="envira-serialization-box">
 						<th scope="row">
-							<label for="envira-serialization"><?php _e( 'Fix Broken Migration', 'envira-gallery' ); ?></label>
+							<label for="envira-serialization"><?php esc_html_e( 'Fix Broken Migration', 'envira-gallery' ); ?></label>
 						</th>
 						<td>
 							<form id="envira-serialization" method="post">
@@ -487,44 +494,44 @@ class Settings {
 						<!-- Media Position -->
 						<tr id="envira-media-position-box">
 							<th scope="row">
-								<label for="envira-media-position"><?php _e( 'Add New Images', 'envira-gallery' ); ?></label>
+								<label for="envira-media-position"><?php esc_html_e( 'Add New Images', 'envira-gallery' ); ?></label>
 							</th>
 							<td>
 								<select id="envira-media-position" name="envira_media_position">
 									<?php foreach ( (array) envira_get_media_positions() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $media_position ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], $media_position ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php _e( 'When adding media to a Gallery, choose whether to add this media before or after any existing images.', 'envira-gallery' ); ?></p>
+								<p class="description"><?php esc_html_e( 'When adding media to a Gallery, choose whether to add this media before or after any existing images.', 'envira-gallery' ); ?></p>
 							</td>
 						</tr>
 
 						<!-- Delete Media -->
 						<tr id="envira-image-delete-box">
 							<th scope="row">
-								<label for="envira-image-delete"><?php _e( 'Delete Image on Gallery Image Deletion', 'envira-gallery' ); ?></label>
+								<label for="envira-image-delete"><?php esc_html_e( 'Delete Image on Gallery Image Deletion', 'envira-gallery' ); ?></label>
 							</th>
 							<td>
 								<select id="envira-image-delete" name="envira_image_delete">
 									<?php foreach ( (array) envira_get_media_delete_options() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $image_delete ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], $image_delete ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php _e( 'When deleting an Image from a Gallery, choose whether to delete all media associated with that image. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
+								<p class="description"><?php esc_html_e( 'When deleting an Image from a Gallery, choose whether to delete all media associated with that image. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
 							</td>
 						</tr>
 						
 						<tr id="envira-media-delete-box">
 							<th scope="row">
-								<label for="envira-media-delete"><?php _e( 'Delete Images on Gallery Deletion', 'envira-gallery' ); ?></label>
+								<label for="envira-media-delete"><?php esc_html_e( 'Delete Images on Gallery Deletion', 'envira-gallery' ); ?></label>
 							</th>
 							<td>
 								<select id="envira-media-delete" name="envira_media_delete">
 									<?php foreach ( (array) envira_get_media_delete_options() as $i => $data ) : ?>
-										<option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $media_delete ); ?>><?php echo $data['name']; ?></option>
+										<option value="<?php echo esc_html( $data['value'] ); ?>"<?php selected( $data['value'], $media_delete ); ?>><?php echo esc_html( $data['name'] ); ?></option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php _e( 'When deleting a Gallery, choose whether to delete all media associated with the gallery. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
+								<p class="description"><?php esc_html_e( 'When deleting a Gallery, choose whether to delete all media associated with the gallery. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
 							</td>
 						</tr>
 
@@ -547,10 +554,10 @@ class Settings {
 	 */
 	public function settings_standalone_tab() {
 
-		// Get slugs
+		// Get slugs.
 		$enabled   = envira_get_setting( 'standalone_enabled' );
 		$slug      = envira_standalone_get_the_slug( 'gallery' );
-		$albumSlug = envira_standalone_get_the_slug( 'albums' );
+		$album_slug = envira_standalone_get_the_slug( 'albums' );
 
 		?>
 		<div id="envira-settings-standalone">
@@ -579,21 +586,21 @@ class Settings {
 
 						<tr id="envira-settings-slug-box-gallery">
 							<th scope="row">
-								<label for="envira-gallery-slug"><?php _e( 'Gallery Slug ', 'envira-standalone' ); ?></label>
+								<label for="envira-gallery-slug"><?php esc_html_e( 'Gallery Slug ', 'envira-standalone' ); ?></label>
 							</th>
 							<td>
 								<input type="text" name="envira-gallery-slug" id="envira-gallery-slug" value="<?php echo $slug; ?>" />
-								<p class="description"><?php _e( 'The slug to prefix to all ' . apply_filters( 'envira_whitelabel_name', 'Envira' ) . ' Galleries.', 'envira-standalone' ); ?></p>
+								<p class="description"><?php esc_html_e( 'The slug to prefix to all ' . apply_filters( 'envira_whitelabel_name', 'Envira' ) . ' Galleries.', 'envira-standalone' ); ?></p>
 							</td>
 						</tr>
 
 						<tr id="envira-settings-slug-box-albums">
 							<th scope="row">
-								<label for="envira-albums-slug"><?php _e( 'Album Slug ', 'envira-standalone' ); ?></label>
+								<label for="envira-albums-slug"><?php esc_html_e( 'Album Slug ', 'envira-standalone' ); ?></label>
 							</th>
 							<td>
-								<input type="text" name="envira-albums-slug" id="envira-albums-slug" value="<?php echo $albumSlug; ?>" />
-								<p class="description"><?php _e( 'The slug to prefix to all ' . apply_filters( 'envira_whitelabel_name', 'Envira' ) . ' Albums.', 'envira-standalone' ); ?></p>
+								<input type="text" name="envira-albums-slug" id="envira-albums-slug" value="<?php echo $album_slug; ?>" />
+								<p class="description"><?php esc_html_e( 'The slug to prefix to all ' . apply_filters( 'envira_whitelabel_name', 'Envira' ) . ' Albums.', 'envira-standalone' ); ?></p>
 							</td>
 						</tr>
 
@@ -619,7 +626,7 @@ class Settings {
 		// Get slugs
 		$enabled = envira_get_setting( 'standalone_enabled' );
 		// $slug = Envira_Gallery_Common::get_instance()->standalone_get_slug( 'gallery' );
-		// $albumSlug = Envira_Gallery_Common::get_instance()->standalone_get_slug( 'albums' );
+		// $album_slug = Envira_Gallery_Common::get_instance()->standalone_get_slug( 'albums' );
 		?>
 		<div id="envira-settings-debug">
 			<?php
@@ -703,13 +710,13 @@ class Settings {
 		}
 
 		// If here, fix potentially broken migration
-		// Get WPDB and serialization class
-		global $wpdb, $fixedGalleries;
+		// Get WPDB and serialization class.
+		global $wpdb, $fixed_galleries;
 
-		// Keep count of the number of galleries that get fixed
-		$fixedGalleries = 0;
+		// Keep count of the number of galleries that get fixed.
+		$fixed_galleries = 0;
 
-		// Query to get all Envira CPTs
+		// Query to get all Envira CPTs.
 		$galleries = new \ WP_Query(
 			array(
 				'post_type'      => 'envira',
@@ -718,24 +725,24 @@ class Settings {
 			)
 		);
 
-		// Iterate through galleries
+		// Iterate through galleries.
 		if ( $galleries->posts ) {
 			foreach ( $galleries->posts as $gallery ) {
 
 				$fixed = false;
 
-				// Attempt to get gallery data
+				// Attempt to get gallery data.
 				$gallery_data = get_post_meta( $gallery->ID, '_eg_gallery_data', true );
 
-				// Skip empty galleries
+				// Skip empty galleries.
 				if ( empty( $gallery_data ) ) {
 					continue;
 				}
 
-				// If gallery data isn't an array, something broke
+				// If gallery data isn't an array, something broke.
 				if ( ! is_array( $gallery_data ) ) {
-					// Need to fix the broken serialized string for this gallery
-					// Get raw string from DB
+					// Need to fix the broken serialized string for this gallery.
+					// Get raw string from DB.
 					$query            = $wpdb->prepare(
 						'	SELECT meta_value
 												FROM ' . $wpdb->prefix . 'postmeta
@@ -747,7 +754,7 @@ class Settings {
 					);
 					$raw_gallery_data = $wpdb->get_row( $query );
 
-					// Do the fix, which returns an unserialized array
+					// Do the fix, which returns an unserialized array.
 					$gallery_data = envira_fix_serialized_string( $raw_gallery_data->meta_value );
 
 					// Check we now have an array of unserialized data
@@ -755,7 +762,7 @@ class Settings {
 						continue;
 					}
 
-					// Mark as fixed
+					// Mark as fixed.
 					$fixed = true;
 				}
 
@@ -763,7 +770,7 @@ class Settings {
 				// Some migrations seem to strip the leading HTTP URL, which causes us problems with thumbnail generation.
 				if ( isset( $gallery_data['gallery'] ) ) {
 					foreach ( $gallery_data['gallery'] as $id => $item ) {
-						// Source
+						// Source.
 						if ( isset( $item['src'] ) ) {
 							if ( ! empty( $item['src'] ) && ! filter_var( $item['src'], FILTER_VALIDATE_URL ) ) {
 								// Image isn't a valid URL - fix
@@ -772,19 +779,19 @@ class Settings {
 							}
 						}
 
-						// Link
+						// Link.
 						if ( isset( $item['link'] ) ) {
 							if ( ! empty( $item['link'] ) && ! filter_var( $item['link'], FILTER_VALIDATE_URL ) ) {
-								// Image isn't a valid URL - fix
+								// Image isn't a valid URL - fix.
 								$gallery_data['gallery'][ $id ]['link'] = get_bloginfo( 'url' ) . '/' . $item['link'];
 								$fixed                                  = true;
 							}
 						}
 
-						// Thumbnail
+						// Thumbnail.
 						if ( isset( $item['thumb'] ) ) {
 							if ( ! empty( $item['thumb'] ) && ! filter_var( $item['thumb'], FILTER_VALIDATE_URL ) ) {
-								// Thumbnail isn't a valid URL - fix
+								// Thumbnail isn't a valid URL - fix.
 								$gallery_data['gallery'][ $id ]['thumb'] = get_bloginfo( 'url' ) . '/' . $item['thumb'];
 								$fixed                                   = true;
 							}
@@ -792,21 +799,21 @@ class Settings {
 					}
 				}
 
-				// Finally, store the post meta if a fix was applied
+				// Finally, store the post meta if a fix was applied.
 				if ( $fixed ) {
 					update_post_meta( $gallery->ID, '_eg_gallery_data', $gallery_data );
-					$fixedGalleries++;
+					$fixed_galleries++;
 				}
 			}
 		}
 
-		// Output an admin notice so the user knows what happened
+		// Output an admin notice so the user knows what happened.
 		add_action( 'envira_gallery_settings_general_tab_notice', array( $this, 'fixed_migration' ) );
 
 	}
 
 	/**
-	 * debug_screen_output function.
+	 * Debug Screen function.
 	 *
 	 * @access public
 	 * @return void
@@ -823,7 +830,7 @@ class Settings {
 			$theme      = $theme_data->Name . ' ' . $theme_data->Version;
 		}
 
-		// Try to identify the hosting provider
+		// Try to identify the hosting provider.
 		$host = false;
 
 		if ( defined( 'WPE_APIKEY' ) ) {
@@ -852,12 +859,12 @@ class Settings {
 
 		<div class="wrap">
 				<div id="templateside">
-					<p class="instructions"><?php _e( 'The information provided on this screen is intended to be shared with Envira Gallery when opening a new support ticket.', 'send-system-info' ); ?></p>
-					<p class="instructions"><?php _e( 'This information can be downloaded as a text file, then uploaded to the support ticket.', 'send-system-info' ); ?></p>
+					<p class="instructions"><?php esc_html_e( 'The information provided on this screen is intended to be shared with Envira Gallery when opening a new support ticket.', 'send-system-info' ); ?></p>
+					<p class="instructions"><?php esc_html_e( 'This information can be downloaded as a text file, then uploaded to the support ticket.', 'send-system-info' ); ?></p>
 					<p class="instructions"><?php _e( '<a target="_blank" href="https://enviragallery.com/docs/">See our documentation</a> for more details.', 'send-system-info' ); ?></p>
 				</div>
 				<div id="template">
-					<?php // Form used to download .txt file ?>
+					<?php // Form used to download .txt file. ?>
 					<form action="<?php echo esc_url( self_admin_url( 'admin-ajax.php' ) ); ?>" method="post" enctype="multipart/form-data" >
 						<input type="hidden" name="action" value="download_system_info" />
 						<div>
@@ -879,7 +886,7 @@ class Settings {
 													
 						</div>
 						<p class="submit">
-							<input type="submit" class="button button-primary" value="<?php _e( 'Download System Info as Text File', 'send-system-info' ); ?>" />
+							<input type="submit" class="button button-primary" value="<?php esc_html_e( 'Download System Info as Text File', 'send-system-info' ); ?>" />
 						</p>
 					</form>
 				</div>
@@ -903,7 +910,7 @@ class Settings {
 
 		header( 'Content-type: text/plain' );
 
-		// Text file name marked with Unix timestamp
+		// Text file name marked with Unix timestamp.
 		header( 'Content-Disposition: attachment; filename=system_info_' . time() . '.txt' );
 
 		echo $_POST['send-system-info-textarea'];
@@ -917,11 +924,11 @@ class Settings {
 	 * @since 1.7.0
 	 */
 	public function fixed_migration() {
-		global $fixedGalleries;
+		global $fixed_galleries;
 
 		?>
 		<div class="notice updated below-h2">
-			<p><strong><?php echo $fixedGalleries . __( ' galleries(s) fixed successfully.', 'envira-gallery' ); ?></strong></p>
+			<p><strong><?php echo $fixed_galleries . __( ' galleries(s) fixed successfully.', 'envira-gallery' ); ?></strong></p>
 		</div>
 		<?php
 

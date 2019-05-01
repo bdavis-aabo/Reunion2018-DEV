@@ -29,3 +29,48 @@ body.envira_page_envira-gallery-support-settings {
 	}
 
 }
+
+/* ==========================================================================
+   Welcome / Support Screen
+   ========================================================================== */
+
+//    ul#adminmenu {
+// 	li.menu-icon-envira {
+// 		ul.wp-submenu {
+// 			li:nth-last-child(-n+4) {
+// 				display: none;
+// 			}
+// 			li:last-child {
+// 				  display: block;
+// 			}
+// 		}
+// 	}
+//   }
+
+  ul#adminmenu {
+	li.menu-icon-envira {
+		ul.wp-submenu {
+			li:nth-last-child(-n+4) {
+				// display: none;
+			}
+			li:last-child {
+				display: block;
+			}
+		}
+	}
+}
+
+body.envira-welcome-enabled {
+   ul#adminmenu {
+	li.menu-icon-envira {
+		ul.wp-submenu {
+			li:nth-last-child(-n+4) {
+				display: none;
+			}
+			li:last-child {
+				display: block;
+			}
+		}
+	}
+  }
+}

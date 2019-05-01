@@ -19,6 +19,7 @@ jQuery(document).ready(function()
         id: "'.$this->id.'",
         ajax_url: "'.admin_url('admin-ajax.php', NULL).'",
         sed_method: "'.$this->sed_method.'",
+        image_popup: "'.$this->image_popup.'",
     });
 });
 </script>';

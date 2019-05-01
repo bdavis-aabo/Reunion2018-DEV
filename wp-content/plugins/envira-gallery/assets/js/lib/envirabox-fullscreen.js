@@ -1,10 +1,10 @@
-// ==========================================================================
+;// ==========================================================================
 //
 // FullScreen
 // Adds fullscreen functionality
 //
 // ==========================================================================
-;(function (document, $) {
+(function (document, $) {
 	'use strict';
 
 	// Collection of methods supported by user browser
@@ -77,7 +77,7 @@
 	})();
 
 	// If browser does not have Full Screen API, then simply unset default button template and stop
-	if ( !fn ) {
+	if ( ! fn ) {
 
 		if ( $ && $.envirabox ) {
 			$.envirabox.defaults.btnTpl.fullScreen = false;
@@ -124,69 +124,78 @@
 		}
 	};
 
-	$(document).on({
-		'onInit.eb' : function(e, instance) {
-			var $container;
+	$( document ).on(
+		{
+			'onInit.eb' : function(e, instance) {
+				var $container;
 
-			var $button = instance.$refs.toolbar.find('[data-envirabox-fullscreen]');
+				var $button = instance.$refs.toolbar.find( '[data-envirabox-fullscreen]' );
 
-			if ( instance && !instance.FullScreen && instance.group[ instance.currIndex ].opts.fullScreen ) {
-				$container = instance.$refs.container;
+				if ( instance && ! instance.FullScreen && instance.group[ instance.currIndex ].opts.fullScreen ) {
+					$container = instance.$refs.container;
 
-				$container.on('click.eb-fullscreen', '[data-envirabox-fullscreen]', function(e) {
+					$container.on(
+						'click.eb-fullscreen',
+						'[data-envirabox-fullscreen]',
+						function(e) {
 
-					e.stopPropagation();
-					e.preventDefault();
+							e.stopPropagation();
+							e.preventDefault();
 
-					FullScreen.toggle( $container[ 0 ] );
+							FullScreen.toggle( $container[ 0 ] );
 
-				});
+						}
+					);
 
-				if ( instance.opts.fullScreen && instance.opts.fullScreen.autoStart === true ) {
-					FullScreen.request( $container[ 0 ] );
+					if ( instance.opts.fullScreen && instance.opts.fullScreen.autoStart === true ) {
+						FullScreen.request( $container[ 0 ] );
+					}
+
+					// Expose API
+					instance.FullScreen = FullScreen;
+
+				} else {
+					$button.hide();
 				}
 
-				// Expose API
-				instance.FullScreen = FullScreen;
+			},
 
-			} else {
-				$button.hide();
-			}
+			'afterKeydown.eb' : function(e, instance, current, keypress, keycode) {
 
-		},
+				// "P" or Spacebar
+				if ( instance && instance.FullScreen && keycode === 70 ) {
+					keypress.preventDefault();
 
-		'afterKeydown.eb' : function(e, instance, current, keypress, keycode) {
+					instance.FullScreen.toggle( instance.$refs.container[ 0 ] );
+				}
 
-			// "P" or Spacebar
-			if ( instance && instance.FullScreen && keycode === 70 ) {
-				keypress.preventDefault();
+			},
 
-				instance.FullScreen.toggle( instance.$refs.container[ 0 ] );
-			}
-
-		},
-
-		'beforeClose.eb' : function( instance ) {
-			if ( instance && instance.FullScreen ) {
-				FullScreen.exit();
+			'beforeClose.eb' : function( instance ) {
+				if ( instance && instance.FullScreen ) {
+					FullScreen.exit();
+				}
 			}
 		}
-	});
+	);
 
-	$(document).on(fn.fullscreenchange, function() {
-		var instance = $.envirabox.getInstance();
+	$( document ).on(
+		fn.fullscreenchange,
+		function() {
+			var instance = $.envirabox.getInstance();
 
-		// If image is zooming, then force to stop and reposition properly
-		if ( instance.current && instance.current.type === 'image' && instance.isAnimating ) {
-			instance.current.$content.css( 'transition', 'none' );
+			// If image is zooming, then force to stop and reposition properly
+			if ( instance.current && instance.current.type === 'image' && instance.isAnimating ) {
+				instance.current.$content.css( 'transition', 'none' );
 
-			instance.isAnimating = false;
+				instance.isAnimating = false;
 
-			instance.update( true, true, 0 );
+				instance.update( true, true, 0 );
+			}
+
+			$( document ).trigger( 'onFullscreenChange', FullScreen.isFullscreen() );
+
 		}
-
-		$(document).trigger('onFullscreenChange', FullScreen.isFullscreen() );
-
-	});
+	);
 
 }(document, window.jQuery));

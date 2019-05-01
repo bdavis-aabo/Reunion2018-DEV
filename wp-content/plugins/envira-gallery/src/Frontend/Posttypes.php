@@ -17,6 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 }
 
+/**
+ * Envira Post Types.
+ */
 class Posttypes {
 
 	/**
@@ -70,6 +73,8 @@ class Posttypes {
 			'show_in_admin_bar'   => true,
 			'rewrite'             => false,
 			'query_var'           => false,
+			'show_in_rest'        => true,
+			'rest_base'           => 'envira-gallery',
 			'menu_position'       => apply_filters( 'envira_gallery_post_type_menu_position', 247 ),
 			'menu_icon'           => plugins_url( 'assets/css/images/menu-icon@2x.png', ENVIRA_FILE ),
 			'supports'            => array( 'title' ),
@@ -77,10 +82,10 @@ class Posttypes {
 
 		);
 
-		// Check if standalone is enabled
+		// Check if standalone is enabled.
 		if ( envira_is_standalone_enabled() ) {
 
-			// Get slug
+			// Get slug.
 			$slug = envira_standalone_get_the_slug( 'gallery' );
 
 			// Change the default post type args so that it can be publicly accessible.
@@ -98,18 +103,18 @@ class Posttypes {
 		}
 
 		$args['capabilities'] = array(
-			// Meta caps
+			// Meta caps.
 			'edit_post'              => 'edit_envira_gallery',
 			'read_post'              => 'read_envira_gallery',
 			'delete_post'            => 'delete_envira_gallery',
 
-			// Primitive caps outside map_meta_cap()
+			// Primitive caps outside map_meta_cap().
 			'edit_posts'             => 'edit_envira_galleries',
 			'edit_others_posts'      => 'edit_other_envira_galleries',
 			'publish_posts'          => 'publish_envira_galleries',
 			'read_private_posts'     => 'read_private_envira_galleries',
 
-			// Primitive caps used within map_meta_cap()
+			// Primitive caps used within map_meta_cap().
 			'read'                   => 'read',
 			'delete_posts'           => 'delete_envira_galleries',
 			'delete_private_posts'   => 'delete_private_envira_galleries',
@@ -127,4 +132,5 @@ class Posttypes {
 		register_post_type( 'envira', $args );
 
 	}
+
 }

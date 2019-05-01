@@ -230,10 +230,17 @@ class MEC_factory extends MEC_base
         wp_enqueue_script('wp-color-picker');
         
         // Include jQuery date picker
-        wp_enqueue_script('jquery-ui-datepicker');
+        //wp_enqueue_script('jquery-ui-datepicker');
         
         // Include MEC backend script file
+        wp_enqueue_script('mec-typekit-script', $this->main->asset('js/jquery.typewatch.js'));
         wp_enqueue_script('mec-backend-script', $this->main->asset('js/backend.js'), array('wp-color-picker', 'jquery-ui-datepicker'));
+        wp_localize_script( 'mec-backend-script', 'mec_admin_localize', 
+            array( 
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'ajax_nonce' => wp_create_nonce('mec_settings_nonce'),
+            ) 
+        );
         wp_enqueue_script('mec-events-script', $this->main->asset('js/events.js'));
 
         // Thickbox
@@ -248,6 +255,8 @@ class MEC_factory extends MEC_base
         
         // Include "Right to Left" CSS file
         if(is_rtl()) wp_enqueue_style('mec-backend-rtl-style', $this->main->asset('css/mecrtl.min.css'));
+
+
     }
     
     /**
@@ -258,6 +267,12 @@ class MEC_factory extends MEC_base
     {
         // Current locale
         $locale = $this->main->get_current_language();
+
+        // Styling
+        $styling = $this->main->get_styling();
+
+        // Google Fonts Status
+        $gfonts_status = (isset($styling['disable_gfonts']) and $styling['disable_gfonts']) ? false : true;
         
         // Include WordPress jQuery
         wp_enqueue_script('jquery');
@@ -267,6 +282,8 @@ class MEC_factory extends MEC_base
         
         // Include MEC frontend script files
         wp_enqueue_script('mec-frontend-script', $this->main->asset('js/frontend.js'));
+        wp_enqueue_script('mec-tooltip-script', $this->main->asset('packages/tooltip/tooltip.js'));
+
         wp_enqueue_script('mec-events-script', $this->main->asset('js/events.js'));
         
         // Include Lity Lightbox
@@ -298,12 +315,14 @@ class MEC_factory extends MEC_base
         // Include MEC frontend CSS files
         wp_enqueue_style('mec-font-icons', $this->main->asset('css/iconfonts.css'));
         wp_enqueue_style('mec-frontend-style', $this->main->asset('css/frontend.min.css'));
+        wp_enqueue_style('mec-tooltip-style', $this->main->asset('packages/tooltip/tooltip.css'));
+        wp_enqueue_style('mec-tooltip-shadow-style', $this->main->asset('packages/tooltip/tooltipster-sideTip-shadow.min.css'));
         
         // Include "Right to Left" CSS file
         if(is_rtl()) wp_enqueue_style('mec-frontend-rtl-style', $this->main->asset('css/mecrtl.min.css'));
 		
 		// Include Google Fonts
-		wp_enqueue_style('mec-google-fonts', '//fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:100,300,400,700');
+		if($gfonts_status) wp_enqueue_style('mec-google-fonts', '//fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:100,300,400,700');
 		
 		// Include Dynamic CSS
         if(get_option('mec_dyncss') == true)
@@ -313,7 +332,7 @@ class MEC_factory extends MEC_base
         }
         
         // Include Google Font
-        if(get_option('mec_gfont')) wp_enqueue_style('mec-custom-google-font', get_option('mec_gfont'), array(), NULL);
+        if($gfonts_status and get_option('mec_gfont')) wp_enqueue_style('mec-custom-google-font', get_option('mec_gfont'), array(), NULL);
         
         // Include Lity CSS file
         wp_enqueue_style('mec-lity-style', $this->main->asset('packages/lity/lity.min.css'));
@@ -566,6 +585,9 @@ class MEC_factory extends MEC_base
     public function deactivate($network = false)
 	{
         $this->main->flush_rewrite_rules();
+
+        // Clear Scheduler Cronjob
+        wp_clear_scheduled_hook('mec_scheduler');
 	}
     
     /**
@@ -754,9 +776,9 @@ class MEC_factory extends MEC_base
             $calendars = array
             (
                 array('title'=>'Full Calendar', 'meta'=>array('skin'=>'full_calendar', 'show_past_events'=>1, 'sk-options'=>array('full_calendar'=>array('start_date_type'=>'today', 'default_view'=>'list', 'monthly'=>1, 'weekly'=>1, 'daily'=>1, 'list'=>1)), 'sf-options'=>array('full_calendar'=>array('month_filter'=>array('type'=>'dropdown'), 'text_search'=>array('type'=>'text_input'))), 'sf_status'=>1)),
-                array('title'=>'Monthly View', 'meta'=>array('skin'=>'monthly_view', 'show_past_events'=>1, 'sk-options'=>array('monthly_view'=>array('next_previous_button'=>1)), 'sf-options'=>array('monthly_view'=>$sf_options), 'sf_status'=>1)),
-                array('title'=>'Weekly View', 'meta'=>array('skin'=>'weekly_view', 'show_past_events'=>1, 'sk-options'=>array('weekly_view'=>array('next_previous_button'=>1)), 'sf-options'=>array('weekly_view'=>$sf_options), 'sf_status'=>1)),
-                array('title'=>'Daily View', 'meta'=>array('skin'=>'daily_view', 'show_past_events'=>1, 'sk-options'=>array('daily_view'=>array('next_previous_button'=>1)), 'sf-options'=>array('daily_view'=>$sf_options), 'sf_status'=>1)),
+                array('title'=>'Monthly View', 'meta'=>array('skin'=>'monthly_view', 'show_past_events'=>1, 'sk-options'=>array('monthly_view'=>array('start_date_type'=>'start_current_month', 'next_previous_button'=>1)), 'sf-options'=>array('monthly_view'=>$sf_options), 'sf_status'=>1)),
+                array('title'=>'Weekly View', 'meta'=>array('skin'=>'weekly_view', 'show_past_events'=>1, 'sk-options'=>array('weekly_view'=>array('start_date_type'=>'start_current_month', 'next_previous_button'=>1)), 'sf-options'=>array('weekly_view'=>$sf_options), 'sf_status'=>1)),
+                array('title'=>'Daily View', 'meta'=>array('skin'=>'daily_view', 'show_past_events'=>1, 'sk-options'=>array('daily_view'=>array('start_date_type'=>'start_current_month', 'next_previous_button'=>1)), 'sf-options'=>array('daily_view'=>$sf_options), 'sf_status'=>1)),
                 array('title'=>'Map View', 'meta'=>array('skin'=>'map', 'show_past_events'=>1, 'sk-options'=>array('map'=>array('limit'=>200)), 'sf-options'=>array('map'=>$sf_options), 'sf_status'=>1)),
                 array('title'=>'Upcoming events (List)', 'meta'=>array('skin'=>'list', 'show_past_events'=>0, 'sk-options'=>array('list'=>array('load_more_button'=>1)), 'sf-options'=>array('list'=>$sf_options), 'sf_status'=>1)),
                 array('title'=>'Upcoming events (Grid)', 'meta'=>array('skin'=>'grid', 'show_past_events'=>0, 'sk-options'=>array('grid'=>array('load_more_button'=>1)), 'sf-options'=>array('grid'=>$sf_options), 'sf_status'=>1)),
@@ -769,7 +791,7 @@ class MEC_factory extends MEC_base
             foreach($calendars as $calendar)
             {
                 // Calendar exists
-                if(post_exists($calendar['title'], 'modern-events-calendar-lite')) continue;
+                if(post_exists($calendar['title'], 'MEC')) continue;
 
                 $post = array('post_title'=>$calendar['title'], 'post_content'=>'MEC', 'post_type'=>'mec_calendars', 'post_status'=>'publish');
                 $post_id = wp_insert_post($post);
@@ -784,6 +806,9 @@ class MEC_factory extends MEC_base
                 foreach($calendar['meta'] as $key=>$value) update_post_meta($post_id, $key, $value);
             }
         }
+
+        // Scheduler Cron job
+        if(!wp_next_scheduled('mec_scheduler')) wp_schedule_event(time(), 'hourly', 'mec_scheduler');
         
         // Mark this blog as installed
         update_option('mec_installed', 1);
@@ -810,8 +835,9 @@ class MEC_factory extends MEC_base
             // Database Object
             $db = MEC::getInstance('app.libraries.db');
 
-            // drop table
+            // Drop Tables
             $db->q("DROP TABLE `#__mec_events`");
+            $db->q("DROP TABLE `#__mec_dates`");
 
             // MEC Deleted
             delete_option('mec_installed');

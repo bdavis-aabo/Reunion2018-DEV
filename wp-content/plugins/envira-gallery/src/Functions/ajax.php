@@ -544,8 +544,7 @@ function envira_gallery_ajax_save_meta() {
 
 	// Save the different types of default meta fields for images, videos and HTML slides.
 	if ( isset( $meta['status'] ) ) {
-			 $gallery_data['gallery'][ $attach_id ]['status'] = trim( esc_html( $meta['status'] ) );
-
+		$gallery_data['gallery'][ $attach_id ]['status'] = trim( esc_html( $meta['status'] ) );
 	}
 	if ( isset( $meta['title'] ) ) {
 		$gallery_data['gallery'][ $attach_id ]['title'] = trim( $meta['title'] );

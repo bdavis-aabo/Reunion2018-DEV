@@ -40,20 +40,11 @@ do_action('rss_tag_pre', 'rss2');
 		<dc:creator><![CDATA[<?php $this->feed->author($event->data->post->post_author); ?>]]></dc:creator>
 
 		<guid isPermaLink="false"><?php the_guid($event->ID); ?></guid>
-        
-        <?php if(get_option('rss_use_excerpt')): ?>
-		<description><![CDATA[<?php echo $this->feed->excerpt($event->ID); ?>]]></description>
-        <?php else: ?>
-        
-		<description><![CDATA[<?php echo $this->feed->excerpt($event->ID); ?>]]></description>
-        
-        <?php $content = $this->feed->content($event->ID, 'rss2'); ?>
-        <?php if(strlen($content) > 0): ?>
-        <content:encoded><![CDATA[<?php echo $content; ?>]]></content:encoded>
-        <?php else: ?>
-        <content:encoded><![CDATA[<?php echo $this->feed->excerpt($event->ID); ?>]]></content:encoded>
-        <?php endif; ?>
-        
+
+        <description><![CDATA[<?php echo $this->feed->excerpt($event->ID); ?>]]></description>
+
+        <?php if(!get_option('rss_use_excerpt')): $content = $this->feed->content($event->ID, 'rss2'); ?>
+            <content:encoded><![CDATA[<?php echo $content; ?>]]></content:encoded>
         <?php endif; ?>
         
         <?php if(get_comments_number($event->ID) or comments_open($event->ID)): ?>

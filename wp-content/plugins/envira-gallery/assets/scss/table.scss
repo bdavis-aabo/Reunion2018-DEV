@@ -50,7 +50,8 @@ body.post-type-envira_album {
 	/* ==========================================================================
 	   Post Table Form
 	   ========================================================================== */
-	form#posts-filter {
+	form#posts-filter,
+	form#logs-filter {
 		/**
 		* Re-establish the left and right margins, so there's spacing between the Admin Menu
 		* and the content

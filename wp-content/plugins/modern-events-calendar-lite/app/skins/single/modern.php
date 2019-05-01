@@ -3,7 +3,7 @@
 defined('MECEXEC') or die();
 ?>
 <div class="mec-wrap <?php echo $event_colorskin; ?> clearfix <?php echo $this->html_class; ?>" id="mec_skin_<?php echo $this->uniqueid; ?>">
-    <article class="mec-single-event mec-single-modern">
+    <article class="row mec-single-event mec-single-modern">
         <div class="mec-events-event-image"><?php echo $event->data->thumbnails['full']; ?></div>
         <div class="col-md-4">
             
@@ -55,8 +55,10 @@ defined('MECEXEC') or die();
                 <!-- Register Booking Button -->
                 <?php if($this->main->can_show_booking_module($event)): ?>
                     <?php $data_lity = ''; if( isset($settings['single_booking_style']) and $settings['single_booking_style'] == 'modal' ) $data_lity = 'data-lity'; ?>
-                    <a class="mec-booking-button mec-bg-color" href="#mec-events-meta-group-booking-<?php echo $this->uniqueid; ?>" <?php echo $data_lity; ?>><?php echo esc_html($this->main->m('register_button', __('REGISTER', 'modern-events-calendar-lite'))); ?></a>
-                <?php endif ?>
+                    <a class="mec-booking-button mec-bg-color <?php if( isset($settings['single_booking_style']) and $settings['single_booking_style'] != 'modal' ) echo 'simple-booking'; ?>" href="#mec-events-meta-group-booking-<?php echo $this->uniqueid; ?>" <?php echo $data_lity; ?>><?php echo esc_html($this->main->m('register_button', __('REGISTER', 'modern-events-calendar-lite'))); ?></a>
+                <?php elseif(isset($event->data->meta['mec_more_info']) and trim($event->data->meta['mec_more_info']) and $event->data->meta['mec_more_info'] != 'http://'): ?>
+                    <a class="mec-booking-button mec-bg-color" href="<?php echo $event->data->meta['mec_more_info']; ?>"><?php echo esc_html($this->main->m('register_button', __('REGISTER', 'modern-events-calendar-lite'))); ?></a>
+                <?php endif; ?>
             </div>
 
             <!-- Speakers Module -->
@@ -195,10 +197,13 @@ defined('MECEXEC') or die();
                     <div class="mec-single-event-label">
                         <i class="mec-fa-bookmark-o"></i>
                         <h3 class="mec-cost"><?php echo $this->main->m('taxonomy_labels', __('Labels', 'modern-events-calendar-lite')); ?></h3>
-                        <?php foreach($event->data->labels as $labels=>$label) : 
-                            $seperator = (++$mec_i === $mec_items ) ? '' : ',';
-                            echo '<dd style="color:' . $label['color'] . '">' . $label["name"] . $seperator . '</dd>';
-                        endforeach; ?>
+                        <?php
+                            foreach($event->data->labels as $labels=>$label)
+                            {
+                                $seperator = (++$mec_i === $mec_items) ? '' : ',';
+                                echo '<dd style="color:' . $label['color'] . '">' . $label["name"] . $seperator . '</dd>';
+                            }
+                        ?>
                     </div>
                     <?php
                 }
@@ -249,3 +254,39 @@ defined('MECEXEC') or die();
         </div>
     </article>
 </div>
+<?php
+$speakers = '""';
+if ( !empty($event->data->speakers)) 
+{
+    $speakers= [];
+    foreach ($event->data->speakers as $key => $value) {
+        $speakers[] = array(
+            "@type" 	=> "Person",
+            "name"		=> $value['name'],
+            "image"		=> $value['thumbnail'],
+            "sameAs"	=> $value['facebook'],
+        );
+    } 
+    $speakers = json_encode($speakers);
+}
+?>
+<script type="application/ld+json">
+{
+	"@context" 		: "http://schema.org",
+	"@type" 		: "Event",
+	"startDate" 	: "<?php echo !empty( $event->data->meta['mec_date']['start']['date'] ) ? $event->data->meta['mec_date']['start']['date'] : '' ; ?>",
+	"endDate" 		: "<?php echo !empty( $event->data->meta['mec_date']['end']['date'] ) ? $event->data->meta['mec_date']['end']['date'] : '' ; ?>",
+	"location" 		:
+	{
+		"@type" 		: "Place",
+		"name" 			: "<?php echo (isset($location['name']) ? $location['name'] : ''); ?>",
+		"image"			: "<?php echo esc_url($location['thumbnail'] ); ?>",
+		"address"		: "<?php echo (isset($location['address']) ? $location['address'] : ''); ?>"
+	},
+	"performer": <?php echo $speakers; ?>,
+	"description" 	: "<?php  echo esc_html(preg_replace('/<p>\\s*?(<a .*?><img.*?><\\/a>|<img.*?>)?\\s*<\\/p>/s', '<div class="figure">$1</div>', get_the_content())); ?>",
+	"image" 		: "<?php echo esc_html($event->data->featured_image['full']); ?>",
+	"name" 			: "<?php esc_html_e(get_the_title()); ?>",
+	"url"			: "<?php the_permalink(); ?>"
+}
+</script>

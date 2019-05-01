@@ -1,358 +1,548 @@
 (function () { var require = undefined; var define = undefined; (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-'use strict';
+'use strict'; // deps & vars
 
-// deps & vars
+var _conditionalElements = _interopRequireDefault(require("./forms/conditional-elements.js"));
 
-var _conditionalElements = require('./forms/conditional-elements.js');
-
-var _conditionalElements2 = _interopRequireDefault(_conditionalElements);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var mc4wp = window.mc4wp || {};
-var Gator = require('gator');
-var forms = require('./forms/forms.js');
-var config = window.mc4wp_forms_config || {};
-var scrollToElement = require('scroll-to-element');
 
+var Gator = require('gator');
+
+var forms = require('./forms/forms.js');
+
+var config = window.mc4wp_forms_config || {};
+
+var scrollToElement = require('scroll-to-element');
 
 // funcs
 function scrollToForm(form) {
-	var animate = config.auto_scroll === 'animated';
-
-	scrollToElement(form.element, {
-		duration: animate ? 800 : 1,
-		alignment: 'middle'
-	});
+  var animate = config.auto_scroll === 'animated';
+  scrollToElement(form.element, {
+    duration: animate ? 800 : 1,
+    alignment: 'middle'
+  });
 }
 
 function handleFormRequest(form, eventName, errors, data) {
-	var timeStart = Date.now();
-	var pageHeight = document.body.clientHeight;
+  var timeStart = Date.now();
+  var pageHeight = document.body.clientHeight; // re-populate form
 
-	// re-populate form
-	if (errors) {
-		form.setData(data);
-	}
+  if (errors) {
+    form.setData(data);
+  } // scroll to form
 
-	// scroll to form
-	if (window.scrollY <= 10 && config.auto_scroll) {
-		scrollToForm(form);
-	}
 
-	// trigger events on window.load so all other scripts have loaded
-	window.addEventListener('load', function () {
-		// trigger events
-		forms.trigger('submitted', [form]);
-		forms.trigger(form.id + '.submitted', [form]);
+  if (window.scrollY <= 10 && config.auto_scroll) {
+    scrollToForm(form);
+  } // trigger events on window.load so all other scripts have loaded
 
-		if (errors) {
-			forms.trigger('error', [form, errors]);
-			forms.trigger(form.id + '.error', [form, errors]);
-		} else {
-			// form was successfully submitted
-			forms.trigger('success', [form, data]);
-			forms.trigger(form.id + '.success', [form, data]);
 
-			// subscribed / unsubscribed
-			forms.trigger(eventName, [form, data]);
-			forms.trigger(form.id + "." + eventName, [form, data]);
+  window.addEventListener('load', function () {
+    // trigger events
+    forms.trigger(form.id + '.submitted', [form]);
+    forms.trigger('submitted', [form]);
 
-			// for BC: always trigger "subscribed" event when firing "updated_subscriber" event
-			if (eventName === 'updated_subscriber') {
-				forms.trigger('subscribed', [form, data, true]);
-				forms.trigger(form.id + "." + "subscribed", [form, data, true]);
-			}
-		}
+    if (errors) {
+      forms.trigger(form.id + '.error', [form, errors]);
+      forms.trigger('error', [form, errors]);
+    } else {
+      // form was successfully submitted
+      forms.trigger(form.id + '.success', [form, data]);
+      forms.trigger('success', [form, data]); // subscribed / unsubscribed
 
-		// scroll to form again if page height changed since last scroll, eg because of slow loading images
-		// (only if load didn't take more than 0.8 seconds to prevent overtaking user scroll)
-		var timeElapsed = Date.now() - timeStart;
-		if (config.auto_scroll && timeElapsed > 1000 && timeElapsed < 2000 && document.body.clientHeight != pageHeight) {
-			scrollToForm(form);
-		}
-	});
-}
+      forms.trigger(form.id + "." + eventName, [form, data]);
+      forms.trigger(eventName, [form, data]); // for BC: always trigger "subscribed" event when firing "updated_subscriber" event
 
-// Bind browser events to form events (using delegation)
+      if (eventName === 'updated_subscriber') {
+        forms.trigger(form.id + "." + "subscribed", [form, data, true]);
+        forms.trigger('subscribed', [form, data, true]);
+      }
+    } // scroll to form again if page height changed since last scroll, eg because of slow loading images
+    // (only if load didn't take more than 0.8 seconds to prevent overtaking user scroll)
+
+
+    var timeElapsed = Date.now() - timeStart;
+
+    if (config.auto_scroll && timeElapsed > 1000 && timeElapsed < 2000 && document.body.clientHeight !== pageHeight) {
+      scrollToForm(form);
+    }
+  });
+} // Bind browser events to form events (using delegation)
+
+
 Gator(document.body).on('submit', '.mc4wp-form', function (event) {
-	var form = forms.getByElement(event.target || event.srcElement);
-	forms.trigger('submit', [form, event]);
-	forms.trigger(form.id + '.submit', [form, event]);
-});
+  var form = forms.getByElement(event.target || event.srcElement);
 
+  if (!event.defaultPrevented) {
+    forms.trigger(form.id + '.submit', [form, event]);
+  }
+
+  if (!event.defaultPrevented) {
+    forms.trigger('submit', [form, event]);
+  }
+});
 Gator(document.body).on('focus', '.mc4wp-form', function (event) {
-	var form = forms.getByElement(event.target || event.srcElement);
+  var form = forms.getByElement(event.target || event.srcElement);
 
-	if (!form.started) {
-		forms.trigger('started', [form, event]);
-		forms.trigger(form.id + '.started', [form, event]);
-		form.started = true;
-	}
+  if (!form.started) {
+    forms.trigger(form.id + '.started', [form, event]);
+    forms.trigger('started', [form, event]);
+    form.started = true;
+  }
 });
-
 Gator(document.body).on('change', '.mc4wp-form', function (event) {
-	var form = forms.getByElement(event.target || event.srcElement);
-	forms.trigger('change', [form, event]);
-	forms.trigger(form.id + '.change', [form, event]);
-});
+  var form = forms.getByElement(event.target || event.srcElement);
+  forms.trigger('change', [form, event]);
+  forms.trigger(form.id + '.change', [form, event]);
+}); // init conditional elements
 
-// init conditional elements
-_conditionalElements2.default.init();
+_conditionalElements["default"].init(); // register early listeners
 
-// register early listeners
+
 if (mc4wp.listeners) {
-	var listeners = mc4wp.listeners;
-	for (var i = 0; i < listeners.length; i++) {
-		forms.on(listeners[i].event, listeners[i].callback);
-	}
+  var listeners = mc4wp.listeners;
 
-	// delete temp listeners array, so we don't bind twice
-	delete mc4wp["listeners"];
-}
+  for (var i = 0; i < listeners.length; i++) {
+    forms.on(listeners[i].event, listeners[i].callback);
+  } // delete temp listeners array, so we don't bind twice
 
-// expose forms object
-mc4wp.forms = forms;
 
-// handle submitted form
+  delete mc4wp["listeners"];
+} // expose forms object
+
+
+mc4wp.forms = forms; // handle submitted form
+
 if (config.submitted_form) {
-	var formConfig = config.submitted_form,
-	    element = document.getElementById(formConfig.element_id),
-	    form = forms.getByElement(element);
+  var formConfig = config.submitted_form,
+      element = document.getElementById(formConfig.element_id),
+      form = forms.getByElement(element);
+  handleFormRequest(form, formConfig.event, formConfig.errors, formConfig.data);
+} // expose mc4wp object globally
 
-	handleFormRequest(form, formConfig.event, formConfig.errors, formConfig.data);
-}
 
-// expose mc4wp object globally
 window.mc4wp = mc4wp;
 
-},{"./forms/conditional-elements.js":2,"./forms/forms.js":4,"gator":6,"scroll-to-element":13}],2:[function(require,module,exports){
+},{"./forms/conditional-elements.js":2,"./forms/forms.js":4,"gator":7,"scroll-to-element":12}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
+exports["default"] = void 0;
+
 function getFieldValues(form, fieldName) {
-    var values = [];
-    var inputs = form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+  var values = [];
+  var inputs = form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
 
-    for (var i = 0; i < inputs.length; i++) {
-        var input = inputs[i];
-        var type = input.getAttribute("type");
+  for (var i = 0; i < inputs.length; i++) {
+    var input = inputs[i];
+    var type = input.getAttribute("type");
 
-        if ((type === "radio" || type === "checkbox") && !input.checked) {
-            continue;
-        }
-
-        values.push(input.value);
+    if ((type === "radio" || type === "checkbox") && !input.checked) {
+      continue;
     }
 
-    return values;
+    values.push(input.value);
+  }
+
+  return values;
 }
 
 function findForm(element) {
-    var bubbleElement = element;
+  var bubbleElement = element;
 
-    while (bubbleElement.parentElement) {
-        bubbleElement = bubbleElement.parentElement;
+  while (bubbleElement.parentElement) {
+    bubbleElement = bubbleElement.parentElement;
 
-        if (bubbleElement.tagName === 'FORM') {
-            return bubbleElement;
-        }
+    if (bubbleElement.tagName === 'FORM') {
+      return bubbleElement;
     }
+  }
 
-    return null;
+  return null;
 }
 
 function toggleElement(el) {
-    var show = !!el.getAttribute('data-show-if');
-    var conditions = show ? el.getAttribute('data-show-if').split(':') : el.getAttribute('data-hide-if').split(':');
-    var fieldName = conditions[0];
-    var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
-    var form = findForm(el);
-    var values = getFieldValues(form, fieldName);
+  var show = !!el.getAttribute('data-show-if');
+  var conditions = show ? el.getAttribute('data-show-if').split(':') : el.getAttribute('data-hide-if').split(':');
+  var fieldName = conditions[0];
+  var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
+  var form = findForm(el);
+  var values = getFieldValues(form, fieldName); // determine whether condition is met
 
-    // determine whether condition is met
-    var conditionMet = false;
-    for (var i = 0; i < values.length; i++) {
-        var value = values[i];
+  var conditionMet = false;
 
-        // condition is met when value is in array of expected values OR expected values contains a wildcard and value is not empty
-        conditionMet = expectedValues.indexOf(value) > -1 || expectedValues.indexOf('*') > -1 && value.length > 0;
+  for (var i = 0; i < values.length; i++) {
+    var value = values[i]; // condition is met when value is in array of expected values OR expected values contains a wildcard and value is not empty
 
-        if (conditionMet) {
-            break;
-        }
+    conditionMet = expectedValues.indexOf(value) > -1 || expectedValues.indexOf('*') > -1 && value.length > 0;
+
+    if (conditionMet) {
+      break;
+    }
+  } // toggle element display
+
+
+  if (show) {
+    el.style.display = conditionMet ? '' : 'none';
+  } else {
+    el.style.display = conditionMet ? 'none' : '';
+  } // find all inputs inside this element and toggle [required] attr (to prevent HTML5 validation on hidden elements)
+
+
+  var inputs = el.querySelectorAll('input, select, textarea');
+  [].forEach.call(inputs, function (el) {
+    if ((conditionMet || show) && el.getAttribute('data-was-required')) {
+      el.required = true;
+      el.removeAttribute('data-was-required');
     }
 
-    // toggle element display
-    if (show) {
-        el.style.display = conditionMet ? '' : 'none';
-    } else {
-        el.style.display = conditionMet ? 'none' : '';
+    if ((!conditionMet || !show) && el.required) {
+      el.setAttribute('data-was-required', "true");
+      el.required = false;
     }
+  });
+} // evaluate conditional elements globally
 
-    // find all inputs inside this element and toggle [required] attr (to prevent HTML5 validation on hidden elements)
-    var inputs = el.querySelectorAll('input, select, textarea');
-    [].forEach.call(inputs, function (el) {
-        if ((conditionMet || show) && el.getAttribute('data-was-required')) {
-            el.required = true;
-            el.removeAttribute('data-was-required');
-        }
 
-        if ((!conditionMet || !show) && el.required) {
-            el.setAttribute('data-was-required', "true");
-            el.required = false;
-        }
-    });
-}
-
-// evaluate conditional elements globally
 function evaluate() {
-    var elements = document.querySelectorAll('.mc4wp-form [data-show-if], .mc4wp-form [data-hide-if]');
-    [].forEach.call(elements, toggleElement);
-}
+  var elements = document.querySelectorAll('.mc4wp-form [data-show-if], .mc4wp-form [data-hide-if]');
+  [].forEach.call(elements, toggleElement);
+} // re-evaluate conditional elements for change events on forms
 
-// re-evaluate conditional elements for change events on forms
+
 function handleInputEvent(evt) {
-    if (!evt.target || !evt.target.form || evt.target.form.className.indexOf('mc4wp-form') < 0) {
-        return;
-    }
+  if (!evt.target || !evt.target.form || evt.target.form.className.indexOf('mc4wp-form') < 0) {
+    return;
+  }
 
-    var form = evt.target.form;
-    var elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
-    [].forEach.call(elements, toggleElement);
+  var form = evt.target.form;
+  var elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
+  [].forEach.call(elements, toggleElement);
 }
 
-exports.default = {
-    'init': function init() {
-        document.addEventListener('keyup', handleInputEvent, true);
-        document.addEventListener('change', handleInputEvent, true);
-        document.addEventListener('mc4wp-refresh', evaluate, true);
-        window.addEventListener('load', evaluate);
-        evaluate();
-    }
+var _default = {
+  'init': function init() {
+    document.addEventListener('keyup', handleInputEvent, true);
+    document.addEventListener('change', handleInputEvent, true);
+    document.addEventListener('mc4wp-refresh', evaluate, true);
+    window.addEventListener('load', evaluate);
+    evaluate();
+  }
 };
+exports["default"] = _default;
 
 },{}],3:[function(require,module,exports){
 'use strict';
 
 var serialize = require('form-serialize');
+
 var populate = require('populate.js');
 
 var Form = function Form(id, element) {
-	this.id = id;
-	this.element = element || document.createElement('form');
-	this.name = this.element.getAttribute('data-name') || "Form #" + this.id;
-	this.errors = [];
-	this.started = false;
+  this.id = id;
+  this.element = element || document.createElement('form');
+  this.name = this.element.getAttribute('data-name') || "Form #" + this.id;
+  this.errors = [];
+  this.started = false;
 };
 
 Form.prototype.setData = function (data) {
-	try {
-		populate(this.element, data);
-	} catch (e) {
-		console.error(e);
-	}
+  try {
+    populate(this.element, data);
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 Form.prototype.getData = function () {
-	return serialize(this.element, { hash: true, empty: true });
+  return serialize(this.element, {
+    hash: true,
+    empty: true
+  });
 };
 
 Form.prototype.getSerializedData = function () {
-	return serialize(this.element, { hash: false, empty: true });
+  return serialize(this.element, {
+    hash: false,
+    empty: true
+  });
 };
 
 Form.prototype.setResponse = function (msg) {
-	this.element.querySelector('.mc4wp-response').innerHTML = msg;
-};
+  this.element.querySelector('.mc4wp-response').innerHTML = msg;
+}; // revert back to original state
 
-// revert back to original state
+
 Form.prototype.reset = function () {
-	this.setResponse('');
-	this.element.querySelector('.mc4wp-form-fields').style.display = '';
-	this.element.reset();
+  this.setResponse('');
+  this.element.querySelector('.mc4wp-form-fields').style.display = '';
+  this.element.reset();
 };
 
 module.exports = Form;
 
-},{"form-serialize":5,"populate.js":7}],4:[function(require,module,exports){
-'use strict';
-
-// deps
+},{"form-serialize":6,"populate.js":9}],4:[function(require,module,exports){
+'use strict'; // deps
 
 var EventEmitter = require('wolfy87-eventemitter');
-var Form = require('./form.js');
 
-// variables
+var Form = require('./form.js'); // variables
+
+
 var events = new EventEmitter();
-var forms = [];
-
-// get form by its id
+var forms = []; // get form by its id
 // please note that this will get the FIRST occurence of the form with that ID on the page
+
 function get(formId) {
+  formId = parseInt(formId); // do we have form for this one already?
 
-	// do we have form for this one already?
-	for (var i = 0; i < forms.length; i++) {
-		if (forms[i].id == formId) {
-			return forms[i];
-		}
-	}
+  for (var i = 0; i < forms.length; i++) {
+    if (forms[i].id === formId) {
+      return forms[i];
+    }
+  } // try to create from first occurence of this element
 
-	// try to create from first occurence of this element
-	var formElement = document.querySelector('.mc4wp-form-' + formId);
-	return createFromElement(formElement, formId);
-}
 
-// get form by <form> element (or any input in form)
+  var formElement = document.querySelector('.mc4wp-form-' + formId);
+  return createFromElement(formElement, formId);
+} // get form by <form> element (or any input in form)
+
+
 function getByElement(element) {
-	var formElement = element.form || element;
+  var formElement = element.form || element;
 
-	for (var i = 0; i < forms.length; i++) {
-		if (forms[i].element == formElement) {
-			return forms[i];
-		}
-	}
+  for (var i = 0; i < forms.length; i++) {
+    if (forms[i].element === formElement) {
+      return forms[i];
+    }
+  }
 
-	return createFromElement(formElement);
-}
+  return createFromElement(formElement);
+} // create form object from <form> element
 
-// create form object from <form> element
+
 function createFromElement(formElement, id) {
-	id = id || parseInt(formElement.getAttribute('data-id')) || 0;
-	var form = new Form(id, formElement);
-	forms.push(form);
-	return form;
+  id = id || parseInt(formElement.getAttribute('data-id')) || 0;
+  var form = new Form(id, formElement);
+  forms.push(form);
+  return form;
 }
 
 function all() {
-	return forms;
+  return forms;
 }
 
 function triggerEvent(eventName, eventArgs) {
-	if (eventName === 'submit') {
-		// don't spin up new thread for submit event as we want to preventDefault()... 
-		// TODO: Fix that in Premium.
-		events.trigger(eventName, eventArgs);
-	} else {
-		// process in separate thread to prevent errors from breaking core functionality
-		window.setTimeout(function () {
-			events.trigger(eventName, eventArgs);
-		}, 1);
-	}
+  if (eventName === 'submit' || eventName.indexOf('.submit') > 0) {
+    // don't spin up new thread for submit event as we want to preventDefault()... 
+    events.trigger(eventName, eventArgs);
+  } else {
+    // process in separate thread to prevent errors from breaking core functionality
+    window.setTimeout(function () {
+      events.trigger(eventName, eventArgs);
+    }, 1);
+  }
 }
 
 module.exports = {
-	"all": all,
-	"get": get,
-	"getByElement": getByElement,
-	"on": events.on.bind(events),
-	"trigger": triggerEvent,
-	"off": events.off.bind(events)
+  "all": all,
+  "get": get,
+  "getByElement": getByElement,
+  "on": events.on.bind(events),
+  "trigger": triggerEvent,
+  "off": events.off.bind(events)
 };
 
 },{"./form.js":3,"wolfy87-eventemitter":16}],5:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],6:[function(require,module,exports){
 // get successful control from form and assemble into object
 // http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2
 
@@ -614,7 +804,7 @@ function str_serialize(result, key, value) {
 
 module.exports = serialize;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
  * Copyright 2014 Craig Campbell
  *
@@ -982,7 +1172,47 @@ module.exports = serialize;
     window.Gator = Gator;
 }) ();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+(function (process){
+// Generated by CoffeeScript 1.12.2
+(function() {
+  var getNanoSeconds, hrtime, loadTime, moduleLoadTime, nodeLoadTime, upTime;
+
+  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
+    module.exports = function() {
+      return performance.now();
+    };
+  } else if ((typeof process !== "undefined" && process !== null) && process.hrtime) {
+    module.exports = function() {
+      return (getNanoSeconds() - nodeLoadTime) / 1e6;
+    };
+    hrtime = process.hrtime;
+    getNanoSeconds = function() {
+      var hr;
+      hr = hrtime();
+      return hr[0] * 1e9 + hr[1];
+    };
+    moduleLoadTime = getNanoSeconds();
+    upTime = process.uptime() * 1e9;
+    nodeLoadTime = moduleLoadTime - upTime;
+  } else if (Date.now) {
+    module.exports = function() {
+      return Date.now() - loadTime;
+    };
+    loadTime = Date.now();
+  } else {
+    module.exports = function() {
+      return new Date().getTime() - loadTime;
+    };
+    loadTime = new Date().getTime();
+  }
+
+}).call(this);
+
+
+
+}).call(this,require('_process'))
+},{"_process":5}],9:[function(require,module,exports){
 /*! populate.js v1.0.2 by @dannyvankooten | MIT license */
 ;(function(root) {
 
@@ -1078,312 +1308,7 @@ module.exports = serialize;
 
 }(this));
 
-},{}],8:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],9:[function(require,module,exports){
-(function (global){
-var now = require('performance-now')
-  , root = typeof window === 'undefined' ? global : window
-  , vendors = ['moz', 'webkit']
-  , suffix = 'AnimationFrame'
-  , raf = root['request' + suffix]
-  , caf = root['cancel' + suffix] || root['cancelRequest' + suffix]
-
-for(var i = 0; !raf && i < vendors.length; i++) {
-  raf = root[vendors[i] + 'Request' + suffix]
-  caf = root[vendors[i] + 'Cancel' + suffix]
-      || root[vendors[i] + 'CancelRequest' + suffix]
-}
-
-// Some versions of FF have rAF but not cAF
-if(!raf || !caf) {
-  var last = 0
-    , id = 0
-    , queue = []
-    , frameDuration = 1000 / 60
-
-  raf = function(callback) {
-    if(queue.length === 0) {
-      var _now = now()
-        , next = Math.max(0, frameDuration - (_now - last))
-      last = next + _now
-      setTimeout(function() {
-        var cp = queue.slice(0)
-        // Clear queue here to prevent
-        // callbacks from appending listeners
-        // to the current frame's queue
-        queue.length = 0
-        for(var i = 0; i < cp.length; i++) {
-          if(!cp[i].cancelled) {
-            try{
-              cp[i].callback(last)
-            } catch(e) {
-              setTimeout(function() { throw e }, 0)
-            }
-          }
-        }
-      }, Math.round(next))
-    }
-    queue.push({
-      handle: ++id,
-      callback: callback,
-      cancelled: false
-    })
-    return id
-  }
-
-  caf = function(handle) {
-    for(var i = 0; i < queue.length; i++) {
-      if(queue[i].handle === handle) {
-        queue[i].cancelled = true
-      }
-    }
-  }
-}
-
-module.exports = function(fn) {
-  // Wrap in a new function to prevent
-  // `cancel` potentially being assigned
-  // to the native rAF function
-  return raf.call(root, fn)
-}
-module.exports.cancel = function() {
-  caf.apply(root, arguments)
-}
-module.exports.polyfill = function(object) {
-  if (!object) {
-    object = root;
-  }
-  object.requestAnimationFrame = raf
-  object.cancelAnimationFrame = caf
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"performance-now":10}],10:[function(require,module,exports){
-(function (process){
-// Generated by CoffeeScript 1.12.2
-(function() {
-  var getNanoSeconds, hrtime, loadTime, moduleLoadTime, nodeLoadTime, upTime;
-
-  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
-    module.exports = function() {
-      return performance.now();
-    };
-  } else if ((typeof process !== "undefined" && process !== null) && process.hrtime) {
-    module.exports = function() {
-      return (getNanoSeconds() - nodeLoadTime) / 1e6;
-    };
-    hrtime = process.hrtime;
-    getNanoSeconds = function() {
-      var hr;
-      hr = hrtime();
-      return hr[0] * 1e9 + hr[1];
-    };
-    moduleLoadTime = getNanoSeconds();
-    upTime = process.uptime() * 1e9;
-    nodeLoadTime = moduleLoadTime - upTime;
-  } else if (Date.now) {
-    module.exports = function() {
-      return Date.now() - loadTime;
-    };
-    loadTime = Date.now();
-  } else {
-    module.exports = function() {
-      return new Date().getTime() - loadTime;
-    };
-    loadTime = new Date().getTime();
-  }
-
-}).call(this);
-
-
-
-}).call(this,require('_process'))
-},{"_process":8}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // easing functions from "Tween.js"
 exports.linear = function(n){
   return n;
@@ -1583,7 +1508,7 @@ exports['in-elastic'] = exports.inElastic;
 exports['out-elastic'] = exports.outElastic;
 exports['in-out-elastic'] = exports.inOutElastic;
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 function Emitter(obj) {
   if (obj) return mixin(obj);
 };
@@ -1683,7 +1608,7 @@ if (typeof module !== 'undefined') {
   module.exports = Emitter;
 }
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var scroll = require('./scroll-to');
 
 function calculateScrollOffset(elem, additionalOffset, alignment) {
@@ -1717,7 +1642,86 @@ module.exports = function (elem, options) {
   if (elem) return scroll(0, calculateScrollOffset(elem, options.offset, options.align), options);
 };
 
-},{"./scroll-to":14}],14:[function(require,module,exports){
+},{"./scroll-to":14}],13:[function(require,module,exports){
+(function (global){
+var now = require('performance-now')
+  , root = typeof window === 'undefined' ? global : window
+  , vendors = ['moz', 'webkit']
+  , suffix = 'AnimationFrame'
+  , raf = root['request' + suffix]
+  , caf = root['cancel' + suffix] || root['cancelRequest' + suffix]
+
+for(var i = 0; !raf && i < vendors.length; i++) {
+  raf = root[vendors[i] + 'Request' + suffix]
+  caf = root[vendors[i] + 'Cancel' + suffix]
+      || root[vendors[i] + 'CancelRequest' + suffix]
+}
+
+// Some versions of FF have rAF but not cAF
+if(!raf || !caf) {
+  var last = 0
+    , id = 0
+    , queue = []
+    , frameDuration = 1000 / 60
+
+  raf = function(callback) {
+    if(queue.length === 0) {
+      var _now = now()
+        , next = Math.max(0, frameDuration - (_now - last))
+      last = next + _now
+      setTimeout(function() {
+        var cp = queue.slice(0)
+        // Clear queue here to prevent
+        // callbacks from appending listeners
+        // to the current frame's queue
+        queue.length = 0
+        for(var i = 0; i < cp.length; i++) {
+          if(!cp[i].cancelled) {
+            try{
+              cp[i].callback(last)
+            } catch(e) {
+              setTimeout(function() { throw e }, 0)
+            }
+          }
+        }
+      }, Math.round(next))
+    }
+    queue.push({
+      handle: ++id,
+      callback: callback,
+      cancelled: false
+    })
+    return id
+  }
+
+  caf = function(handle) {
+    for(var i = 0; i < queue.length; i++) {
+      if(queue[i].handle === handle) {
+        queue[i].cancelled = true
+      }
+    }
+  }
+}
+
+module.exports = function(fn) {
+  // Wrap in a new function to prevent
+  // `cancel` potentially being assigned
+  // to the native rAF function
+  return raf.call(root, fn)
+}
+module.exports.cancel = function() {
+  caf.apply(root, arguments)
+}
+module.exports.polyfill = function(object) {
+  if (!object) {
+    object = root;
+  }
+  object.requestAnimationFrame = raf
+  object.cancelAnimationFrame = caf
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"performance-now":8}],14:[function(require,module,exports){
 var Tween = require('./tween');
 var raf = require('raf');
 
@@ -1762,9 +1766,16 @@ function scrollTo(x, y, options) {
 
 module.exports = scrollTo;
 
-},{"./tween":15,"raf":9}],15:[function(require,module,exports){
+},{"./tween":15,"raf":13}],15:[function(require,module,exports){
 var ease = require('./ease');
 var Emitter = require('./emitter');
+
+function extend(obj, src) {
+  for (var key in src) {
+    if (src.hasOwnProperty(key)) obj[key] = src[key];
+  }
+  return obj;
+}
 
 function Tween(obj) {
   if (!(this instanceof Tween)) return new Tween(obj);
@@ -1777,7 +1788,7 @@ Emitter(Tween.prototype);
 
 Tween.prototype.reset = function(){
   this.isArray = Object.prototype.toString.call(this._from) === '[object Array]';
-  this._curr = Object.assign({}, this._from);
+  this._curr = extend({}, this._from);
   this._done = false;
   this._start = Date.now();
   return this;
@@ -1856,11 +1867,12 @@ Tween.prototype.update = function(fn){
 };
 
 module.exports = Tween;
-},{"./ease":11,"./emitter":12}],16:[function(require,module,exports){
+
+},{"./ease":10,"./emitter":11}],16:[function(require,module,exports){
 /*!
- * EventEmitter v5.2.5 - git.io/ee
+ * EventEmitter v5.2.6 - git.io/ee
  * Unlicense - http://unlicense.org/
- * Oliver Caldwell - http://oli.me.uk/
+ * Oliver Caldwell - https://oli.me.uk/
  * @preserve
  */
 

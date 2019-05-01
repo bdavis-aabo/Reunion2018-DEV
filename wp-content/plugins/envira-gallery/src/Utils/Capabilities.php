@@ -7,6 +7,7 @@
  * @package Envira_Gallery
  * @author  Envira Team
  */
+
 namespace Envira\Utils;
 
 // Exit if accessed directly.
@@ -15,6 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 
 }
+
+/**
+ * Capabilities class.
+ *
+ * @since 1.3.7
+ *
+ * @package Envira_Gallery
+ * @author  Envira Team
+ */
 class Capabilities {
 
 	/**
@@ -24,7 +34,7 @@ class Capabilities {
 	 */
 	public function __construct() {
 
-		// Actions
+		// Actions.
 		add_action( 'admin_init', array( $this, 'add_capabilities' ) );
 
 	}
@@ -47,7 +57,7 @@ class Capabilities {
 		}
 
 		// If here, we need to assign capabilities
-		// Define the roles we want to assign capabilities to
+		// Define the roles we want to assign capabilities to.
 		$roles = array(
 			'administrator',
 			'editor',
@@ -56,15 +66,15 @@ class Capabilities {
 			'subscriber',
 		);
 
-		// Iterate through roles
+		// Iterate through roles.
 		foreach ( $roles as $role_name ) {
-			// Properly get the role as WP_Role object
+			// Properly get the role as WP_Role object.
 			$role = get_role( $role_name );
 			if ( ! is_object( $role ) ) {
 				continue;
 			}
 
-			// Map this Role's Post capabilities to our Envira Gallery capabilities
+			// Map this Role's Post capabilities to our Envira Gallery capabilities.
 			$caps = array(
 				'edit_envira_gallery'               => $role->has_cap( 'edit_posts' ),
 				'read_envira_gallery'               => $role->has_cap( 'read' ),
@@ -85,9 +95,9 @@ class Capabilities {
 				'create_envira_galleries'           => $role->has_cap( 'edit_posts' ),
 			);
 
-			// Add the above Envira capabilities to this Role
+			// Add the above Envira capabilities to this Role.
 			foreach ( $caps as $envira_cap => $value ) {
-				// Don't add if value is false
+				// Don't add if value is false.
 				if ( ! $value ) {
 					continue;
 				}

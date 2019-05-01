@@ -1,39 +1,40 @@
-// ==========================================================================
+;// ==========================================================================
 //
 // Media
 // Adds additional media type support
 //
 // ==========================================================================
-;(function ($) {
+(function ($) {
 
 	'use strict';
 
 	// Formats matching url to final form
-
 	var format = function (url, rez, params) {
-		if ( !url ) {
+		if ( ! url ) {
 			return;
 		}
 
 		params = params || '';
 
-		if ( $.type(params) === "object" ) {
-			params = $.param(params, true);
+		if ( $.type( params ) === "object" ) {
+			params = $.param( params, true );
 		}
 
-		$.each(rez, function (key, value) {
-			url = url.replace('$' + key, value || '');
-		});
+		$.each(
+			rez,
+			function (key, value) {
+				url = url.replace( '$' + key, value || '' );
+			}
+		);
 
 		if (params.length) {
-			url += (url.indexOf('?') > 0 ? '&' : '?') + params;
+			url += (url.indexOf( '?' ) > 0 ? '&' : '?') + params;
 		}
 
 		return url;
 	};
 
 	// Object containing properties for each media type
-
 	var defaults = {
 		youtube_playlist : {
 			matcher : /^http:\/\/(?:www\.)?youtube\.com\/watch\?((v=[^&\s]*&list=[^&\s]*)|(list=[^&\s]*&v=[^&\s]*))(&[^&\s]*)*$/,
@@ -120,7 +121,7 @@
 			matcher : /(instagr\.am|instagram\.com)\/tv\/([a-zA-Z0-9_\-]+)\/?/i,
 			type    : 'iframe',
 			url     : '//$1/p/$2/media/?size=l'
-    	},
+		},
 
 		wistia : {
 			matcher : /wistia.com\/medias\/(.*)\/?(.*)/,
@@ -150,7 +151,7 @@
 			matcher : /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(((maps\/(place\/(.*)\/)?\@(.*),(\d+.?\d+?)z))|(\?ll=))(.*)?/i,
 			type    : 'iframe',
 			url     : function (rez) {
-				return '//maps.google.' + rez[2] + '/?ll=' + ( rez[9] ? rez[9] + '&z=' + Math.floor(  rez[10]  ) + ( rez[12] ? rez[12].replace(/^\//, "&") : '' )  : rez[12] ) + '&output=' + ( rez[12] && rez[12].indexOf('layer=c') > 0 ? 'svembed' : 'embed' );
+				return '//maps.google.' + rez[2] + '/?ll=' + ( rez[9] ? rez[9] + '&z=' + Math.floor( rez[10] ) + ( rez[12] ? rez[12].replace( /^\//, "&" ) : '' ) : rez[12] ) + '&output=' + ( rez[12] && rez[12].indexOf( 'layer=c' ) > 0 ? 'svembed' : 'embed' );
 			}
 		},
 
@@ -162,125 +163,136 @@
 			matcher : /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(maps\/search\/)(.*)/i,
 			type    : 'iframe',
 			url     : function (rez) {
-				return '//maps.google.' + rez[2] + '/maps?q=' + rez[5].replace('query=', 'q=').replace('api=1', '') + '&output=embed';
+				return '//maps.google.' + rez[2] + '/maps?q=' + rez[5].replace( 'query=', 'q=' ).replace( 'api=1', '' ) + '&output=embed';
 			}
 		}
 	};
-	
-	$(document).on('onInit.eb', function (e, instance) {
 
-		$.each(instance.group, function( i, item ) {
+	$( document ).on(
+		'onInit.eb',
+		function (e, instance) {
 
-			// console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-			// console.log(item.src);
-			// console.log(item);
+			$.each(
+				instance.group,
+				function( i, item ) {
 
-			var url_to_check  = item.src || '',
-				type = false,
-				subtype = false,
-				url = false,
-				media,
-				thumb,
-				rez,
-				params,
-				urlParams,
-				o,
-				provider = false;
+					// console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+					// console.log(item.src);
+					// console.log(item);
+					var url_to_check = item.src || '',
+					type             = false,
+					subtype          = false,
+					url              = false,
+					media,
+					thumb,
+					rez,
+					params,
+					urlParams,
+					o,
+					provider         = false;
 
-			// Skip items that already have content type
-			if ( item.type ) {
-				return;
-			}
-
-			media = $.extend( true, {}, defaults, item.opts.media );
-
-			// Look for any matching media type
-			$.each(media, function ( n, el ) {
-				// console.log( 'provider: ' + n + ' - matcher: ' + el.matcher + ' - url: ' + url_to_check + ' - url: ' + url );
-				rez = url_to_check.match(el.matcher);
-				o   = {};
-
-				if (!rez) {
-					return;
-				}
-
-				provider = n;
-
-				// console.log ('MATCHED!!!!!!! url_to_check ' + url_to_check );
-				// console.log ('MATCHED!!!!!!! provider ' + ' ' + provider);
-				// console.log ('MATCHED!!!!!!! rez ' + ' ' + rez);
-				// console.log ('MATCHED!!!!!!! el.url ' + ' ' + el.url);
-
-				type = el.type;
-				if ( el.subtype !== undefined ) {
-					subtype = el.subtype;
-				}
-
-				if ( el.paramPlace && rez[ el.paramPlace ] ) {
-					urlParams = rez[ el.paramPlace ];
-
-					if ( urlParams[ 0 ] == '?' ) {
-						urlParams = urlParams.substring(1);
+					// Skip items that already have content type
+					if ( item.type ) {
+						return;
 					}
 
-					urlParams = urlParams.split('&');
+					media = $.extend( true, {}, defaults, item.opts.media );
 
-					for ( var m = 0; m < urlParams.length; ++m ) {
-						var p = urlParams[ m ].split('=', 2);
+					// Look for any matching media type
+					$.each(
+						media,
+						function ( n, el ) {
+							// console.log( 'provider: ' + n + ' - matcher: ' + el.matcher + ' - url: ' + url_to_check + ' - url: ' + url );
+							rez = url_to_check.match( el.matcher );
+							o   = {};
 
-						if ( p.length == 2 ) {
-							o[ p[0] ] = decodeURIComponent( p[1].replace(/\+/g, " ") );
-						}
-					}
-				}
-
-				params = $.extend( true, {}, el.params, item.opts[ n ], o );
-
-				url   = $.type(el.url) === "function" ? el.url.call(this, rez, params, item) : format(el.url, rez, params);
-				thumb = $.type(el.thumb) === "function" ? el.thumb.call(this, rez, params, item) : format(el.thumb, rez);
-
-				if ( provider === 'vimeo' ) {
-					url = url.replace('&%23', '#');
-				}
-
-				return false;
-			});
-
-			if ( type ) {
-				// console.log ('MATCHED URL!!!!!!! ' + url);
-				item.src  = url;
-				item.type = type;
-				item.subtype = subtype;
-
-				if ( !item.opts.thumb && !( item.opts.$thumb && item.opts.$thumb.length ) ) {
-					item.opts.thumb = thumb;
-				}
-
-				if ( type === 'iframe' ) {
-					$.extend(true, item.opts, {
-						iframe : {
-							preload : false,
-							provider: provider,
-							attr : {
-								scrolling : "no"
+							if ( ! rez) {
+								return;
 							}
+
+							provider = n;
+
+							// console.log ('MATCHED!!!!!!! url_to_check ' + url_to_check );
+							// console.log ('MATCHED!!!!!!! provider ' + ' ' + provider);
+							// console.log ('MATCHED!!!!!!! rez ' + ' ' + rez);
+							// console.log ('MATCHED!!!!!!! el.url ' + ' ' + el.url);
+							type = el.type;
+							if ( el.subtype !== undefined ) {
+								subtype = el.subtype;
+							}
+
+							if ( el.paramPlace && rez[ el.paramPlace ] ) {
+								urlParams = rez[ el.paramPlace ];
+
+								if ( urlParams[ 0 ] == '?' ) {
+									urlParams = urlParams.substring( 1 );
+								}
+
+								urlParams = urlParams.split( '&' );
+
+								for ( var m = 0; m < urlParams.length; ++m ) {
+									var p = urlParams[ m ].split( '=', 2 );
+
+									if ( p.length == 2 ) {
+										o[ p[0] ] = decodeURIComponent( p[1].replace( /\+/g, " " ) );
+									}
+								}
+							}
+
+							params = $.extend( true, {}, el.params, item.opts[ n ], o );
+
+							url   = $.type( el.url ) === "function" ? el.url.call( this, rez, params, item ) : format( el.url, rez, params );
+							thumb = $.type( el.thumb ) === "function" ? el.thumb.call( this, rez, params, item ) : format( el.thumb, rez );
+
+							if ( provider === 'vimeo' ) {
+								url = url.replace( '&%23', '#' );
+							}
+
+							return false;
 						}
-					});
+					);
 
-					item.contentProvider = provider;
+					if ( type ) {
+						// console.log ('MATCHED URL!!!!!!! ' + url);
+						item.src     = url;
+						item.type    = type;
+						item.subtype = subtype;
 
-					item.opts.slideClass += ' envirabox-slide--' + ( provider == 'gmap_place' || provider == 'gmap_search' ? 'map' : 'video' );
+						if ( ! item.opts.thumb && ! ( item.opts.$thumb && item.opts.$thumb.length ) ) {
+							item.opts.thumb = thumb;
+						}
+
+						if ( type === 'iframe' ) {
+							$.extend(
+								true,
+								item.opts,
+								{
+									iframe : {
+										preload : false,
+										provider: provider,
+										attr : {
+											scrolling : "no"
+										}
+									}
+								}
+							);
+
+							item.contentProvider = provider;
+
+							item.opts.slideClass += ' envirabox-slide--' + ( provider == 'gmap_place' || provider == 'gmap_search' ? 'map' : 'video' );
+						}
+
+					} else {
+
+						// If no content type is found, then set it to `image` as fallback
+						item.type = 'image';
+
+					}
+
 				}
+			);
 
-			} else {
-
-				// If no content type is found, then set it to `image` as fallback
-				item.type = 'image';
-				
-			}
-
-		});
-
-	});
+		}
+	);
 
 }(window.jQuery));

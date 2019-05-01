@@ -23,11 +23,11 @@ use Envira\Frontend\Background;
  * @since 1.7.0
  *
  * @access public
- * @param mixed $gallery_id
- * @return void
+ * @param intenger $gallery_id Gallery ID.
+ * @return bool
  */
 function envira_crop_images( $gallery_id ) {
-	// Bail if no gallery ID
+	// Bail if no gallery ID.
 	if ( ! isset( $gallery_id ) ) {
 		return false;
 	}
@@ -45,31 +45,31 @@ function envira_crop_images( $gallery_id ) {
 }
 
 /**
- * envira_resize_image function.
+ * Helper Method to resize Images.
  *
  * @since 1.7.0
  *
  * @access public
- * @param mixed  $url
- * @param mixed  $width (default: null)
- * @param mixed  $height (default: null)
- * @param bool   $crop (default: true)
- * @param string $align (default: 'c')
- * @param int    $quality (default: 100)
- * @param bool   $retina (default: false)
- * @param array  $data (default: array())
- * @param bool   $force_overwrite (default: false)
- * @return void
+ * @param string $url URL of image to resize.
+ * @param mixed  $width (default: null).
+ * @param mixed  $height (default: null).
+ * @param bool   $crop (default: true).
+ * @param string $align (default: 'c').
+ * @param int    $quality (default: 100).
+ * @param bool   $retina (default: false).
+ * @param array  $data (default: array()).
+ * @param bool   $force_overwrite (default: false).
+ * @return array
  */
 function envira_resize_image( $url, $width = null, $height = null, $crop = true, $align = 'c', $quality = 100, $retina = false, $data = array(), $force_overwrite = false ) {
 
 	// Get common vars.
 	$args = array( $url, $width, $height, $crop, $align, $quality, $retina, $data );
 
-	// Filter args
+	// Filter args.
 	$args = apply_filters( 'envira_gallery_resize_image_args', $args );
 
-	// Get image info
+	// Get image info.
 	$common = envira_get_image_info( $args );
 
 	// Unpack variables if an array, otherwise return WP_Error.

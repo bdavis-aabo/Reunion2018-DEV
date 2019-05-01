@@ -58,7 +58,6 @@ function mec_get_tickets_availability'.$uniqueid.'(event_id, date)
             
             for(ticket_id in data.availability)
             {
-                console.log(limit);
                 var limit = data.availability[ticket_id];
                 
                 jQuery("#mec_booking'.$uniqueid.' #mec_event_ticket"+ticket_id).addClass(".mec-event-ticket"+limit);
@@ -89,6 +88,13 @@ function mec_get_tickets_availability'.$uniqueid.'(event_id, date)
                     jQuery("#mec_booking'.$uniqueid.' #mec_event_ticket"+ticket_id+" .mec-book-ticket-limit").attr("max", limit);
                     jQuery("#mec_booking'.$uniqueid.' #mec_event_ticket"+ticket_id+" .mec-event-ticket-available span").html(limit);
                 }
+            }
+            
+            for(ticket_id in data.prices)
+            {
+                var price_label = data.prices[ticket_id];
+                
+                jQuery("#mec_booking'.$uniqueid.' #mec_event_ticket"+ticket_id+" .mec-event-ticket-price").html(price_label);
             }
         },
         error: function(jqXHR, textStatus, errorThrown)
@@ -247,15 +253,22 @@ function mec_book_form_submit'.$uniqueid.'()
     jQuery("#mec_book_form'.$uniqueid.' button[type=submit]").addClass("loading");
     jQuery("#mec_booking_message'.$uniqueid.'").removeClass("mec-success mec-error").hide();
     
+    
+    var fileToUpload = false;
+    
     var data = jQuery("#mec_book_form'.$uniqueid.'").serialize();
-    jQuery.ajax(
-    {
-        type: "GET",
+    jQuery.ajax({
+        type: "POST",
         url: "'.admin_url('admin-ajax.php', NULL).'",
-        data: data,
+        data: new FormData(jQuery("#mec_book_form'.$uniqueid.'")[0]),
         dataType: "JSON",
+        processData: false,
+        contentType: false,
+        cache: false,
         success: function(data)
         {
+            console.log(data);
+
             // Remove the loading Class to the button
             jQuery("#mec_book_form'.$uniqueid.' button[type=submit]").removeClass("loading");
             

@@ -7,6 +7,7 @@
  * @package Envira_Gallery
  * @author  Envira Gallery Team <support@enviragallery.com>
  */
+
 namespace Envira\Admin;
 
 // Exit if accessed directly.
@@ -18,6 +19,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Envira\Admin\Notices;
 
+/**
+ * License class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class License {
 
 	/**
@@ -517,7 +526,7 @@ class License {
 			'body'    => $body,
 		);
 
-		// Allow us to define the api url for development
+		// Allow us to define the api url for development.
 		$api_url = defined( 'ENVIRA_API_URL' ) ? ENVIRA_API_URL : 'https://enviragallery.com';
 
 		// Perform the query and retrieve the response.

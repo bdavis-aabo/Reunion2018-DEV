@@ -17,15 +17,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 }
 
+/**
+ * Standalone class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Standalone {
 
+	/**
+	 * __construct function.
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function __construct() {
 
 		add_action( 'pre_get_posts', array( $this, 'standalone_pre_get_posts' ) );
 		add_action( 'wp_head', array( $this, 'standalone_maybe_insert_shortcode' ) );
 
 		if ( class_exists( 'Envira_Albums' ) && version_compare( \ Envira_Albums::get_instance()->version, '1.3.1', '<' ) ) {
-			// this is for old versions of albums
+			// this is for old versions of albums.
 			add_action( 'pre_get_posts', array( $this, 'envira_albums_standalone_pre_get_posts' ) );
 			add_action( 'wp_head', array( $this, 'envira_albums_standalone_maybe_insert_shortcode' ) );
 			add_filter( 'envira_albums_post_type_args', array( $this, 'envira_albums_post_type' ) );
@@ -33,7 +47,7 @@ class Standalone {
 		}
 			$standalone = get_option( 'envira_gallery_standalone_enabled' );
 
-			// Make sure standalone has an option set
+			// Make sure standalone has an option set.
 		if ( ! isset( $standalone ) ) {
 
 			update_option( 'envira_gallery_standalone_enabled', true );
@@ -44,7 +58,7 @@ class Standalone {
 			if ( ! get_option( 'envira-standalone-flushed' ) ) {
 				// Flush rewrite rules.
 				flush_rewrite_rules();
-				// Set flag = true in options
+				// Set flag = true in options.
 				update_option( 'envira-standalone-flushed', true );
 			}
 		}
@@ -86,7 +100,7 @@ class Standalone {
 	 */
 	public function standalone_maybe_insert_shortcode() {
 
-		// Check we are on a single Post
+		// Check we are on a single Post.
 		if ( ! get_option( 'envira_gallery_standalone_enabled' ) || ! is_singular() ) {
 			return;
 		}
@@ -104,7 +118,7 @@ class Standalone {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param object $post The current post object.
+	 * @param object $single_template Template.
 	 */
 	public function standalone_get_custom_template( $single_template ) {
 
@@ -114,12 +128,12 @@ class Standalone {
 
 		global $post;
 
-		if ( $post->post_type != 'envira' ) {
+		if ( 'envira' !== $post->post_type ) {
 			return $single_template; }
 
 		// check settings, if the user hasn't selected a custom template to override single.php, then go no further
 		// $instance = Envira_Gallery_Metaboxes::get_instance();
-		// $template = $instance->get_config( 'standalone_template', $instance->get_config_default( 'standalone_template' ) );
+		// $template = $instance->get_config( 'standalone_template', $instance->get_config_default( 'standalone_template' ) );.
 		$data = get_post_meta( $post->ID, '_eg_gallery_data', true );
 
 		if ( ! $data ) {
@@ -127,10 +141,10 @@ class Standalone {
 
 		if ( ! empty( $data['config']['standalone_template'] ) ) {
 			$user_template = $data['config']['standalone_template'];
-			// get path to current folder
+			// get path to current folder.
 			$new_template = locate_template( $user_template );
 			if ( ! file_exists( $new_template ) ) :
-				// if it does not exist, then let's keep the default
+				// if it does not exist, then let's keep the default.
 				return $single_template;
 			endif;
 		} else {
@@ -173,7 +187,7 @@ class Standalone {
 	 */
 	public function envira_albums_standalone_maybe_insert_shortcode() {
 
-		// Check we are on a single Post
+		// Check we are on a single Post.
 		if ( ! get_option( 'envira_gallery_standalone_enabled' ) || ! is_singular() ) {
 			return;
 		}
@@ -197,7 +211,7 @@ class Standalone {
 	 */
 	public function envira_albums_post_type( $args ) {
 
-		// Get slug
+		// Get slug.
 		$slug = $this->envira_albums_standalone_get_slug( 'albums' );
 
 		// Change the default post type args so that it can be publicly accessible.
@@ -219,16 +233,16 @@ class Standalone {
 	 *
 	 * @since 1.0.1
 	 *
-	 * @param string $type Type (gallery|albums)
+	 * @param string $type Type (gallery|albums) Type.
 	 * @return string $slug Slug.
 	 */
 	public function envira_albums_standalone_get_slug( $type ) {
 
-		// Get slug
+		// Get slug.
 		switch ( $type ) {
 			case 'gallery':
 				$slug = get_option( 'envira-gallery-slug' );
-				if ( ! $slug or empty( $slug ) ) {
+				if ( ! $slug || empty( $slug ) ) {
 					// Fallback to check for previous version option name.
 					$slug = get_option( 'envira_standalone_slug' );
 					if ( ! $slug || empty( $slug ) ) {
@@ -239,13 +253,13 @@ class Standalone {
 
 			case 'albums':
 				$slug = get_option( 'envira-albums-slug' );
-				if ( ! $slug or empty( $slug ) ) {
+				if ( ! $slug || empty( $slug ) ) {
 					$slug = 'envira_album';
 				}
 				break;
 
 			default:
-				$slug = 'envira'; // Fallback
+				$slug = 'envira'; // Fallback.
 				break;
 		}
 

@@ -31,7 +31,7 @@ function envira_get_lightbox_themes() {
 			'file'   => ENVIRA_FILE,
 			'config' => array(
 				'arrows'          => 'true',
-				'margins'         => array( 120, 0 ), // top/bottom, left/right
+				'margins'         => array( 120, 0 ), // top/bottom, left/right.
 				'gutter'          => '100',
 				'thumbs_position' => 'bottom',
 				'base_template'   => 'envirabox_default_template',
@@ -47,7 +47,7 @@ function envira_get_lightbox_themes() {
 		'file'   => ENVIRA_FILE,
 		'config' => array(
 			'arrows'        => 'true',
-			'margins'       => array( 220, 0 ),  // top/bottom, left/right
+			'margins'       => array( 220, 0 ),  // top/bottom, left/right.
 			'gutter'        => '50',
 			'base_template' => 'envirabox_legecy_template',
 		),
@@ -83,17 +83,17 @@ function envira_get_gallery_themes() {
  *
  * @since 1.8.0
  *
- * @param array $data Array of gallery data
+ * @param array $data Array of gallery data.
  * @return string String template for the gallery lightbox
  */
 function envirabox_default_template( $data ) {
 
-	// Build out the lightbox template
+	// Build out the lightbox template.
 	$envirabox_wrap_css_classes = apply_filters( 'envirabox_wrap_css_classes', 'envirabox-wrap', $data );
 
 	$lightbox_themes = envira_get_lightbox_themes();
-	$key             = array_search( envira_get_config( 'lightbox_theme', $data ), array_column( $lightbox_themes, 'value' ) );
-	// if the theme could not be located - possible that this is a theme from gallery themes addon, and the addon is not activated/installed
+	$key             = array_search( envira_get_config( 'lightbox_theme', $data ), array_column( $lightbox_themes, 'value' ), true );
+	// if the theme could not be located - possible that this is a theme from gallery themes addon, and the addon is not activated/installed.
 	$theme           = ( empty( $key ) ) ? 'base_dark' : envira_get_config( 'lightbox_theme', $data );
 	$envirabox_theme = apply_filters( 'envirabox_theme', 'envirabox-theme-' . $theme, $data );
 
@@ -105,7 +105,7 @@ function envirabox_default_template( $data ) {
 			$template = apply_filters( 'envirabox_inner_above', $template, $data );
 
 				$template .= '<div class="envirabox-caption-wrap">';
-				$template .= ( isset( $data['config']['lightbox_title_caption'] ) && $data['config']['lightbox_title_caption'] == 'title' ) ? '<div class="envirabox-title envirabox-title-item-id-' . $data['id'] . '"></div>' : '<div class="envirabox-caption envirabox-caption-item-id-' . $data['id'] . '' . ( envira_get_config( 'image_counter', $data ) ? ' with-counter' : false ) . '"></div>';
+				$template .= ( isset( $data['config']['lightbox_title_caption'] ) && 'title' === $data['config']['lightbox_title_caption'] ) ? '<div class="envirabox-title envirabox-title-item-id-' . $data['id'] . '"></div>' : '<div class="envirabox-caption envirabox-caption-item-id-' . $data['id'] . '' . ( envira_get_config( 'image_counter', $data ) ? ' with-counter' : false ) . '"></div>';
 
 	if ( envira_get_config( 'image_counter', $data ) ) {
 		$template .= apply_filters( 'envirabox_theme_image_counter', '<div class="envirabox-image-counter">' . __( 'Image', 'envira-gallery' ) . ' <span data-envirabox-index></span> ' . __( 'of', 'envira-gallery' ) . ' <span data-envirabox-count></span></div>', $theme, $data );
@@ -142,17 +142,17 @@ function envirabox_default_template( $data ) {
 }
 
 /**
- * envirabox_infinity_template function.
+ * Envirabox Infinity Template function.
  *
  * @since 1.8.0
  *
  * @access public
- * @param mixed $data
- * @return void
+ * @param mixed $data Incoming gallery data.
+ * @return html
  */
 function envirabox_infinity_template( $data ) {
 
-	// Build out the lightbox template
+	// Build out the lightbox template.
 	$envirabox_wrap_css_classes = apply_filters( 'envirabox_wrap_css_classes', 'envirabox-wrap', $data );
 
 	$envirabox_theme = apply_filters( 'envirabox_theme', 'envirabox-theme-' . envira_get_config( 'lightbox_theme', $data ), $data );
@@ -200,14 +200,14 @@ function envirabox_infinity_template( $data ) {
 function envira_load_lightbox_theme( $theme ) {
 
 	$lightbox_themes = envira_get_lightbox_themes();
-	$key             = array_search( $theme, array_column( $lightbox_themes, 'value' ) );
-	// if the theme could not be located - possible that this is a theme from gallery themes addon, and the addon is not activated/installed
+	$key             = array_search( $theme, array_column( $lightbox_themes, 'value' ), true );
+	// if the theme could not be located - possible that this is a theme from gallery themes addon, and the addon is not activated/installed.
 	if ( empty( $key ) ) {
-		$key   = array_search( 'base_dark', array_column( $lightbox_themes, 'value' ) ); // revert to default lightbox theme
+		$key   = array_search( 'base_dark', array_column( $lightbox_themes, 'value' ), true ); // revert to default lightbox theme.
 		$theme = 'base_dark';
 	}
 	$current_theme = $lightbox_themes[ $key ];
-	$version       = ( defined( 'ENVIRA_DEBUG' ) && ENVIRA_DEBUG == 'true' ) ? $version = time() . '-' . ENVIRA_VERSION : ENVIRA_VERSION;
+	$version       = ( defined( 'ENVIRA_DEBUG' ) && ENVIRA_DEBUG === 'true' ) ? $version = time() . '-' . ENVIRA_VERSION : ENVIRA_VERSION;
 
 	if ( file_exists( get_stylesheet_directory() . '/envira-gallery/lightbox-themes/' . $theme . '/style.css' ) ) {
 
@@ -238,22 +238,29 @@ function envira_load_lightbox_theme( $theme ) {
 }
 
 /**
- * envira_load_lightbox_config function.
+ * Envira Lightbox Config function.
  *
  * @since 1.8.0
  *
  * @access public
- * @param mixed $theme
- * @return void
+ * @param intenger    $gallery_id   The Id of the gallery.
+ * @param bool        $raw          Raw data.
+ * @param bool|string $gallery_type Type of gallery.
+ * @return string Config.
  */
-function envira_load_lightbox_config( $gallery_id, $raw = false ) {
+function envira_load_lightbox_config( $gallery_id, $raw = false, $gallery_type = false ) {
 
-	$data            = envira_get_gallery( $gallery_id );
+	// Grab the gallery Data.
+	$data = envira_get_gallery( $gallery_id );
+
+	if ( $gallery_type ) {
+		$data = apply_filters( 'envira_gallery_custom_gallery_data_by_' . $gallery_type, $data, array( 'type' => $gallery_type ), null, $gallery_id );
+	}
 	$lightbox_themes = envira_get_lightbox_themes();
-	$key             = array_search( envira_get_config( 'lightbox_theme', $data ), array_column( $lightbox_themes, 'value' ) );
-	// if the theme could not be located - possible that this is a theme from gallery themes addon, and the addon is not activated/installed
+	$key             = array_search( envira_get_config( 'lightbox_theme', $data ), array_column( $lightbox_themes, 'value' ), true );
+	// if the theme could not be located - possible that this is a theme from gallery themes addon, and the addon is not activated/installed.
 	if ( empty( $key ) ) {
-		$key = array_search( 'base_dark', array_column( $lightbox_themes, 'value' ) ); // revert to default lightbox theme
+		$key = array_search( 'base_dark', array_column( $lightbox_themes, 'value' ), true ); // revert to default lightbox theme.
 	}
 	$legacy_themes = envirabox_legecy_themes();
 	$current_theme = $lightbox_themes[ $key ];
@@ -273,21 +280,21 @@ function envira_load_lightbox_config( $gallery_id, $raw = false ) {
 	$config['load_all']       = apply_filters( 'envira_load_all_images_lightbox', false, $data );
 	$config['error_template'] = envirabox_error_template( $data );
 
-	// If supersize is enabled lets override settings
-	if ( envira_get_config( 'supersize', $data ) == 1 ) {
+	// If supersize is enabled lets override settings.
+	if ( envira_get_config( 'supersize', $data ) === 1 ) {
 
-		$config['margins'] = ( in_array( envira_get_config( 'lightbox_theme', $data ), $legacy_themes ) && ( envira_get_config( 'lightbox_title_caption', $data !== null ) ) ) || is_admin_bar_showing() || envira_get_config( 'thumbnails', $data ) == 1 ? array( 100, 0 ) : array( 10, 0 );
+		$config['margins'] = ( in_array( envira_get_config( 'lightbox_theme', $data ), $legacy_themes, true ) && ( null !== envira_get_config( 'lightbox_title_caption', $data ) ) ) || is_admin_bar_showing() || envira_get_config( 'thumbnails', $data ) === 1 ? array( 100, 0 ) : array( 10, 0 );
 
 	}
 
-	$config['thumbs_position']     = in_array( $current_theme['value'], $legacy_themes ) ? envira_get_config( 'thumbnails_position', $data ) : 'lock';
-	$config['arrow_position']      = in_array( $current_theme['value'], $legacy_themes ) ? envira_get_config( 'arrows_position', $data ) : false;
-	$config['arrows']              = in_array( $current_theme['value'], $legacy_themes ) ? envira_get_config( 'arrows', $data ) : true;
-	$config['toolbar']             = in_array( $current_theme['value'], $legacy_themes ) ? false : true;
-	$config['infobar']             = in_array( $current_theme['value'], $legacy_themes ) ? true : false;
-	$config['show_smallbtn']       = in_array( $current_theme['value'], $legacy_themes ) ? true : false;
-	$config['inner_caption']       = in_array( $current_theme['value'], $legacy_themes ) ? true : false;
-	$config['caption_position']    = in_array( $current_theme['value'], $legacy_themes ) ? envira_get_config( 'title_display', $data ) : false;
+	$config['thumbs_position']     = in_array( $current_theme['value'], $legacy_themes, true ) ? envira_get_config( 'thumbnails_position', $data ) : 'lock';
+	$config['arrow_position']      = in_array( $current_theme['value'], $legacy_themes, true ) ? envira_get_config( 'arrows_position', $data ) : false;
+	$config['arrows']              = in_array( $current_theme['value'], $legacy_themes, true ) ? envira_get_config( 'arrows', $data ) : true;
+	$config['toolbar']             = in_array( $current_theme['value'], $legacy_themes, true ) ? false : true;
+	$config['infobar']             = in_array( $current_theme['value'], $legacy_themes, true ) ? true : false;
+	$config['show_smallbtn']       = in_array( $current_theme['value'], $legacy_themes, true ) ? true : false;
+	$config['inner_caption']       = in_array( $current_theme['value'], $legacy_themes, true ) ? true : false;
+	$config['caption_position']    = in_array( $current_theme['value'], $legacy_themes, true ) ? envira_get_config( 'title_display', $data ) : false;
 	$config['idle_time']           = envira_get_config( 'idle_time', $data ) ? envira_get_config( 'idle_time', $data ) : false;
 	$config['click_content']       = envira_get_config( 'click_content', $data ) ? envira_get_config( 'click_content', $data ) : false;
 	$config['click_slide']         = envira_get_config( 'click_slide', $data ) ? envira_get_config( 'click_slide', $data ) : false;
@@ -296,17 +303,17 @@ function envira_load_lightbox_config( $gallery_id, $raw = false ) {
 	$config['transition_duration'] = envira_get_config( 'transition_duration', $data ) ? envira_get_config( 'transition_duration', $data ) : false;
 	$config['small_btn_template']  = '<a data-envirabox-close class="envirabox-item envirabox-close envirabox-button--close" title="' . __( 'Close', 'envira-gallery' ) . '" href="#"></a>';
 
-	return json_encode( $config );
+	return wp_json_encode( $config );
 
 }
 
 /**
- * envirabox_legecy_themes function.
+ * Envirabox Legecy Themes function.
  *
  * @since 1.8.0
  *
  * @access public
- * @return void
+ * @return array
  */
 function envirabox_legecy_themes() {
 
@@ -323,12 +330,13 @@ function envirabox_legecy_themes() {
 }
 
 /**
- * envira_default_lightbox_config function.
+ * Envira Default Lightbox Config function.
  *
  * @since 1.8.0
  *
  * @access public
- * @return void
+ * @param intenger $gallery_id Gallery Post type ID.
+ * @return array
  */
 function envirabox_default_config( $gallery_id ) {
 
@@ -336,7 +344,7 @@ function envirabox_default_config( $gallery_id ) {
 
 	$config = array(
 		'arrows'          => 'true',
-		'margins'         => array( 220, 0 ), // top/bottom, left/right
+		'margins'         => array( 220, 0 ), // top/bottom, left/right.
 		'template'        => envirabox_default_template( $data ),
 		'thumbs_position' => 'bottom',
 	);
@@ -346,13 +354,13 @@ function envirabox_default_config( $gallery_id ) {
 }
 
 /**
- * envirabox_error_template function.
+ * Envirabox Error Template function.
  *
  * @since 1.8.0
  *
  * @access public
- * @param mixed $data
- * @return void
+ * @param mixed $data Gallery data.
+ * @return html
  */
 function envirabox_error_template( $data ) {
 
@@ -371,24 +379,24 @@ function envirabox_error_template( $data ) {
 function envira_load_gallery_theme( $theme ) {
 
 	$gallery_themes = envira_get_gallery_themes();
-	$key            = array_search( $theme, array_column( $gallery_themes, 'value' ) );
+	$key            = array_search( $theme, array_column( $gallery_themes, 'value' ), true );
 	$current_theme  = $gallery_themes[ $key ];
 
 	if ( file_exists( get_stylesheet_directory() . '/envira-gallery/gallery-themes/' . $theme . '/style.css' ) ) {
 
-		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', get_stylesheet_directory_uri() . '/envira-gallery/gallery-themes/' . $theme . '/style.css', array( ENVIRA_SLUG . '-style' ) );
+		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', get_stylesheet_directory_uri() . '/envira-gallery/gallery-themes/' . $theme . '/style.css', array( ENVIRA_SLUG . '-style' ), ENVIRA_VERSION );
 
 		return;
 
 	} elseif ( file_exists( get_template_directory() . '/envira-gallery/gallery-themes/' . $theme . '/style.css' ) ) {
 
-		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', get_template_directory_uri() . '/envira-gallery/gallery-themes/' . $theme . '/style.css', array( ENVIRA_SLUG . '-style' ) );
+		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', get_template_directory_uri() . '/envira-gallery/gallery-themes/' . $theme . '/style.css', array( ENVIRA_SLUG . '-style' ), ENVIRA_VERSION );
 
 		return;
 
-	} elseif ( file_exists( plugin_dir_path( $current_theme['file'] ) . 'envira-gallery/lightbox-themes/' . $theme . '/css/style.css' ) ) {
+	} elseif ( file_exists( plugin_dir_path( $current_theme['file'] ) . 'envira-gallery/gallery-themes/' . $theme . '/css/style.css' ) ) {
 
-		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', plugins_url( 'envira-gallery/gallery-themes/' . $theme . '/css/style.css', $current_theme['file'] ), array( ENVIRA_SLUG . '-style' ) );
+		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', plugins_url( 'envira-gallery/gallery-themes/' . $theme . '/css/style.css', $current_theme['file'] ), array( ENVIRA_SLUG . '-style' ), ENVIRA_VERSION );
 
 		return;
 
@@ -396,7 +404,7 @@ function envira_load_gallery_theme( $theme ) {
 
 		$last_resort = apply_filters( 'envira_load_gallery_theme_url', plugins_url( 'envira-gallery/gallery-themes/' . $theme . '/css/style.css', ENVIRA_FILE ), $theme );
 
-		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', $last_resort, array( ENVIRA_SLUG . '-style' ) );
+		wp_enqueue_style( ENVIRA_SLUG . '-' . $theme . '-gallery-theme', $last_resort, array( ENVIRA_SLUG . '-style' ), ENVIRA_VERSION );
 
 		return;
 
@@ -405,14 +413,14 @@ function envira_load_gallery_theme( $theme ) {
 }
 
 /**
- * envira_get_layout_template function.
+ * Envira Get Layout Template function.
  *
  * @since 1.8.0
  *
  * @access public
- * @param mixed $file
- * @param array $data (default: array())
- * @return void
+ * @param mixed $file Filename.
+ * @param array $data (default: array()).
+ * @return string
  */
 function envira_get_layout_template( $file, $data = array() ) {
 
@@ -443,17 +451,17 @@ function envira_get_layout_template( $file, $data = array() ) {
 }
 
 /**
- * envirabox_legecy_template function.
+ * Envirabox Legecy Template function.
  *
  * @since 1.8.0
  *
  * @access public
- * @param mixed $data
- * @return void
+ * @param mixed $data Gallery data.
+ * @return string
  */
 function envirabox_legecy_template( $data ) {
 
-	// Build out the lightbox template
+	// Build out the lightbox template.
 	$envirabox_wrap_css_classes = apply_filters( 'envirabox_wrap_css_classes', 'envirabox-wrap', $data );
 
 	$envirabox_theme = apply_filters( 'envirabox_theme', 'envirabox-theme-' . envira_get_config( 'lightbox_theme', $data ), $data );
@@ -469,7 +477,7 @@ function envirabox_legecy_template( $data ) {
 		$template .= envira_get_toolbar_template( $data );
 	}
 
-	if ( envira_get_config( 'arrows', $data ) && envira_get_config( 'arrows_position', $data ) != 'inside' ) {
+	if ( envira_get_config( 'arrows', $data ) && envira_get_config( 'arrows_position', $data ) !== 'inside' ) {
 
 		$template     .= '<div class="envirabox-navigation">';
 			$template .= '<a data-envirabox-prev title="' . __( 'Prev', 'envira-gallery' ) . '" class="envirabox-arrow envirabox-arrow--left envirabox-nav envirabox-prev" href="#"><span></span></a>';
@@ -478,22 +486,22 @@ function envirabox_legecy_template( $data ) {
 
 	}
 
-			// Top Left box      +
+			// Top Left box.
 			$template .= '<div class="envirabox-position-overlay envira-gallery-top-left">';
 			$template  = apply_filters( 'envirabox_output_dynamic_position', $template, $data, 'top-left' );
 			$template .= '</div>';
 
-			// Top Right box
+			// Top Right box.
 			$template .= '<div class="envirabox-position-overlay envira-gallery-top-right">';
 			$template  = apply_filters( 'envirabox_output_dynamic_position', $template, $data, 'top-right' );
 			$template .= '</div>';
 
-			// Bottom Left box
+			// Bottom Left box.
 			$template .= '<div class="envirabox-position-overlay envira-gallery-bottom-left">';
 			$template  = apply_filters( 'envirabox_output_dynamic_position', $template, $data, 'bottom-left' );
 			$template .= '</div>';
 
-			// Bottom Right box
+			// Bottom Right box.
 			$template .= '<div class="envirabox-position-overlay envira-gallery-bottom-right">';
 			$template  = apply_filters( 'envirabox_output_dynamic_position', $template, $data, 'bottom-right' );
 			$template .= '</div>';
@@ -554,7 +562,7 @@ function envira_get_toolbar_template( $data ) {
 			$title = $post->post_title;
 		}
 
-		// add a filter in case title needs to be manipulated for the toolbar
+		// add a filter in case title needs to be manipulated for the toolbar.
 		$title = apply_filters( 'envira_gallery_toolbar_title', $title, $data );
 
 		$template .= '<li id="envirabox-buttons-title"><span>' . htmlentities( $title, ENT_QUOTES ) . '</span></li>';

@@ -74,6 +74,7 @@ jQuery(document).ready(function()
         style: "'.(isset($this->skin_options['style']) ? $this->skin_options['style'] : NULL).'",
         ajax_url: "'.admin_url('admin-ajax.php', NULL).'",
         sed_method: "'.$this->sed_method.'",
+        image_popup: "'.$this->image_popup.'",
         sf:
         {
             container: "'.($this->sf_status ? '#mec_search_form_'.$this->id : '').'",
@@ -88,7 +89,7 @@ $this->factory->params('footer', $javascript);
 $styling = $this->main->get_styling();
 $event_colorskin = (isset($styling['mec_colorskin'] ) || isset($styling['color'])) ? 'colorskin-custom' : '';
 
-if($this->style == 'classic' || $this->style == 'novel' )
+if($this->style == 'classic' || $this->style == 'novel' || $this->style == 'simple' )
 {
     $cal_style        = 'mec-box-calendar mec-event-calendar-classic mec-event-container-'.$this->style;
     $div_start_topsec = $div_end_topsec = $events_side = $div_footer = '';

@@ -21,7 +21,7 @@
 .envira-notice {
   position: relative; }
   .envira-notice.is-dismissible p {
-    padding-right: 15px; }
+	padding-right: 15px; }
 
 body.post-new-php.post-type-envira .envira-notice {
   margin-top: 25px; }

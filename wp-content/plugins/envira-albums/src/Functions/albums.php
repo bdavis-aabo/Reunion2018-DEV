@@ -61,10 +61,10 @@ function _envira_get_album( $album_id ) {
 }
 
 /**
- * envira_get_album_by_slug function.
+ * Gets albums by slug function.
  *
  * @access public
- * @param mixed $slug
+ * @param mixed $slug Album slug.
  * @return array
  */
 function envira_get_album_by_slug( $slug ) {
@@ -87,10 +87,10 @@ function envira_get_album_by_slug( $slug ) {
 }
 
 /**
- * _envira_get_album_by_slug function.
+ * Gets albums by slug function.
  *
  * @access private
- * @param mixed $slug
+ * @param mixed $slug Album slug.
  * @return array
  */
 function _envira_get_album_by_slug( $slug ) {
@@ -132,7 +132,7 @@ function _envira_get_album_by_slug( $slug ) {
  * @param bool   $skip_empty   Skip empty albums.
  * @param bool   $ignore_cache Should we ignore cache.
  * @param string $search_terms Search Terms.
- * @return void
+ * @return array $albums
  */
 function envira_get_albums( $skip_empty = true, $ignore_cache = false, $search_terms = '' ) {
 
@@ -154,14 +154,14 @@ function envira_get_albums( $skip_empty = true, $ignore_cache = false, $search_t
 		return $albums;
 }
 
-	/**
-	 * _envira_get_albums function.
-	 *
-	 * @access private
-	 * @param bool   $skip_empty (default: true)
-	 * @param string $search_terms (default: '')
-	 * @return void
-	 */
+/**
+ * _envira_get_albums function.
+ *
+ * @access private
+ * @param bool   $skip_empty (default: true).
+ * @param string $search_terms (default: '').
+ * @return array
+ */
 function _envira_get_albums( $skip_empty = true, $search_terms = '' ) {
 		// Build WP_Query arguments.
 	$args = array(
@@ -207,7 +207,7 @@ function _envira_get_albums( $skip_empty = true, $search_terms = '' ) {
 		$ret[] = $data;
 	}
 
-		// Return the album data.
+	// Return the album data.
 	return $ret;
 
 }
@@ -220,6 +220,8 @@ function _envira_get_albums( $skip_empty = true, $search_terms = '' ) {
  * @access public
  * @param int  $album_id Album ID.
  * @param bool $raw      Return raw or json encode.
+ * @param bool $is_dynamic      Is this a dynamic album.
+ * @param bool $dynamic_id      Dynamic ID.
  * @return array|string
  */
 function envira_get_album_config( $album_id, $raw = false, $is_dynamic = false, $dynamic_id = false ) {
@@ -278,7 +280,7 @@ function envira_get_album_config( $album_id, $raw = false, $is_dynamic = false, 
  * @since 1.8.3
  *
  * @access public
- * @param array $data
+ * @param array $data Gallery data.
  * @return array
  */
 function envira_album_maybe_set_thumbnail_size_auto( $data ) {

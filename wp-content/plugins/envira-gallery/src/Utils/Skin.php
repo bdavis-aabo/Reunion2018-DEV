@@ -1,4 +1,12 @@
 <?php
+/**
+ * Skin class.
+ *
+ * @since 1.0.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Team
+ */
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -71,7 +79,7 @@ class Envira_Gallery_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @since 1.0.0
 	 */
-	function footer() {}
+	public function footer() {}
 
 	/**
 	 * Instead of outputting HTML for errors, json_encode the errors and send them
@@ -81,7 +89,7 @@ class Envira_Gallery_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @param array $errors Array of errors with the install process.
 	 */
-	function error( $errors ) {
+	public function error( $errors ) {
 
 		if ( ! empty( $errors ) ) {
 			echo json_encode( array( 'error' => __( 'There was an error installing the addon. Please try again.', 'envira-gallery' ) ) );
@@ -99,6 +107,6 @@ class Envira_Gallery_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @param string $string The feedback string.
 	 */
-	function feedback( $string ) {}
+	public function feedback( $string ) {}
 
 }

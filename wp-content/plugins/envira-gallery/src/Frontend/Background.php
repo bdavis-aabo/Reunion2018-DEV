@@ -5,8 +5,9 @@
  * @since 1.7.0
  *
  * @package Envira Gallery
- * @author  Envira Team
+ * @author  Envira Gallery Team <support@enviragallery.com>
  */
+
 namespace Envira\Frontend;
 
 // Exit if accessed directly.
@@ -18,10 +19,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Envira\Utils\Cropping;
 
+/**
+ * Background Processing Class.
+ *
+ * @since 1.7.0
+ */
 class Background {
 
 	/**
-	 * namespace
+	 * API Namespace
 	 *
 	 * (default value: 'envira')
 	 *
@@ -33,7 +39,7 @@ class Background {
 	public $domain = 'envira-background';
 
 	/**
-	 * version
+	 * API Version
 	 *
 	 * (default value: 'v1')
 	 *
@@ -45,7 +51,7 @@ class Background {
 	public $version = 'v1';
 
 	/**
-	 * request
+	 * Holds API Request
 	 *
 	 * (default value: null)
 	 *
@@ -55,16 +61,15 @@ class Background {
 	public $request = null;
 
 	/**
-	 * Main constructor.
+	 * Class Constructor.
 	 *
 	 * @since 1.7.0
 	 *
 	 * @access public
-	 * @return void
 	 */
-	function __construct() {
+	public function __construct() {
 
-		// Actions
+		// Actions.
 		add_action( 'rest_api_init', array( $this, 'register_api_routes' ) );
 
 	}
@@ -128,28 +133,29 @@ class Background {
 	}
 
 	/**
-	 * insert_gallery function.
+	 * Insert_gallery function.
 	 *
 	 * @since 1.7.0
 	 *
 	 * @access public
+	 * @param mixed $request Request.
 	 * @return void
 	 */
 	public function maybe_insert_gallery( \ WP_REST_Request $request ) {
 
-		 // Set the request.
+		// Set the request.
 		$this->request = $request;
 
-		// Get the body
+		// Get the body.
 		$body = $request->get_body_params();
 
-		// Validate the request
+		// Validate the request.
 		$valid = $this->validate_request( $request );
 
-		// Setup the ID Var
+		// Setup the ID Var.
 		$post_id = '';
 
-		// Return if request not valid
+		// Return if request not valid.
 		if ( ! $valid ) {
 
 				return;
@@ -180,14 +186,14 @@ class Background {
 			$post = wp_update_post( $post_args );
 
 		}
-		// make a request to insert images is
+		// make a request to insert images is.
 		if ( is_array( $body['data']['images'] ) ) {
 
 				$images = $body['data']['images'];
 
 			foreach ( $images as $image => $data ) {
 
-				// Build the Image Data
+				// Build the Image Data.
 				$image_data = array(
 					'gallery' => $post,
 					'image'   => $data,
@@ -207,27 +213,28 @@ class Background {
 	 * @since 1.7.0
 	 *
 	 * @access public
+	 * @param mixed $request Request.
 	 * @return void
 	 */
 	public function insert_image( \ WP_REST_Request $request ) {
 
-		 // Set the request.
+		// Set the request.
 		$this->request = $request;
 
-		// Get the body
+		// Get the body.
 		$body = $request->get_body_params();
 
-		// Validate the request
+		// Validate the request.
 		$valid = $this->validate_request( $request );
 
-		// Return if request not valid
+		// Return if request not valid.
 		if ( ! $valid ) {
 
 				return;
 
 		}
 
-		// Require if the function doesnt exist
+		// Require if the function doesnt exist.
 		if ( ! function_exists( 'wp_handle_sideload' ) ) {
 
 			require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -238,8 +245,8 @@ class Background {
 		$post_id = $body['data']['gallery'];
 		$image   = $body['data']['image'];
 
-		// Check that $post_id is a envira post_type
-		if ( get_post_type( $post_id ) != 'envira' ) {
+		// Check that $post_id is a envira post_type.
+		if ( 'envira' !== get_post_type( $post_id ) ) {
 
 			return false;
 
@@ -253,27 +260,27 @@ class Background {
 
 		}
 
-		 $gallery_data = get_post_meta( $post_id, '_eg_gallery_data', true );
+		$gallery_data = get_post_meta( $post_id, '_eg_gallery_data', true );
 
-		 // If Gallery Data is emptyy prepare it.
+		// If Gallery Data is emptyy prepare it.
 		if ( empty( $gallery_data ) ) {
 
 			$gallery_data = array();
 		}
 
-		 // Set the File name from the API
+		// Set the File name from the API.
 		$new_attachment = $image['title'];
 
-		// Grab the Upload Directory
+		// Grab the Upload Directory.
 		$upload_dir = wp_upload_dir();
 
-		// Set the upload path
+		// Set the upload path.
 		$upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
 
-		// Decode the returned image
+		// Decode the returned image.
 		$image_upload = file_put_contents( $upload_path . $new_attachment, file_get_contents( $image['src'] ) );
 
-		// Prep the new file
+		// Prep the new file.
 		$file             = array();
 		$file['error']    = '';
 		$file['tmp_name'] = $upload_path . $new_attachment;
@@ -283,7 +290,7 @@ class Background {
 
 		$file_return = wp_handle_sideload( $file, array( 'test_form' => false ) );
 
-		// Setup the Attachment Data
+		// Setup the Attachment Data.
 		$attachment = array(
 			'post_type'      => 'attachment',
 			'post_mime_type' => 'image/jpeg',
@@ -293,13 +300,13 @@ class Background {
 			'post_parent'    => $post_id,
 		);
 
-		// Insert new attachment - check
+		// Insert new attachment - check.
 		$attachment_id = wp_insert_attachment( $attachment, $file_return['file'], $post_id );
 
-		// Generate Attachment Metadata
+		// Generate Attachment Metadata.
 		$meta_data = wp_generate_attachment_metadata( $attachment_id, $file_return['file'] );
 
-		// Update Attachments metadata
+		// Update Attachments metadata.
 		$update_data = wp_update_attachment_metadata( $attachment_id, $meta_data );
 
 		// Update the attachment image post meta first.
@@ -325,28 +332,29 @@ class Background {
 	}
 
 	/**
-	 * maybe_insert_album function.
+	 * Maybe insert album function.
 	 *
 	 * @since 1.7.0
 	 *
 	 * @access public
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request.
 	 * @return void
 	 */
 	public function maybe_insert_album( \ WP_REST_Request $request ) {
-		 // Set the request.
+
+		// Set the request.
 		$this->request = $request;
 
-		// Get the body
+		// Get the body.
 		$body = $request->get_body_params();
 
-		// Validate the request
+		// Validate the request.
 		$valid = $this->validate_request( $request );
 
-		// Setup the ID Var
+		// Setup the ID Var.
 		$post_id = '';
 
-		// Return if request not valid
+		// Return if request not valid.
 		if ( ! $valid ) {
 
 				return;
@@ -378,14 +386,14 @@ class Background {
 
 		}
 
-		// make a request to insert images is
+		// make a request to insert images is.
 		if ( is_array( $body['data']['galleries'] ) ) {
 
 				$images = $body['data']['galleries'];
 
 			foreach ( $galleries as $gallery => $data ) {
 
-				// Build the Image Data
+				// Build the Image Data.
 				$image_data = array(
 					'album'     => $post,
 					'galleries' => $data,
@@ -404,7 +412,7 @@ class Background {
 	 * @since 1.7.0
 	 *
 	 * @access public
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request.
 	 * @return void
 	 */
 	public function crop_images( \ WP_REST_Request $request ) {
@@ -412,13 +420,13 @@ class Background {
 		// Set the request.
 		$this->request = $request;
 
-		// Get the body
+		// Get the body.
 		$body = $request->get_body_params();
 
-		// Validate the request
+		// Validate the request.
 		$valid = $this->validate_request( $request );
 
-		// Return if request not valid
+		// Return if request not valid.
 		if ( ! $valid ) {
 
 			return;
@@ -443,8 +451,8 @@ class Background {
 					continue;
 				}
 
-				// Check the image is a valid URL
-				// Some plugins decide to strip the blog's URL
+				// Check the image is a valid URL.
+				// Some plugins decide to strip the blog's URL.
 				if ( ! filter_var( $image[0], FILTER_VALIDATE_URL ) ) {
 					$image[0] = get_bloginfo( 'url' ) . '/' . $image[0];
 				}
@@ -585,12 +593,12 @@ class Background {
 	}
 
 	/**
-	 * resize function.
+	 * Helper Request to resize images in the background.
 	 *
 	 * @since 1.7.0
 	 *
 	 * @access public
-	 * @param \ WP_REST_Request $request
+	 * @param \ WP_REST_Request $request Request.
 	 * @return void
 	 */
 	public function resize( \ WP_REST_Request $request ) {
@@ -598,13 +606,13 @@ class Background {
 		// Set the request.
 		$this->request = $request;
 
-		// Validate the request
+		// Validate the request.
 		$valid = $this->validate_request( $request );
 
-		// Get the body
+		// Get the body.
 		$body = $request->get_body_params();
 
-		// Return if request not valid
+		// Return if request not valid.
 		if ( ! $valid ) {
 
 			wp_send_json_error();
@@ -645,6 +653,7 @@ class Background {
 	 *
 	 * @since 1.7.0
 	 *
+	 * @param mixed $request Request.
 	 * @return bool True if valid, false otherwise.
 	 */
 	public function validate_request( $request ) {
@@ -656,7 +665,7 @@ class Background {
 			return false;
 		}
 
-		// Verify the request is comming from the site
+		// Verify the request is comming from the site.
 		$site_url = site_url();
 
 		if ( strpos( $body['site'], $site_url ) === false ) {
@@ -667,7 +676,7 @@ class Background {
 
 		$token = get_option( 'envira_rest_token' );
 
-		if ( $token != $request->get_header( 'X-Envira-Token' ) ) {
+		if ( $token !== $request->get_header( 'X-Envira-Token' ) ) {
 
 			return false;
 
@@ -684,7 +693,7 @@ class Background {
 	 * Self generated token to validate background requests.
 	 *
 	 * @access public
-	 * @return void
+	 * @return string
 	 */
 	public function generate_token() {
 
@@ -704,13 +713,13 @@ class Background {
 	 * @since 1.7.0
 	 *
 	 * @access public
-	 * @param mixed $data
-	 * @param mixed $type
+	 * @param mixed $data Request Data.
+	 * @param mixed $type Request Type.
 	 * @return void
 	 */
 	public function background_request( $data, $type ) {
 
-		// Bail if nothing set
+		// Bail if nothing set.
 		if ( ! is_array( $data ) || ! isset( $type ) ) {
 			return;
 		}
@@ -739,7 +748,7 @@ class Background {
 			'X-Envira-Token' => $token,
 		);
 
-		// Generate the background request url
+		// Generate the background request url.
 		$url = trailingslashit( $rest_url ) . $name . '/' . $version . '/' . $type;
 
 		$args = array(

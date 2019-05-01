@@ -571,7 +571,7 @@ trait SWP_Buttons_Panel_Trait {
 	*/
 	protected function get_order_of_icons() {
 		global $swp_social_networks;
-		$default_buttons = SWP_Utility::get_option( 'order_of_icons' );
+		$active_networks = SWP_Utility::get_option( 'order_of_icons' );
 		$sort_method     = SWP_Utility::get_option( 'order_of_icons_method' );
 		$order           = array();
 
@@ -586,7 +586,7 @@ trait SWP_Buttons_Panel_Trait {
 		*
 		*/
 		if ( 'manual' === $sort_method || false === $sort_method ) {
-			return $default_buttons;
+			return $active_networks;
 		}
 
 
@@ -597,7 +597,7 @@ trait SWP_Buttons_Panel_Trait {
 		*
 		*/
 		if( empty( $this->shares ) || !is_array( $this->shares ) ) {
-		   return $default_buttons;
+		   return $active_networks;
 		}
 
 
@@ -609,13 +609,12 @@ trait SWP_Buttons_Panel_Trait {
 		*/
 		arsort( $this->shares );
 		foreach( $this->shares as $network => $share_count ) {
-		   if( $network !== 'total_shares' && in_array( $network, $default_buttons ) ) {
+		   if( $network != 'total_shares' && in_array( $network, $active_networks ) ) {
 			   $order[$network] = $network;
 		   }
 		}
 		$this->options['order_of_icons'] = $order;
 		return $order;
-
 	}
 
 
@@ -705,7 +704,7 @@ trait SWP_Buttons_Panel_Trait {
 		}
 
 		// Render the html for the total shares.
-		$html = '<div class="nc_tweetContainer total_shares total_sharesalt" >';
+		$html = '<div class="nc_tweetContainer swp_share_button total_shares total_sharesalt" >';
 		   $html .= '<span class="swp_count ">' . SWP_Utility::kilomega( $this->shares['total_shares'] ) . ' <span class="swp_label">' . __( 'Shares','social-warfare' ) . '</span></span>';
 		$html .= '</div>';
 
@@ -805,14 +804,15 @@ trait SWP_Buttons_Panel_Trait {
 			return;
 		}
 
-
 		/**
 		 * If it's not a set of floating buttons and it's not set to the left,
 		 * then we attach the total shares on the right.
 		 *
 		 */
-		$this->inner_html = $buttons_html . $total_shares_html;
 
+		else {
+			$this->inner_html = $buttons_html . $total_shares_html;
+		}
 	}
 
 

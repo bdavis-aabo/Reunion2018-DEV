@@ -7,6 +7,7 @@
  * @package Envira_Gallery
  * @author  Envira Gallery Team <support@enviragallery.com>
  */
+
 namespace Envira\Admin;
 
  // Exit if accessed directly.
@@ -14,6 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Posttype admin class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Posttype {
 
 	/**

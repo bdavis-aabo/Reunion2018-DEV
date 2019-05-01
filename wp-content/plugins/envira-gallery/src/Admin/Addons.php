@@ -277,7 +277,7 @@ class Addons {
 			if ( count( $addons['unlicensed'] ) > 0 ) {
 				?>
 				<div class="envira-addons-area unlicensed" class="envira-clear">
-					<h3><?php _e( 'Unlock More Addons', 'envira-gallery' ); ?></h3>
+					<h3><?php esc_html_e( 'Unlock More Addons', 'envira-gallery' ); ?></h3>
 					<p><?php echo sprintf( __( '<strong>Want even more addons?</strong> <a href="%s">Upgrade your ' . ( apply_filters( 'envira_whitelabel', false ) ? '' : 'Envira Gallery ' ) . 'account</a> and unlock the following addons.', 'envira-gallery' ), $upgrade_url ); ?></p>
 
 					<div id="envira-addons-unlicensed" class="envira-addons">

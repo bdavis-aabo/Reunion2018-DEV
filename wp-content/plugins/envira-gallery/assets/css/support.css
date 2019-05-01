@@ -32,3 +32,14 @@ body.envira_page_envira-gallery-support-settings .nav-tab-wrapper {
     body.envira_page_envira-gallery-support-tools .nav-tab-wrapper a.nav-tab.nav-tab-active,
     body.envira_page_envira-gallery-support-settings .nav-tab-wrapper a.nav-tab.nav-tab-active {
       font-weight: 500; }
+
+/* ==========================================================================
+   Welcome / Support Screen
+   ========================================================================== */
+ul#adminmenu li.menu-icon-envira ul.wp-submenu li:last-child {
+  display: block; }
+
+body.envira-welcome-enabled ul#adminmenu li.menu-icon-envira ul.wp-submenu li:nth-last-child(-n+4) {
+  display: none; }
+body.envira-welcome-enabled ul#adminmenu li.menu-icon-envira ul.wp-submenu li:last-child {
+  display: block; }

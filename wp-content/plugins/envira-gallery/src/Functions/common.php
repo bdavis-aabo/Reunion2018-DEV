@@ -89,14 +89,6 @@ function envira_get_columns() {
 			'value' => '6',
 			'name'  => __( 'Six Columns (6)', 'envira-gallery' ),
 		),
-	// array(
-	// 'value' => 'blogroll',
-	// 'name'  => __( 'Blogroll', 'envira-gallery' )
-	// ),
-	// array(
-	// 'value' => 'square',
-	// 'name'  => __( 'Square', 'envira-gallery' )
-	// )
 	);
 
 	return apply_filters( 'envira_gallery_columns', $columns );
@@ -194,7 +186,7 @@ function envira_get_sorting_options( $is_album = false ) {
 		),
 		array(
 			'name'  => __( 'Random', 'envira-gallery' ),
-			'value' => 1, // Deliberate, as we map the 'random' config key which was a true/false
+			'value' => 1, // Deliberate, as we map the 'random' config key which was a true/false.
 		),
 		array(
 			'name'  => __( 'Published Date', 'envira-gallery' ),
@@ -500,12 +492,12 @@ function envira_get_config_defaults( $post_id ) {
 	// Prepare default values.
 	$defaults = array(
 
-		// Images Tab
+		// Images Tab.
 		'type'                                     => 'default',
 
-		// Config Tab
+		// Config Tab.
 		'columns'                                  => '0',
-		'justified_row_height'                     => 150, // automatic/justified layout
+		'justified_row_height'                     => 150, // automatic/justified layout.
 		'justified_gallery_theme'                  => 'normal',
 		'justified_margins'                        => 1,
 		'justified_last_row'                       => 'nojustify',
@@ -517,7 +509,7 @@ function envira_get_config_defaults( $post_id ) {
 		'margin'                                   => 10,
 		'random'                                   => 0,
 		'sorting_direction'                        => 'ASC',
-		'image_size'                               => 'default', // Default = uses the below crop_width and crop_height
+		'image_size'                               => 'default', // Default = uses the below crop_width and crop_height.
 		'image_sizes_random'                       => array(),
 		'crop_width'                               => 640,
 		'crop_height'                              => 480,
@@ -525,8 +517,8 @@ function envira_get_config_defaults( $post_id ) {
 		'crop_position'                            => 'c',
 		'dimensions'                               => 0,
 		'isotope'                                  => 1,
-		'css_animations'                           => 1, // Depricated @since 1.8.0
-		'css_opacity'                              => 100, // Depricated @since 1.8.0
+		'css_animations'                           => 1, // Depricated @since 1.8.0.
+		'css_opacity'                              => 100, // Depricated @since 1.8.0.
 		'lightbox_title_caption'                   => 'title',
 		'additional_copy_title'                    => 0,
 		'additional_copy_caption'                  => 0,
@@ -536,11 +528,11 @@ function envira_get_config_defaults( $post_id ) {
 		'additional_copy_caption_mobile'           => 0,
 		'additional_copy_automatic_title_mobile'   => 1,
 		'additional_copy_automatic_caption_mobile' => 1,
-		'lazy_loading'                             => 1, // lazy loading 'ON' for new galleries
+		'lazy_loading'                             => 1, // lazy loading 'ON' for new galleries.
 		'lazy_loading_delay'                       => 500,
 		'sort_order'                               => '0',
 
-		// Lightbox
+		// Lightbox.
 		'lightbox_enabled'                         => 1,
 		'gallery_link_enabled'                     => 1,
 		'lightbox_theme'                           => 'base_dark',
@@ -548,8 +540,8 @@ function envira_get_config_defaults( $post_id ) {
 		'title_display'                            => 'float',
 		'arrows'                                   => 1,
 		'arrows_position'                          => 'inside',
-		'keyboard'                                 => 1, // Depricated @since 1.8.1
-		'mousewheel'                               => 1, // Depricated @since 1.8.1
+		'keyboard'                                 => 1, // Depricated @since 1.8.1.
+		'mousewheel'                               => 1, // Depricated @since 1.8.1.
 		'toolbar'                                  => 1,
 		'toolbar_title'                            => 0,
 		'toolbar_position'                         => 'top',
@@ -560,13 +552,13 @@ function envira_get_config_defaults( $post_id ) {
 		'html5'                                    => 0,
 		'supersize'                                => 0,
 
-		// Thumbnails
+		// Thumbnails.
 		'thumbnails'                               => 1,
 		'thumbnails_width'                         => 75,
 		'thumbnails_height'                        => 50,
 		'thumbnails_position'                      => 'bottom',
 
-		// Mobile
+		// Mobile.
 		'mobile'                                   => 1,
 		'mobile_width'                             => 320,
 		'mobile_height'                            => 240,
@@ -580,7 +572,7 @@ function envira_get_config_defaults( $post_id ) {
 		'mobile_thumbnails_height'                 => 50,
 		'mobile_justified_row_height'              => 80,
 
-		// Misc
+		// Misc.
 		'title'                                    => '',
 		'slug'                                     => '',
 		'classes'                                  => array(),
@@ -592,6 +584,25 @@ function envira_get_config_defaults( $post_id ) {
 
 	return $defaults;
 
+}
+
+add_action('upload_mimes', 'envira_add_file_types_to_uploads');
+
+/**
+ * Add support for SVgs to the meida Library
+ *
+ * @since 1.8.6
+ *
+ * @param array $file_types Core file types.
+ * @return array
+ */
+function envira_add_file_types_to_uploads($file_types){
+
+	$new_filetypes        = array();
+	$new_filetypes['svg'] = 'image/svg+xml';
+	$file_types           = array_merge($file_types, $new_filetypes );
+
+	return $file_types;
 }
 
 /**
@@ -606,11 +617,11 @@ function envira_get_supported_filetypes() {
 	$supported_file_types = array(
 		array(
 			'title'      => __( 'Image Files', 'envira-gallery' ),
-			'extensions' => 'jpg,jpeg,jpe,gif,png,bmp,tif,tiff,JPG,JPEG,JPE,GIF,PNG,BMP,TIF,TIFF',
+			'extensions' => 'svg,jpg,jpeg,jpe,gif,png,bmp,tif,tiff,SVG,JPG,JPEG,JPE,GIF,PNG,BMP,TIF,TIFF',
 		),
 	);
 
-	// Allow Developers and Addons to filter the supported file types
+	// Allow Developers and Addons to filter the supported file types.
 	$supported_file_types = apply_filters( 'envira_gallery_supported_file_types', $supported_file_types );
 
 	return $supported_file_types;
@@ -636,7 +647,7 @@ function envira_get_supported_filetypes_mimes() {
 		'image/tiff',
 	);
 
-	// Allow Developers and Addons to filter the supported file types
+	// Allow Developers and Addons to filter the supported file types.
 	$supported_file_types = apply_filters( 'envira_gallery_supported_file_types_mimes', $supported_file_types );
 
 	return $supported_file_types;
@@ -705,12 +716,12 @@ function envira_sort_gallery( $data, $sort_type, $sort_direction ) {
 		return false;
 	}
 
-	// We need this part of $data populated with something
+	// We need this part of $data populated with something.
 	if ( empty( $data['gallery'] ) ) {
 		return $data;
 	}
 
-	// Return if we dont have a sort type
+	// Return if we dont have a sort type.
 	if ( empty( $sort_type ) || empty( $sort_direction ) ) {
 		return $data;
 	}
@@ -718,32 +729,31 @@ function envira_sort_gallery( $data, $sort_type, $sort_direction ) {
 	if ( empty( $data['gallery'] ) ) {
 		echo 'no gallery images?';
 		exit;
-		return $data;
 	}
 
-	// Update the sort type
+	// Update the sort type.
 	$data['config']['sort_order'] = $sort_type;
 
 	switch ( $sort_type ) {
 		case '1':
-			// Shuffle keys
+			// Shuffle keys.
 			$keys = array_keys( $data['gallery'] );
 			shuffle( $keys );
 
-			// Rebuild array in new order
+			// Rebuild array in new order.
 			$new = array();
 			foreach ( $keys as $key ) {
 				$new[ $key ] = $data['gallery'][ $key ];
 			}
 
-			// Assign back to gallery
+			// Assign back to gallery.
 			$data['gallery'] = $new;
 			break;
 		case 'src':
 		case 'title':
 		case 'status':
-		case 'caption': // new for backend sort
-		case 'alt': // new for backend sort
+		case 'caption': // new for backend sort.
+		case 'alt': // new for backend sort.
 		case 'link':
 			// Get metadata
 			$keys = array();
@@ -751,8 +761,8 @@ function envira_sort_gallery( $data, $sort_type, $sort_direction ) {
 				$keys[ $id ] = strip_tags( $item[ $sort_type ] );
 			}
 
-			// Sort titles / captions
-			if ( $sort_direction == 'ASC' ) {
+			// Sort titles / captions.
+			if ( $sort_direction === 'ASC' ) {
 
 				natcasesort( $keys );
 
@@ -762,24 +772,24 @@ function envira_sort_gallery( $data, $sort_type, $sort_direction ) {
 
 			}
 
-			// Iterate through sorted items, rebuilding slider
+			// Iterate through sorted items, rebuilding gallery.
 			$new_sort = array();
 			foreach ( $keys as $key => $title ) {
 				$new_sort[ $key ] = $data['gallery'][ $key ];
 			}
 
-			// Assign back to gallery
+			// Assign back to gallery.
 			$data['gallery'] = $new_sort;
 
 			break;
 		/**
-		* Published Date
+		* Published Date.
 		*/
 		case 'date':
-				// Get published date for each
-				$keys = array();
+			// Get published date for each.
+			$keys = array();
 			foreach ( $data['gallery'] as $id => $item ) {
-				// If the attachment isn't in the Media Library, we can't get a post date - assume now
+				// If the attachment isn't in the Media Library, we can't get a post date - assume now.
 				if ( ! is_numeric( $id ) || ( false === ( $attachment = get_post( $id ) ) ) ) {
 					$keys[ $id ] = date( 'Y-m-d H:i:s' );
 				} else {
@@ -787,23 +797,22 @@ function envira_sort_gallery( $data, $sort_type, $sort_direction ) {
 				}
 			}
 
-				// Sort titles / captions
-			if ( $sort_direction == 'ASC' ) {
+				// Sort titles / captions.
+			if ( $sort_direction === 'ASC' ) {
 				asort( $keys );
 			} else {
 				arsort( $keys );
 			}
 
-				// Iterate through sorted items, rebuilding gallery
-				$new = array();
+			// Iterate through sorted items, rebuilding gallery.
+			$new = array();
 			foreach ( $keys as $key => $title ) {
 				$new[ $key ] = $data['gallery'][ $key ];
 			}
 
-				// Assign back to gallery
-				$data['gallery'] = $new;
+			// Assign back to gallery.
+			$data['gallery'] = $new;
 			break;
-		 break;
 		case 'date':
 			break;
 		case '0':
@@ -838,13 +847,13 @@ function envira_get_max_execution_time() {
  */
 function envira_get_transient_expiration_time( $plugin = 'envira-gallery' ) {
 
-	// Define the default
+	// Define the default.
 	$default = DAY_IN_SECONDS;
 
-	// Allow devs to filter this depending on the plugin
+	// Allow devs to filter this depending on the plugin.
 	$default = apply_filters( 'envira_gallery_get_transient_expiration_time', $default, $plugin );
 
-	// Return
+	// Return.
 	return $default;
 
 }
@@ -856,26 +865,26 @@ function envira_get_transient_expiration_time( $plugin = 'envira-gallery' ) {
  */
 function envira_standalone_get_reserved_post_type_slugs() {
 
-	$postTypes = get_post_types();
-	if ( ! is_array( $postTypes ) ) {
-		return; // Something went wrong fetching Post Types
+	$post_types = get_post_types();
+	if ( ! is_array( $post_types ) ) {
+		return; // Something went wrong fetching Post Types.
 	}
 
 	$slugs = array();
-	foreach ( $postTypes as $postType ) {
-		// Skip our own post type
-		if ( $postType == 'envira' || $postType == 'envira_album' ) {
+	foreach ( $post_types as $post_type ) {
+		// Skip our own post type.
+		if ( $post_type === 'envira' || $post_type === 'envira_album' ) {
 			continue;
 		}
 
-		$postTypeObj = get_post_type_object( $postType );
+		$post_type_obj = get_post_type_object( $post_type );
 
-		if ( ! isset( $postTypeObj->rewrite['slug'] ) ) {
+		if ( ! isset( $post_type_obj->rewrite['slug'] ) ) {
 			continue;
 		}
 
-		// Add slug to array
-		$slugs[] = $postTypeObj->rewrite['slug'];
+		// Add slug to array.
+		$slugs[] = $post_type_obj->rewrite['slug'];
 	}
 
 	return $slugs;
@@ -912,17 +921,17 @@ function envira_is_standalone_enabled() {
  * @param string $string  String of data to minify.
  * @return string $string Minified string of data.
  */
-function envira_minify( $string, $stripDoubleForwardslashes = true ) {
+function envira_minify( $string, $strip_double_foward_slashes = true ) {
 
-	// Added a switch for stripping double forwardslashes
-	// This can be disabled when using URLs in JS, to ensure http:// doesn't get removed
-	// All other comment removal and minification will take place
-	$stripDoubleForwardslashes = apply_filters( 'envira_minify_strip_double_forward_slashes', $stripDoubleForwardslashes );
+	// Added a switch for stripping double forwardslashes.
+	// This can be disabled when using URLs in JS, to ensure http:// doesn't get removed.
+	// All other comment removal and minification will take place.
+	$strip_double_foward_slashes = apply_filters( 'envira_minify_strip_double_forward_slashes', $strip_double_foward_slashes );
 
-	if ( $stripDoubleForwardslashes ) {
+	if ( $strip_double_foward_slashes ) {
 		$clean = preg_replace( '/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '', $string );
 	} else {
-		// Use less aggressive method
+		// Use less aggressive method.
 		$clean = preg_replace( '!/\*.*?\*/!s', '', $string );
 		$clean = preg_replace( '/\n\s*\n/', "\n", $clean );
 	}
@@ -944,7 +953,7 @@ function envira_minify( $string, $stripDoubleForwardslashes = true ) {
  */
 function envira_standalone_get_the_slug( $type ) {
 
-	// Get slug
+	// Get slug.
 	switch ( $type ) {
 		case 'gallery':
 			$slug = get_option( 'envira-gallery-slug' );
@@ -965,7 +974,7 @@ function envira_standalone_get_the_slug( $type ) {
 			break;
 
 		default:
-			$slug = 'envira'; // Fallback
+			$slug = 'envira'; // Fallback.
 			break;
 	}
 
@@ -998,18 +1007,18 @@ function envira_standalone_get_slug( $type ) {
  */
 function envira_get_setting( $key, $default = '' ) {
 
-	// Prefix the key
+	// Prefix the key.
 	$prefixed_key = 'envira_gallery_' . $key;
 
-	// Get the option value
+	// Get the option value.
 	$value = get_option( $prefixed_key );
 
-	// If no value exists, fallback to the default
+	// If no value exists, fallback to the default.
 	if ( ! isset( $value ) ) {
 		$value = envira_get_setting_default( $key );
 	}
 
-	// Allow devs to filter
+	// Allow devs to filter.
 	$value = apply_filters( 'envira_gallery_get_setting', $value, $key, $prefixed_key );
 
 	return $value;
@@ -1061,28 +1070,28 @@ function envira_get_setting_defaults() {
  *
  * @since 1.7.0
  *
- * @param string $key   The setting key
- * @param string $value The value to set for the key
- * @return null
+ * @param string $key   The setting key.
+ * @param string $value The value to set for the key.
+ * @return void
  */
 function envira_update_setting( $key, $value ) {
 
-	// Prefix the key
+	// Prefix the key.
 	$key = 'envira_gallery_' . $key;
 
-	// Allow devs to filter
+	// Allow devs to filter.
 	$value = apply_filters( 'envira_gallery_get_setting', $value, $key );
 
-	// Update option
+	// Update option.
 	update_option( $key, $value );
 
 }
 
 /**
- * envira_get_allowed_tags function.
+ * Helper Method to get allowed tags.
  *
  * @access public
- * @param array $tags (default: array())
+ * @param array $tags (default: array()) Tags to allow.
  * @return void
  */
 function envira_get_allowed_tags( $tags = array() ) {

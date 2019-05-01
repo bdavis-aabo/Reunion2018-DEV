@@ -44,9 +44,7 @@ function envira_album_load_lightbox_config( $album_id, $raw = false ) {
 
 	// If supersize is enabled lets override settings.
 	if ( envira_get_config( 'supersize', $data ) === 1 ) {
-
 		$config['margins'] = array( 0, 0 );
-
 	}
 
 	$legacy_themes                = envirabox_legecy_themes();
@@ -58,6 +56,7 @@ function envira_album_load_lightbox_config( $album_id, $raw = false ) {
 	$config['show_smallbtn']      = in_array( $current_theme['value'], $legacy_themes, true ) ? true : false;
 	$config['inner_caption']      = in_array( $current_theme['value'], $legacy_themes, true ) ? true : false;
 	$config['caption_position']   = in_array( $current_theme['value'], $legacy_themes, true ) ? envira_get_config( 'title_display', $data ) : false;
+	$config['lightbox_title_caption'] = in_array( $current_theme['value'], $legacy_themes, true ) ? envira_get_config( 'lightbox_title_caption', $data ) : false;
 	$config['idle_time']          = envira_get_config( 'idle_time', $data ) ? envira_get_config( 'idle_time', $data ) : false;
 	$config['click_content']      = envira_get_config( 'click_content', $data ) ? envira_get_config( 'click_content', $data ) : false;
 	$config['click_slide']        = envira_get_config( 'click_slide', $data ) ? envira_get_config( 'click_slide', $data ) : false;

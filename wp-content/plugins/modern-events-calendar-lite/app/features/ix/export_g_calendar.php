@@ -6,7 +6,7 @@ $events = $this->main->get_events('-1');
 $ix_options = $this->main->get_ix_options();
 
 // Start the export process if token is exists
-if($ix_options['google_export_token']) $this->action = 'google-calendar-export-start';
+if(isset( $ix_options['google_export_token'] ) && $ix_options['google_export_token']) $this->action = 'google-calendar-export-start';
 ?>
 <div class="wrap" id="mec-wrap">
     <h1><?php _e('MEC Import / Export', 'modern-events-calendar-lite'); ?></h1>
@@ -14,9 +14,10 @@ if($ix_options['google_export_token']) $this->action = 'google-calendar-export-s
         <a href="<?php echo $this->main->remove_qs_var('tab'); ?>" class="nav-tab"><?php echo __('Google Cal. Import', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-g-calendar-export'); ?>" class="nav-tab nav-tab-active"><?php echo __('Google Cal. Export', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-f-calendar-import'); ?>" class="nav-tab"><?php echo __('Facebook Cal. Import', 'modern-events-calendar-lite'); ?></a>
+        <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-meetup-import'); ?>" class="nav-tab"><?php echo __('Meetup Import', 'modern-events-calendar-lite'); ?></a>
+        <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-sync'); ?>" class="nav-tab"><?php echo __('Synchronization', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-export'); ?>" class="nav-tab"><?php echo __('Export', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-import'); ?>" class="nav-tab"><?php echo __('Import', 'modern-events-calendar-lite'); ?></a>
-        <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-sync'); ?>" class="nav-tab"><?php echo __('Synchronization', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-thirdparty'); ?>" class="nav-tab"><?php echo __('Third Party Plugins', 'modern-events-calendar-lite'); ?></a>
     </h2>
     <div class="mec-container">
@@ -130,7 +131,7 @@ jQuery("#mec_g_calendar_export_form_do").on('submit', function(e)
     jQuery('#mec_ix_google_export_do_message').hide();
     
     // Add loading Class to the button
-    jQuery("#mec_ix_google_export_do_form_button").addClass('loading').text("<?php esc_attr_e('Importing ...', 'modern-events-calendar-lite'); ?>");
+    jQuery("#mec_ix_google_export_do_form_button").addClass('loading').text("<?php esc_attr_e('Exporting ...', 'modern-events-calendar-lite'); ?>");
     
     var options = jQuery("#mec_g_calendar_export_form_do").serialize();
     jQuery.ajax(

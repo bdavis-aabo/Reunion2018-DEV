@@ -19,6 +19,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Envira\Admin\License;
 
+/**
+ * Updater class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Updater {
 
 	/**
@@ -84,13 +92,76 @@ class Updater {
 	 */
 	public $update = false;
 
+	/**
+	 * Holds the update url.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $api_url    = 'https://enviragallery.com/';
+
+	/**
+	 * Holds the update data returned from the API.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $api_data   = array();
+
+	/**
+	 * Holds the name.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $name       = '';
+
+	/**
+	 * Holds the slug.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $slug       = '';
+
+	/**
+	 * Version #.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $version    = '';
+
+	/**
+	 * WP Override.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $wp_overide = false;
+
+	/**
+	 * Beta.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $beta       = false;
+
+	/**
+	 * Cache Key.
+	 *
+	 * @since 2.1.3
+	 *
+	 * @var bool|object
+	 */
 	private $cache_key  = '';
 
 	/**
@@ -105,9 +176,9 @@ class Updater {
 	/**
 	 * Primary class constructor.
 	 *
+	 * @param array $config Config data.
 	 * @since 1.7.0
 	 */
-	// public function __construct() {
 	public function __construct( array $config ) {
 
 		// If the user cannot update plugins, stop processing here.
@@ -152,8 +223,8 @@ class Updater {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param object $value  The WordPress update object.
-	 * @return object $value Amended WordPress update object on success, default if object is empty.
+	 * @param object $_transient_data  The WordPress update object.
+	 * @return object $_transient_data Amended WordPress update object on success, default if object is empty.
 	 */
 	public function check_update( $_transient_data ) {
 
@@ -237,7 +308,7 @@ class Updater {
 	 */
 	public function plugins_api( $api, $action = '', $args = null ) {
 
-		$plugin = ( 'plugin_information' == $action ) && isset( $args->slug ) && ( $this->slug == $args->slug );
+		$plugin = ( 'plugin_information' === $action ) && isset( $args->slug ) && ( $this->slug === $args->slug );
 		// If our plugin matches the request, set our own plugin data, else return the default response.
 		if ( $plugin ) {
 			return $this->set_plugins_api( $api );
@@ -338,7 +409,7 @@ class Updater {
 		$response_body = wp_remote_retrieve_body( $response );
 
 		// Bail out early if there are any errors.
-		if ( 200 != $response_code || is_wp_error( $response_body ) ) {
+		if ( 200 !== $response_code || is_wp_error( $response_body ) ) {
 			return false;
 		}
 
@@ -347,6 +418,14 @@ class Updater {
 
 	}
 
+	/**
+	 * Queries the remote URL via wp_remote_post and returns a json decoded response.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @param array $cache_key Cache key.
+	 * @return string|bool          Json decoded response on success, false on failure.
+	 */
 	public function get_cached_info( $cache_key = '' ) {
 
 		if ( empty( $cache_key ) ) {
@@ -356,13 +435,21 @@ class Updater {
 		$cache = get_option( $cache_key );
 
 		if ( empty( $cache['timeout'] ) || current_time( 'timestamp' ) > $cache['timeout'] ) {
-			return false; // Cache is expired
+			return false; // Cache is expired.
 		}
 
 		return json_decode( $cache['value'] );
 
 	}
 
+	/**
+	 * Queries the remote URL via wp_remote_post and returns a json decoded response.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @param string $value        Value.
+	 * @param array  $cache_key    Cache key.
+	 */
 	public function set_cache_info( $value = '', $cache_key = '' ) {
 
 		if ( empty( $cache_key ) ) {
@@ -371,12 +458,18 @@ class Updater {
 
 		$data = array(
 			'timeout' => strtotime( '+3 hours', current_time( 'timestamp' ) ),
-			'value'   => json_encode( $value ),
+			'value'   => wp_json_encode( $value ),
 		);
 
 		update_option( $cache_key, $data, 'no' );
 
 	}
+
+	/**
+	 * Filter for vertify SSL.
+	 *
+	 * @since 1.7.0
+	 */
 	public function verify_ssl() {
 		return (bool) apply_filters( 'envira_api_request_verify_ssl', true, $this );
 	}

@@ -12,11 +12,17 @@ namespace Envira\Utils;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
-
 	exit;
-
 }
 
+/**
+ * Export class.
+ *
+ * @since 1.0.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Team
+ */
 class Export {
 
 	/**
@@ -74,13 +80,13 @@ class Export {
 		ignore_user_abort( true );
 
 		// Grab the proper data.
-		$post_id = absint( $_POST['envira_post_id'] );
+		$post_id = ( isset( $_POST['envira_post_id'] ) ) ? absint( $_POST['envira_post_id'] ) : false;
 		$data    = get_post_meta( $post_id, '_eg_gallery_data', true );
 
 		// Append the in_gallery data checker to the data array.
 		$data['in_gallery'] = get_post_meta( $post_id, '_eg_in_gallery', true );
 
-		// Allow Addons to add to the Gallery export
+		// Allow Addons to add to the Gallery export.
 		$data = apply_filters( 'envira_gallery_export_gallery_data', $data, $post_id );
 
 		// Set the proper headers.
@@ -90,7 +96,7 @@ class Export {
 		header( 'Expires: 0' );
 
 		// Make the settings downloadable to a JSON file and die.
-		die( json_encode( $data ) );
+		die( wp_json_encode( $data ) );
 
 	}
 

@@ -7,13 +7,22 @@
  * @package Envira_Gallery
  * @author  Envira Gallery Team <support@enviragallery.com>
  */
+
 namespace Envira\Admin;
 
- // Exit if accessed directly.
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Media View class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Media_View {
 
 	/**
@@ -23,11 +32,11 @@ class Media_View {
 	 */
 	public function __construct() {
 
-		// Modals
+		// Modals.
 		add_filter( 'envira_gallery_media_view_strings', array( $this, 'media_view_strings' ) );
 		add_action( 'print_media_templates', array( $this, 'print_media_templates' ) );
 
-		// Attachment Defaults
+		// Attachment Defaults.
 		add_action( 'admin_init', array( $this, 'default_link_type_settings' ) );
 
 	}
@@ -37,10 +46,9 @@ class Media_View {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param    array $strings    Media View Strings
-	 * @return   array               Media View Strings
+	 * @return   void
 	 */
-	function default_link_type_settings() {
+	public function default_link_type_settings() {
 
 		if ( isset( $_REQUEST['post'] ) ) {
 			$post_id = $_REQUEST['post'];
@@ -54,11 +62,11 @@ class Media_View {
 			return; }
 		if ( $post_id ) {
 			$the_post = get_post( $post_id );
-			if ( isset( $the_post->post_type ) && ( $the_post->post_type == 'envira' || $the_post->post_type == 'envira_album' ) ) {
+			if ( isset( $the_post->post_type ) && ( 'envira' === $the_post->post_type || 'envira_album' === $the_post->post_type ) ) {
 				update_option( 'image_default_link_type', 'file' );
 				return;
 			}
-		} elseif ( $post_type && $post_type == 'envira' ) {
+		} elseif ( 'envira' === $post_type && $post_type ) {
 				update_option( 'image_default_link_type', 'file' );
 				return;
 		} else {
@@ -72,7 +80,7 @@ class Media_View {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param    array $strings    Media View Strings
+	 * @param    array $strings    Media View Strings.
 	 * @return   array               Media View Strings
 	 */
 	public function media_view_strings( $strings ) {
@@ -83,7 +91,7 @@ class Media_View {
 			return $strings;
 		}
 
-		// Remove The "insertFromUrlTitle" option
+		// Remove The "insertFromUrlTitle" option.
 		unset( $strings['insertFromUrlTitle'] );
 
 		return $strings;
@@ -100,7 +108,7 @@ class Media_View {
 
 		// Always output certain print media templates
 		// Insert Gallery (into Visual / Text Editor)
-		// Use: wp.media.template( 'envira-selection' )
+		// Use: wp.media.template( 'envira-selection' ).
 		?>
 		<script type="text/html" id="tmpl-envira-selection">
 			<div class="media-frame-title">
@@ -122,8 +130,8 @@ class Media_View {
 							<span class="spinner"></span>
 						</div>
 						<div class="media-toolbar-primary search-form">
-							<label for="envira-gallery-search" class="screen-reader-text"><?php _e( 'Search', 'envira-gallery' ); ?></label>
-							<input type="search" placeholder="<?php _e( 'Search', 'envira-gallery' ); ?>" id="envira-gallery-search" class="search" />
+							<label for="envira-gallery-search" class="screen-reader-text"><?php esc_html_e( 'Search', 'envira-gallery' ); ?></label>
+							<input type="search" placeholder="<?php esc_html_e( 'Search', 'envira-gallery' ); ?>" id="envira-gallery-search" class="search" />
 						</div>
 					</div>
 				</div>
@@ -143,7 +151,7 @@ class Media_View {
 		<?php
 
 		// Single Selection Item (Gallery or Album)
-		// Use: wp.media.template( 'envira-selection-item' )
+		// Use: wp.media.template( 'envira-selection-item' ).
 		?>
 		<script type="text/html" id="tmpl-envira-selection-item">
 			<div class="attachment-preview" data-id="{{ data.id }}">
@@ -171,46 +179,51 @@ class Media_View {
 		<?php
 
 		// Selection Sidebar
-		// Use: wp.media.template( 'envira-selection-sidebar' )
+		// Use: wp.media.template( 'envira-selection-sidebar' ).
 		?>
 		<script type="text/html" id="tmpl-envira-selection-sidebar">
 			<!-- Helpful Tips -->
-			<h3><?php _e( 'Helpful Tips', 'envira-gallery' ); ?></h3>
-			<strong><?php _e( 'Choosing Your Gallery', 'envira-gallery' ); ?></strong>
+			<h3><?php esc_html_e( 'Helpful Tips', 'envira-gallery' ); ?></h3>
+			<strong><?php esc_html_e( 'Choosing Your Gallery', 'envira-gallery' ); ?></strong>
 			<p>
-				<?php _e( 'To choose your gallery, simply click on one of the boxes to the left. Ctrl / cmd and click to select multiple Galleries.  The "Insert Gallery" button will be activated once you have selected a gallery.', 'envira-gallery' ); ?>
+				<?php esc_html_e( 'To choose your gallery, simply click on one of the boxes to the left. Ctrl / cmd and click to select multiple Galleries.  The "Insert Gallery" button will be activated once you have selected a gallery.', 'envira-gallery' ); ?>
 			</p>
-			<strong><?php _e( 'Inserting Your Gallery', 'envira-gallery' ); ?></strong>
+			<strong><?php esc_html_e( 'Inserting Your Gallery', 'envira-gallery' ); ?></strong>
 			<p>
-				<?php _e( 'To insert your gallery into the editor, click on the "Insert Gallery" button below.', 'envira-gallery' ); ?>
+				<?php esc_html_e( 'To insert your gallery into the editor, click on the "Insert Gallery" button below.', 'envira-gallery' ); ?>
 			</p>
 
 			<!-- Insert Options -->
-			<h3><?php _e( 'Insert Options', 'envira-gallery' ); ?></h3>
+			<h3><?php esc_html_e( 'Insert Options', 'envira-gallery' ); ?></h3>
 			<div class="settings">
 				<!-- Display Title -->
 				<label class="setting">
-					<span class="name"><?php _e( 'Display Title', 'envira-gallery' ); ?></span>
+					<span class="name"><?php esc_html_e( 'Display Title', 'envira-gallery' ); ?></span>
 					<select name="title" size="1">
-						<option value="0" selected><?php _e( 'No', 'envira-gallery' ); ?></option>
+						<option value="0" selected><?php esc_html_e( 'No', 'envira-gallery' ); ?></option>
 						<?php
 						for ( $i = 1; $i <= 6; $i++ ) {
 							?>
-							<option value="h<?php echo $i; ?>"><?php echo sprintf( __( 'Yes, as Heading H%s', 'envira-gallery' ), $i ); ?></option>
+							<option value="h<?php echo intval( $i ); ?>">
+							<?php
+								// Translators: %s.
+								echo esc_html( sprintf( __( 'Yes, as Heading H%s.', 'envira-gallery' ), $i ) );
+							?>
+							</option>
 							<?php
 						}
 						?>
 					</select>
 				</label>
 				<p class="description">
-					<?php _e( 'Prepends each inserted Gallery with the Gallery Title.', 'envira-gallery' ); ?>
+					<?php esc_html_e( 'Prepends each inserted Gallery with the Gallery Title.', 'envira-gallery' ); ?>
 				</p>
 			</div>
 		</script>
 
 		<?php
 		// Error
-		// Use: wp.media.template( 'envira-gallery-error' )
+		// Use: wp.media.template( 'envira-gallery-error' ).
 		?>
 		<script type="text/html" id="tmpl-envira-gallery-error">
 			<p>
@@ -227,35 +240,35 @@ class Media_View {
 			$post_id = 0;
 		}
 
-		// Bail if we're not editing an Envira Gallery
+		// Bail if we're not editing an Envira Gallery.
 		if ( get_post_type( $post_id ) != 'envira' ) {
 			return;
 		}
 
 		// Single Image Editor
-		// Use: wp.media.template( 'envira-meta-editor' )
+		// Use: wp.media.template( 'envira-meta-editor' ).
 		?>
 		<script type="text/html" id="tmpl-envira-meta-editor">
 			<div class="edit-media-header">
-				<button class="left dashicons"><span class="screen-reader-text"><?php _e( 'Edit previous media item' ); ?></span></button>
-				<button class="right dashicons"><span class="screen-reader-text"><?php _e( 'Edit next media item' ); ?></span></button>
+				<button class="left dashicons"><span class="screen-reader-text"><?php esc_html_e( 'Edit previous media item' ); ?></span></button>
+				<button class="right dashicons"><span class="screen-reader-text"><?php esc_html_e( 'Edit next media item' ); ?></span></button>
 			</div>
 			<div class="media-frame-title">
-				<h1><?php _e( 'Edit Metadata', 'envira-gallery' ); ?></h1>
+				<h1><?php esc_html_e( 'Edit Metadata', 'envira-gallery' ); ?></h1>
 			</div>
 			<div class="media-frame-content">
 				<div class="attachment-details save-ready">
 					<!-- Left -->
-					 <div class="attachment-media-view portrait">
-						 <div class="thumbnail thumbnail-image">
-							 <img class="details-image" src="{{ data.src }}" draggable="false" />
-						 </div>
-					 </div>
+					<div class="attachment-media-view portrait">
+						<div class="thumbnail thumbnail-image">
+							<img class="details-image" src="{{ data.src }}" draggable="false" />
+						</div>
+					</div>
 
-					 <!-- Right -->
-					 <div class="attachment-info">
-						 <!-- Settings -->
-						 <div class="settings">
+					<!-- Right -->
+					<div class="attachment-info">
+						<!-- Settings -->
+						<div class="settings">
 							<!-- Attachment ID -->
 							<input type="hidden" name="id" value="{{ data.id }}" />
 
@@ -269,19 +282,19 @@ class Media_View {
 								<span class="description"><?php esc_html_e( 'Controls whether this individual item is Drafted or Published within the Lightbox.', 'envira-gallery' ); ?></span>
 							</label>
 
-							 <!-- Image Title -->
-							 <label class="setting">
-								 <span class="name"><?php _e( 'Title', 'envira-gallery' ); ?></span>
-								 <input type="text" name="title" value="{{ data.title }}" />
-								 <div class="description">
-									<?php _e( 'HTML is accepted for formatting text in the title section. You can adjust the position of the titles in the main Lightbox settings.', 'envira-gallery' ); ?>
-								 </div>
-							 </label>
+							<!-- Image Title -->
+							<label class="setting">
+								<span class="name"><?php esc_html_e( 'Title', 'envira-gallery' ); ?></span>
+								<input type="text" name="title" value="{{ data.title }}" />
+								<div class="description">
+									<?php esc_html_e( 'HTML is accepted for formatting text in the title section. You can adjust the position of the titles in the main Lightbox settings.', 'envira-gallery' ); ?>
+								</div>
+							</label>
 
-							 <!-- Caption -->
-							 <div class="setting">
-								 <span class="name"><?php _e( 'Caption', 'envira-gallery' ); ?></span>
-								 <?php
+							<!-- Caption -->
+							<div class="setting">
+								<span class="name"><?php esc_html_e( 'Caption', 'envira-gallery' ); ?></span>
+								<?php
 									wp_editor(
 										'',
 										'caption',
@@ -298,31 +311,31 @@ class Media_View {
 									);
 									?>
 								<div class="description">
-									<?php _e( 'HTML is accepted for formatting text in the caption section, and is displayed when an image is clicked.', 'envira-gallery' ); ?>
+									<?php esc_html_e( 'HTML is accepted for formatting text in the caption section, and is displayed when an image is clicked.', 'envira-gallery' ); ?>
 								</div>
-							 </div>
+							</div>
 
-							 <!-- Alt Text -->
-							 <label class="setting">
-								 <span class="name"><?php _e( 'Alt Text', 'envira-gallery' ); ?></span>
-								 <input type="text" name="alt" value="{{ data.alt }}" />
-								 <div class="description">
-									<?php _e( 'Very important for SEO, the Alt Text describes the image.', 'envira-gallery' ); ?>
+							<!-- Alt Text -->
+							<label class="setting">
+								<span class="name"><?php esc_html_e( 'Alt Text', 'envira-gallery' ); ?></span>
+								<input type="text" name="alt" value="{{ data.alt }}" />
+								<div class="description">
+									<?php esc_html_e( 'Very important for SEO, the Alt Text describes the image.', 'envira-gallery' ); ?>
 								</div>
-							 </label>
+							</label>
 
-							 <!-- Link -->
-							 <label class="setting">
-								 <span class="name"><?php _e( 'URL', 'envira-gallery' ); ?></span>
-								 <input type="text" name="link" value="{{ data.link }}" />
-								 <# if ( typeof( data.id ) === 'number' ) { #>
-									  <span class="buttons">
-										<button class="button button-small media-file"><?php _e( 'Media File', 'envira-gallery' ); ?></button>
-										<button class="button button-small attachment-page"><?php _e( 'Attachment Page', 'envira-gallery' ); ?></button>
+							<!-- Link -->
+							<label class="setting">
+								<span class="name"><?php esc_html_e( 'URL', 'envira-gallery' ); ?></span>
+								<input type="text" name="link" value="{{ data.link }}" />
+								<# if ( typeof( data.id ) === 'number' ) { #>
+									<span class="buttons">
+										<button class="button button-small media-file"><?php esc_html_e( 'Media File', 'envira-gallery' ); ?></button>
+										<button class="button button-small attachment-page"><?php esc_html_e( 'Attachment Page', 'envira-gallery' ); ?></button>
 									</span>
 								<# } #>
 								<span class="description">
-									<?php _e( 'Enter a hyperlink if you wish to link this image to somewhere other than its full size image.', 'envira-gallery' ); ?>
+									<?php esc_html_e( 'Enter a hyperlink if you wish to link this image to somewhere other than its full size image.', 'envira-gallery' ); ?>
 								</span>
 							</label>
 
@@ -331,10 +344,10 @@ class Media_View {
 								?>
 								<!-- Link in New Window -->
 								<label class="setting">
-									<span class="name"><?php _e( 'Open URL in New Window?', 'envira-gallery' ); ?></span>
+									<span class="name"><?php esc_html_e( 'Open URL in New Window?', 'envira-gallery' ); ?></span>
 									<span class="description">
 										<input type="checkbox" name="link_new_window" value="1"<# if ( data.link_new_window == '1' ) { #> checked <# } #> />
-										<?php _e( 'Opens your image links in a new browser window / tab.', 'envira-gallery' ); ?>
+										<?php esc_html_e( 'Opens your image links in a new browser window / tab.', 'envira-gallery' ); ?>
 									</span>
 								</label>
 								<?php
@@ -360,47 +373,47 @@ class Media_View {
 
 							<!-- Addons can populate the UI here -->
 							<div class="envira-addons"></div>
-						 </div>
-						 <!-- /.settings -->
+						</div>
+						<!-- /.settings -->
 
-						 <!-- Actions -->
-						 <div class="actions">
-							 <a href="#" class="envira-gallery-meta-submit button media-button button-large button-primary media-button-insert" title="<?php esc_attr_e( 'Save Metadata', 'envira-gallery' ); ?>">
-								<?php _e( 'Save Metadata', 'envira-gallery' ); ?>
-							 </a>
+						<!-- Actions -->
+						<div class="actions">
+							<a href="#" class="envira-gallery-meta-submit button media-button button-large button-primary media-button-insert" title="<?php esc_attr_e( 'Save Metadata', 'envira-gallery' ); ?>">
+								<?php esc_html_e( 'Save Metadata', 'envira-gallery' ); ?>
+							</a>
 
 							<!-- Save Spinner -->
-							 <span class="settings-save-status">
-								  <span class="spinner"></span>
-								  <span class="saved"><?php _e( 'Saved.', 'envira-gallery' ); ?></span>
-							 </span>
-						 </div>
-						 <!-- /.actions -->
-					 </div>
-				 </div>
+							<span class="settings-save-status">
+								<span class="spinner"></span>
+								<span class="saved"><?php esc_html_e( 'Saved.', 'envira-gallery' ); ?></span>
+							</span>
+						</div>
+						<!-- /.actions -->
+					</div>
+				</div>
 			</div>
 		</script>
 
 		<?php
 		// Bulk Image Editor
-		// Use: wp.media.template( 'envira-meta-bulk-editor' )
+		// Use: wp.media.template( 'envira-meta-bulk-editor' ).
 		?>
 		<script type="text/html" id="tmpl-envira-meta-bulk-editor">
 			<div class="media-frame-title">
-				<h1><?php _e( 'Bulk Edit', 'envira-gallery' ); ?></h1>
+				<h1><?php esc_html_e( 'Bulk Edit', 'envira-gallery' ); ?></h1>
 			</div>
 			<div class="media-frame-content">
 				<div class="attachment-details save-ready">
 					<!-- Left -->
-					 <div class="attachment-media-view portrait">
+					<div class="attachment-media-view portrait">
 						<ul class="attachments envira-bulk-edit">
 						</ul>
-					 </div>
+					</div>
 
-					 <!-- Right -->
-					 <div class="attachment-info">
-						 <!-- Settings -->
-						 <div class="settings">
+					<!-- Right -->
+					<div class="attachment-info">
+						<!-- Settings -->
+						<div class="settings">
 
 							<!-- Status -->
 							<label class="setting">
@@ -413,18 +426,18 @@ class Media_View {
 							</label>
 
 							<!-- Image Title -->
-							 <label class="setting">
-								 <span class="name"><?php _e( 'Title', 'envira-gallery' ); ?></span>
-								 <input type="text" name="title" value="" />
-								 <div class="description">
-									<?php _e( 'HTML is accepted for formatting text in the title section. You can adjust the position of the titles in the main Lightbox settings.', 'envira-gallery' ); ?>
-								 </div>
-							 </label>
+							<label class="setting">
+								<span class="name"><?php esc_html_e( 'Title', 'envira-gallery' ); ?></span>
+								<input type="text" name="title" value="" />
+								<div class="description">
+									<?php esc_html_e( 'HTML is accepted for formatting text in the title section. You can adjust the position of the titles in the main Lightbox settings.', 'envira-gallery' ); ?>
+								</div>
+							</label>
 
-							 <!-- Caption -->
-							 <div class="setting">
-								 <span class="name"><?php _e( 'Caption', 'envira-gallery' ); ?></span>
-								 <?php
+							<!-- Caption -->
+							<div class="setting">
+								<span class="name"><?php esc_html_e( 'Caption', 'envira-gallery' ); ?></span>
+								<?php
 									wp_editor(
 										'',
 										'caption',
@@ -439,71 +452,71 @@ class Media_View {
 											'editor_height' => 100,
 										)
 									);
-									?>
+								?>
 								<div class="description">
-									<?php _e( 'HTML is accepted for formatting text in the caption sections, and is displayed when an image is clicked.', 'envira-gallery' ); ?>
+									<?php esc_html_e( 'HTML is accepted for formatting text in the caption sections, and is displayed when an image is clicked.', 'envira-gallery' ); ?>
 								</div>
-							 </div>
+							</div>
 
-							 <!-- Alt Text -->
-							 <label class="setting">
-								 <span class="name"><?php _e( 'Alt Text', 'envira-gallery' ); ?></span>
-								 <input type="text" name="alt" value="" />
-								 <div class="description">
-									<?php _e( 'Very important for SEO, the Alt Text describes the image.', 'envira-gallery' ); ?>
+							<!-- Alt Text -->
+							<label class="setting">
+								<span class="name"><?php esc_html_e( 'Alt Text', 'envira-gallery' ); ?></span>
+								<input type="text" name="alt" value="" />
+								<div class="description">
+									<?php esc_html_e( 'Very important for SEO, the Alt Text describes the image.', 'envira-gallery' ); ?>
 								</div>
-							 </label>
+							</label>
 
-							 <!-- Link -->
-							 <label class="setting">
-								 <span class="name"><?php _e( 'URL', 'envira-gallery' ); ?></span>
-								 <input type="text" name="link" value="" />
-								 <# if ( typeof( data.id ) === 'number' ) { #>
-									  <span class="buttons">
-										<button class="button button-small media-file"><?php _e( 'Media File', 'envira-gallery' ); ?></button>
-										<button class="button button-small attachment-page"><?php _e( 'Attachment Page', 'envira-gallery' ); ?></button>
+							<!-- Link -->
+							<label class="setting">
+								<span class="name"><?php esc_html_e( 'URL', 'envira-gallery' ); ?></span>
+								<input type="text" name="link" value="" />
+								<# if ( typeof( data.id ) === 'number' ) { #>
+									<span class="buttons">
+										<button class="button button-small media-file"><?php esc_html_e( 'Media File', 'envira-gallery' ); ?></button>
+										<button class="button button-small attachment-page"><?php esc_html_e( 'Attachment Page', 'envira-gallery' ); ?></button>
 									</span>
 								<# } #>
 								<span class="description">
-									<?php _e( 'Enter a hyperlink if you wish to link this image to somewhere other than its full size image.', 'envira-gallery' ); ?>
+									<?php esc_html_e( 'Enter a hyperlink if you wish to link this image to somewhere other than its full size image.', 'envira-gallery' ); ?>
 								</span>
 							</label>
 
 							<!-- Link in New Window -->
 							<label class="setting">
-								<span class="name"><?php _e( 'Open URL in New Window?', 'envira-gallery' ); ?></span>
+								<span class="name"><?php esc_html_e( 'Open URL in New Window?', 'envira-gallery' ); ?></span>
 								<span class="description">
 									<input type="checkbox" name="link_new_window" value="1" />
-									<?php _e( 'Opens your image links in a new browser window / tab.', 'envira-gallery' ); ?>
+									<?php esc_html_e( 'Opens your image links in a new browser window / tab.', 'envira-gallery' ); ?>
 								</span>
 							</label>
 
 							<!-- Addons can populate the UI here -->
 							<div class="envira-addons"></div>
-						 </div>
-						 <!-- /.settings -->
+						</div>
+						<!-- /.settings -->
 
-						 <!-- Actions -->
-						 <div class="actions">
-							 <a href="#" class="envira-gallery-meta-submit button media-button button-large button-primary media-button-insert" title="<?php esc_attr_e( 'Save Metadata to Items', 'envira-gallery' ); ?>">
-								<?php _e( 'Save Metadata', 'envira-gallery' ); ?>
-							 </a>
+						<!-- Actions -->
+						<div class="actions">
+							<a href="#" class="envira-gallery-meta-submit button media-button button-large button-primary media-button-insert" title="<?php esc_attr_e( 'Save Metadata to Items', 'envira-gallery' ); ?>">
+								<?php esc_html_e( 'Save Metadata', 'envira-gallery' ); ?>
+							</a>
 
 							<!-- Save Spinner -->
-							 <span class="settings-save-status">
-								  <span class="spinner"></span>
-								  <span class="saved"><?php _e( 'Saved.', 'envira-gallery' ); ?></span>
-							 </span>
-						 </div>
-						 <!-- /.actions -->
-					 </div>
-				 </div>
+							<span class="settings-save-status">
+								<span class="spinner"></span>
+								<span class="saved"><?php esc_html_e( 'Saved.', 'envira-gallery' ); ?></span>
+							</span>
+						</div>
+						<!-- /.actions -->
+					</div>
+				</div>
 			</div>
 		</script>
 
 		<?php
 		// Bulk Image Editor Image
-		// Use: wp.media.template( 'envira-meta-bulk-editor-image' )
+		// Use: wp.media.template( 'envira-meta-bulk-editor-image' ).
 		?>
 		<script type="text/html" id="tmpl-envira-meta-bulk-editor-image">
 			<div class="attachment-preview">
@@ -521,16 +534,16 @@ class Media_View {
 		 * Move Images to Gallery
 		 */
 		// Selection Sidebar
-		// Use: wp.media.template( 'envira-meta-move-media-sidebar' )
+		// Use: wp.media.template( 'envira-meta-move-media-sidebar' ).
 		?>
 		<script type="text/html" id="tmpl-envira-meta-move-media-sidebar">
 			<!-- Helpful Tips -->
-			<h3><?php _e( 'Helpful Tips', 'envira-gallery' ); ?></h3>
+			<h3><?php esc_html_e( 'Helpful Tips', 'envira-gallery' ); ?></h3>
 			<p>
-				<?php _e( 'Select the Gallery to move the selected images to by clicking on one of the boxes to the left.', 'envira-gallery' ); ?>
+				<?php esc_html_e( 'Select the Gallery to move the selected images to by clicking on one of the boxes to the left.', 'envira-gallery' ); ?>
 			</p>
 			<p>
-				<?php _e( 'Once done, click the Move button, and the selected images will be moved to the chosen Gallery.', 'envira-gallery' ); ?>
+				<?php esc_html_e( 'Once done, click the Move button, and the selected images will be moved to the chosen Gallery.', 'envira-gallery' ); ?>
 			</p>
 		</script>
 
@@ -540,7 +553,7 @@ class Media_View {
 		 */
 
 		// Search
-		// Use: wp.media.template( 'envira-gallery-search-bar' )
+		// Use: wp.media.template( 'envira-gallery-search-bar' ).
 		?>
 		<script type="text/html" id="tmpl-envira-gallery-search-bar">
 			<div class="media-toolbar">
@@ -548,15 +561,15 @@ class Media_View {
 					<span class="spinner"></span>
 				</div>
 				<div class="media-toolbar-primary search-form">
-					<label for="envira-gallery-search" class="screen-reader-text"><?php _e( 'Search', 'envira-gallery' ); ?></label>
-					<input type="search" placeholder="<?php _e( 'Search', 'envira-gallery' ); ?>" id="envira-gallery-search" class="search" />
+					<label for="envira-gallery-search" class="screen-reader-text"><?php esc_html_e( 'Search', 'envira-gallery' ); ?></label>
+					<input type="search" placeholder="<?php esc_html_e( 'Search', 'envira-gallery' ); ?>" id="envira-gallery-search" class="search" />
 				</div>
 			</div>
 		</script>
 
 		<?php
 		// Folders and Items
-		// Use: wp.media.template( 'envira-gallery-items' )
+		// Use: wp.media.template( 'envira-gallery-items' ).
 		?>
 		<script type="text/html" id="tmpl-envira-gallery-items">
 			<ul class="attachments envira-gallery-attachments"></ul>
@@ -564,7 +577,7 @@ class Media_View {
 
 		<?php
 		// Single Folder or Image (Item)
-		// Use: wp.media.template( 'envira-gallery-item' )
+		// Use: wp.media.template( 'envira-gallery-item' ).
 		?>
 		<script type="text/html" id="tmpl-envira-gallery-item">
 			<# if ( ! data.is_dir ) { #>

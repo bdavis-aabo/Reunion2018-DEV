@@ -10,9 +10,7 @@
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
-
 	exit;
-
 }
 
 /**
@@ -21,15 +19,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.7.0
  *
  * @access public
- * @param mixed $gallery_id
- * @return void
+ * @param mixed   $gallery_id Gallery ID.
+ * @param boolean $flush_cache Flush Cache.
+ * @return array
  */
 function envira_get_gallery( $gallery_id, $flush_cache = false ) {
 
 	$gallery = get_transient( '_eg_cache_' . $gallery_id );
 
 	// Attempt to return the transient first, otherwise generate the new query to retrieve the data.
-	if ( $flush_cache === true || false === $gallery ) {
+	if ( true === $flush_cache || false === $gallery ) {
 		$gallery = _envira_get_gallery( $gallery_id );
 		if ( $gallery ) {
 			$expiration = envira_get_transient_expiration_time();
@@ -47,7 +46,7 @@ function envira_get_gallery( $gallery_id, $flush_cache = false ) {
  *
  * @since 1.7.0
  *
- * @param int $id     The gallery ID used to retrieve a gallery.
+ * @param int $gallery_id     The gallery ID used to retrieve a gallery.
  * @return array|bool Array of gallery data or false if none found.
  */
 function _envira_get_gallery( $gallery_id ) {
@@ -68,18 +67,20 @@ function _envira_get_gallery( $gallery_id ) {
 }
 
 /**
- * envira_get_gallery_by_slug function.
+ * Envira_get_gallery_by_slug function.
  *
  * @since 1.7.0
  *
  * @access public
- * @param mixed $slug
- * @return void
+ * @param string $slug Gallery Slug.
+ * @return array
  */
 function envira_get_gallery_by_slug( $slug ) {
 
 	// Attempt to return the transient first, otherwise generate the new query to retrieve the data.
-	if ( false === ( $gallery = get_transient( '_eg_cache_' . $slug ) ) ) {
+	$gallery = get_transient( '_eg_cache_' . $slug );
+
+	if ( false === $gallery ) {
 
 		$gallery = _envira_get_gallery_by_slug( $slug );
 
@@ -100,8 +101,8 @@ function envira_get_gallery_by_slug( $slug ) {
  * @since 1.7.0
  *
  * @access private
- * @param mixed $slug
- * @return void
+ * @param string $slug Gallery Slug.
+ * @return boolean
  */
 function _envira_get_gallery_by_slug( $slug ) {
 
@@ -123,8 +124,8 @@ function _envira_get_gallery_by_slug( $slug ) {
 	$galleries = new WP_Query(
 		array(
 			'post_type'      => 'envira',
-			'meta_key'       => 'envira_gallery_slug',
-			'meta_value'     => $slug,
+			'meta_key'       => 'envira_gallery_slug', // @codingStandardsIgnoreLine
+			'meta_value'     => $slug, // @codingStandardsIgnoreLine
 			'fields'         => 'ids',
 			'posts_per_page' => 1,
 		)
@@ -142,7 +143,7 @@ function _envira_get_gallery_by_slug( $slug ) {
 			'no_found_rows'  => true,
 			'cache_results'  => false,
 			'fields'         => 'ids',
-			'meta_query'     => array(
+			'meta_query'     => array( // @codingStandardsIgnoreLine
 				array(
 					'key'   => '_eg_gallery_old_slug',
 					'value' => $slug,
@@ -162,23 +163,25 @@ function _envira_get_gallery_by_slug( $slug ) {
 }
 
 /**
- * envira_get_galleries function.
+ * Envira Get Galleries function.
  *
  * @since 1.7.0
  *
  * @access public
- * @param bool   $skip_empty (default: true)
- * @param bool   $ignore_cache (default: false)
- * @param string $search_terms (default: '')
- * @return void
+ * @param bool   $skip_empty (default: true).
+ * @param bool   $ignore_cache (default: false).
+ * @param string $search_terms (default: '').
+ * @return array
  */
 function envira_get_galleries( $skip_empty = true, $ignore_cache = false, $search_terms = '' ) {
 
+	$galleries = get_transient( '_eg_cache_all' );
+
 	// Attempt to return the transient first, otherwise generate the new query to retrieve the data.
-	if ( $ignore_cache || ! empty( $search_terms ) || false === ( $galleries = get_transient( '_eg_cache_all' ) ) ) {
+	if ( $ignore_cache || ! empty( $search_terms ) || false === $galleries ) {
 		$galleries = _envira_get_galleries( $skip_empty, $search_terms );
 
-		// Cache the results if we're not performing a search and we have some results
+		// Cache the results if we're not performing a search and we have some results.
 		if ( $galleries && empty( $search_terms ) ) {
 			$expiration = envira_get_transient_expiration_time();
 			set_transient( '_eg_cache_all', $galleries, $expiration );
@@ -191,14 +194,19 @@ function envira_get_galleries( $skip_empty = true, $ignore_cache = false, $searc
 }
 
 /**
- * _envira_get_galleries function.
+ * Envira Get Galleries function.
  *
  * @since 1.7.0
  *
- * @access private
- * @return void
+ * @access public
+ * @param bool   $skip_empty (default: true).
+ * @param string $search_terms (default: '').
+ * @param int    $posts_per_page (default: 99).
+ * @param string $orderby (default: post_date).
+ * @param string $order (default: DESC).
+ * @return $ret array Gallery data.
  */
-function _envira_get_galleries( $skip_empty = true, $search_terms = '', $posts_per_page = 99 ) {
+function _envira_get_galleries( $skip_empty = true, $search_terms = '', $posts_per_page = 99, $orderby = 'post_date', $order = 'DESC' ) {
 
 	// Build WP_Query arguments.
 	$args = array(
@@ -207,7 +215,9 @@ function _envira_get_galleries( $skip_empty = true, $search_terms = '', $posts_p
 		'posts_per_page' => $posts_per_page,
 		'no_found_rows'  => true,
 		'fields'         => 'ids',
-		'meta_query'     => array(
+		'orderby'        => $orderby,
+		'order'          => $order,
+		'meta_query'     => array( // @codingStandardsIgnoreLine
 			array(
 				'key'     => '_eg_gallery_data',
 				'compare' => 'EXISTS',
@@ -230,6 +240,7 @@ function _envira_get_galleries( $skip_empty = true, $search_terms = '', $posts_p
 	// Now loop through all the galleries found and only use galleries that have images in them.
 	$ret = array();
 	foreach ( $galleries->posts as $id ) {
+
 		$data = get_post_meta( $id, '_eg_gallery_data', true );
 
 		// Skip empty galleries.
@@ -243,6 +254,9 @@ function _envira_get_galleries( $skip_empty = true, $search_terms = '', $posts_p
 			continue;
 		}
 
+		// Add title.
+		$data['config']['title'] = get_the_title( $id );
+
 		// Add gallery to array of galleries.
 		$ret[] = $data;
 	}
@@ -253,13 +267,13 @@ function _envira_get_galleries( $skip_empty = true, $search_terms = '', $posts_p
 }
 
 /**
- * envira_get_gallery_image_count function.
+ * Gallery image count function.
  *
  * @since 1.7.0
  *
  * @access public
- * @param mixed $gallery_id
- * @return void
+ * @param mixed $gallery_id Gallery Id.
+ * @return int
  */
 function envira_get_gallery_image_count( $gallery_id ) {
 
@@ -277,8 +291,10 @@ function envira_get_gallery_image_count( $gallery_id ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @return void
+ * @param mixed   $gallery_id Gallery Id.
+ * @param boolean $raw Raw.
+ * @param array   $data Gallery Data.
+ * @return string
  */
 function envira_get_gallery_config( $gallery_id, $raw = false, $data = null ) {
 
@@ -290,19 +306,20 @@ function envira_get_gallery_config( $gallery_id, $raw = false, $data = null ) {
 
 	$images = array();
 
-	if ( ! empty( $data ) && $data['config']['type'] == 'dynamic' ) {
+	if ( ! empty( $data ) && 'dynamic' === $data['config']['type'] ) {
 
 		$data = $data;
 
 	} else {
 
-		$data = $original_data = _envira_get_gallery( $gallery_id );
+		$data          = envira_get_gallery( $gallery_id );
+		$original_data = $data;
 
-		// temp hack: preserve keyboard and mousewheel settings (see 1980)
+		// temp hack: preserve keyboard and mousewheel settings (see 1980).
 		$keyboard   = isset( $data['config']['keyboard'] ) ? $data['config']['keyboard'] : 1;
 		$mousewheel = isset( $data['config']['mousewheel'] ) ? $data['config']['mousewheel'] : 1;
 
-		// below filter makes keyboard 0 and makes mousewheel reappear as 0
+		// below filter makes keyboard 0 and makes mousewheel reappear as 0.
 		$data['config']['keyboard']   = $keyboard;
 		$data['config']['mousewheel'] = $mousewheel;
 
@@ -320,7 +337,7 @@ function envira_get_gallery_config( $gallery_id, $raw = false, $data = null ) {
 
 	}
 
-	// Santitize Description
+	// Santitize Description.
 	if ( ! empty( $data['config']['description'] ) ) {
 		$data['config']['description'] = envira_santitize_description( $data['config']['description'] );
 	}
@@ -331,19 +348,37 @@ function envira_get_gallery_config( $gallery_id, $raw = false, $data = null ) {
 		$data['config'][ $key ] = envira_santitize_config_setting( $value, $key );
 	}
 
-	// Disable/Remove FullScreen if Fullscreen addon is not present
+	// Disable/Remove FullScreen if Fullscreen addon is not present.
 	if ( ! class_exists( 'Envira_Fullscreen' ) ) {
 		if ( isset( $data['config']['open_fullscreen'] ) ) {
 			unset( $data['config']['open_fullscreen'] );
 		}
 	}
 
-	// Disable/Remove FullScreen if CSS addon is not present
+	// Disable/Remove Proofing if proofing addon is not present OR proofing isn't even activated.
+	if ( ! class_exists( 'Envira_Proofing' ) || empty( $data['config']['proofing'] ) || 0 === $data['config']['proofing'] ) {
+		foreach ( $data['config'] as $key => $value ) {
+			if ( strtolower( substr( $key, 0, 8 ) ) === 'proofing' ) {
+				unset( $data['config'][ $key ] );
+			}
+		}
+		if ( isset( $data['config']['proofing_submitted_message'] ) ) {
+			unset( $data['config']['proofing_submitted_message'] );
+		}
+		if ( isset( $data['config']['proofing_email_message'] ) ) {
+			unset( $data['config']['proofing_email_message'] );
+		}
+		if ( isset( $data['config']['proofing_email_subject'] ) ) {
+			unset( $data['config']['proofing_email_subject'] );
+		}
+	}
+
+	// Disable/Remove FullScreen if CSS addon is not present.
 	if ( ! function_exists( 'envira_custom_css_plugins_loaded' ) && isset( $data['config']['custom_css'] ) ) {
 		unset( $data['config']['custom_css'] );
 	}
 
-	// Auto Thumbnail Size Check
+	// Auto Thumbnail Size Check.
 	$data = envira_maybe_set_thumbnail_size_auto( $data );
 
 	return wp_json_encode( $data['config'] );
@@ -356,14 +391,15 @@ function envira_get_gallery_config( $gallery_id, $raw = false, $data = null ) {
  * @since 1.8.3
  *
  * @access public
- * @param array $data
+ * @param string $value The value.
+ * @param string $key The key.
  * @return array
  */
 function envira_santitize_config_setting( $value, $key ) {
 
 	/* at the moment we are only processing strings, either on their own or in arrays */
 
-	if ( $key == 'custom_css' ) {
+	if ( 'custom_css' === $key ) {
 		/* Remove comments */
 		$regex     = array(
 			"`^([\t\s]+)`ism"                       => '',
@@ -375,16 +411,16 @@ function envira_santitize_config_setting( $value, $key ) {
 			$value = preg_replace( array_keys( $regex ), $regex, $value );
 	}
 
-	if ( gettype( $value ) == 'array' && ! empty( $value ) ) {
+	if ( gettype( $value ) === 'array' && ! empty( $value ) ) {
 		foreach ( $value as $array_key => $array_value ) {
-			if ( gettype( $array_value ) == 'string' ) {
+			if ( gettype( $array_value ) === 'string' ) {
 				$value[ $array_key ] = htmlentities( $array_value, ENT_QUOTES );
 			}
 		}
 		return $value;
 	}
 
-	if ( gettype( $value ) != 'string' ) {
+	if ( gettype( $value ) !== 'string' ) {
 		return $value;
 	}
 
@@ -398,7 +434,7 @@ function envira_santitize_config_setting( $value, $key ) {
  * @since 1.8.3
  *
  * @access public
- * @param array $data
+ * @param string $value String value.
  * @return array
  */
 function envira_santitize_value( $value ) {
@@ -413,17 +449,17 @@ function envira_santitize_value( $value ) {
  * @since 1.8.3
  *
  * @access public
- * @param array $data
+ * @param array $data Gallery data.
  * @return array
  */
 function envira_maybe_set_thumbnail_size_auto( $data ) {
 
-	if ( isset( $data['config']['thumbnails_custom_size'] ) && $data['config']['thumbnails_custom_size'] === 0 ) {
+	if ( isset( $data['config']['thumbnails_custom_size'] ) && 0 === $data['config']['thumbnails_custom_size'] ) {
 		$data['config']['thumbnails_width']  = 'auto';
 		$data['config']['thumbnails_height'] = 'auto';
 	}
 
-	// if this value 'thumbnails_custom_size' isn't set/exists, then this is a gallery created/updated before 1.8.3 so the width/height values should be honored
+	// if this value 'thumbnails_custom_size' isn't set/exists, then this is a gallery created/updated before 1.8.3 so the width/height values should be honored.
 	return $data;
 
 }
@@ -434,9 +470,8 @@ function envira_maybe_set_thumbnail_size_auto( $data ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @param bool  $raw (default: false)
- * @return void
+ * @param  string $caption The caption.
+ * @return string
  */
 function envira_santitize_caption( $caption ) {
 
@@ -445,8 +480,8 @@ function envira_santitize_caption( $caption ) {
 	}
 
 	// until we built a better santitizer, put this in place for resolving smart quotes in some scenarios when htmlentities doesn't
-	// $caption = str_replace(array("'", "'", '"', '"'), array(chr(145), chr(146), chr(147), chr(148) ), $caption );
-	$encoding = ( mb_detect_encoding( $caption ) != 'ASCII' ) ? mb_detect_encoding( $caption ) : 'utf-8';
+	// $caption = str_replace(array("'", "'", '"', '"'), array(chr(145), chr(146), chr(147), chr(148) ), $caption );.
+	$encoding = ( mb_detect_encoding( $caption ) !== 'ASCII' ) ? mb_detect_encoding( $caption ) : 'utf-8';
 	$caption  = function_exists( 'mb_detect_encoding' ) ? htmlentities( $caption, ENT_QUOTES, $encoding ) : htmlentities( $caption, ENT_QUOTES, $encoding );
 	$caption  = str_replace( '&quot;', '"', $caption );
 	$caption  = nl2br( $caption ); /* convert line breaks into <br/> tags */
@@ -461,7 +496,9 @@ function envira_santitize_caption( $caption ) {
  * @since 1.8.4.2
  *
  * @access public
- * @param string $string
+ * @param string $string Incoming string.
+ * @param string $enc Encoding.
+ * @param string $ret Return.
  * @return result
  */
 function envira_detect_encoding( $string, $enc = null, $ret = null ) {
@@ -492,8 +529,8 @@ function envira_detect_encoding( $string, $enc = null, $ret = null ) {
 
 	foreach ( $enclist as $item ) {
 		$sample = iconv( $item, $item, $string );
-		if ( md5( $sample ) == md5( $string ) ) {
-			if ( $ret === null ) {
+		if ( md5( $sample ) === md5( $string ) ) {
+			if ( null === $ret ) {
 				$result = $item;
 			} else {
 				$result = true; }
@@ -510,9 +547,8 @@ function envira_detect_encoding( $string, $enc = null, $ret = null ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @param bool  $raw (default: false)
- * @return void
+ * @param string $lightbox_caption Caption.
+ * @return string
  */
 function envira_santitize_lightbox_caption( $lightbox_caption ) {
 
@@ -536,14 +572,13 @@ function envira_santitize_lightbox_caption( $lightbox_caption ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @param bool  $raw (default: false)
+ * @param array $meta_data Meta Data.
  * @return void
  */
 function envira_santitize_metadata( $meta_data ) {
 
-	if ( empty( $meta_data ) ) {
-		return $meta_data;
+	if ( ! $meta_data ) {
+		return;
 	}
 
 	if ( is_array( $meta_data ) && ! empty( $meta_data ) ) {
@@ -565,22 +600,18 @@ function envira_santitize_metadata( $meta_data ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @param bool  $raw (default: false)
- * @return void
+ * @param string $title Gallery title.
+ * @return string
  */
 function envira_santitize_title( $title ) {
 
 	if ( empty( $title ) || is_array( $title ) ) {
 		return;
 	}
-	$title = str_replace( array( "'", "'", '"', '"' ), array( chr( 145 ), chr( 146 ), chr( 147 ), chr( 148 ) ), $title );
-	// until we built a better santitizer, put this in place for resolving smart quotes in some scenarios when htmlentities doesn't
-	$filtered_title = htmlentities( $title, ENT_QUOTES );
-	if ( ! $filtered_title ) {
-		$filtered_title = htmlentities( str_replace( array( '"' ), array( '&quot;' ), $title ), ENT_QUOTES );
-	}
 
+	$encoding       = ( mb_detect_encoding( $title ) !== 'ASCII' ) ? mb_detect_encoding( $title ) : 'utf-8';
+	$filtered_title = function_exists( 'mb_detect_encoding' ) ? htmlentities( $title, ENT_QUOTES, $encoding ) : htmlentities( $title, ENT_QUOTES, $encoding );
+	$filtered_title = htmlentities( str_replace( array( '"' ), array( '&quot;' ), $title ), ENT_QUOTES );
 	return $filtered_title;
 
 }
@@ -591,13 +622,12 @@ function envira_santitize_title( $title ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @param bool  $raw (default: false)
- * @return void
+ * @param string $description Gallery description.
+ * @return string
  */
 function envira_santitize_description( $description ) {
 
-	// until we built a better santitizer, put this in place for resolving smart quotes in some scenarios when htmlentities doesn't
+	// until we built a better santitizer, put this in place for resolving smart quotes in some scenarios when htmlentities doesn't.
 	$description = str_replace( array( "'", "'", '"', '"' ), array( chr( 145 ), chr( 146 ), chr( 147 ), chr( 148 ) ), $description );
 
 	return htmlentities( $description, ENT_QUOTES );
@@ -610,13 +640,18 @@ function envira_santitize_description( $description ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @param bool  $raw (default: false)
- * @return void
+ * @param mixed   $gallery_id Gallery id.
+ * @param bool    $raw (default: false).
+ * @param array   $data (default: null).
+ * @param array   $return_sort_ids (default: false).
+ * @param boolean $for_albums (default: false).
+ * @param string  $gallery_type Type.
+ * @param boolean $cache Enable cache.
+ * @return string
  */
-function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $return_sort_ids = false, $for_albums = false ) {
+function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $return_sort_ids = false, $for_albums = false, $gallery_type = false, $cache = true ) {
 
-	if ( ! empty( $data ) && isset( $data['config']['sort_order'] ) && $data['config']['sort_order'] == '1' ) {
+	if ( ! empty( $data ) && isset( $data['config']['sort_order'] ) && '1' === $data['config']['sort_order'] ) {
 
 		$data = envira_insure_random_gallery( $data, $gallery_id );
 
@@ -624,7 +659,11 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 
 		/* if this isn't random sorting, then let's use transient caching */
 
-		$cache = ( ! defined( 'ENVIRA_DEBUG' ) || ! ENVIRA_DEBUG ) ? get_transient( '_eg_fragment_json_' . $gallery_id ) : false;
+		$cache = ( ( ! defined( 'ENVIRA_DEBUG' ) || ! ENVIRA_DEBUG ) && true === $cache ) ? get_transient( '_eg_fragment_json_' . $gallery_id ) : false;
+
+		if ( 'gutenberg' === $gallery_type ) {
+			$data = envira_sort_gallery( $data, $data['config']['sort_order'], $data['config']['sorting_direction'] );
+		}
 
 		if ( $cache ) {
 
@@ -634,7 +673,7 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 
 			} else {
 
-				if ( $return_sort_ids === false ) {
+				if ( false === $return_sort_ids ) {
 
 					return $cache['gallery_images'];
 
@@ -655,7 +694,7 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 	$sizes   = get_intermediate_image_sizes();
 	$sizes[] = 'full';
 
-	if ( ! empty( $data ) && $data['config']['type'] == 'dynamic' ) {
+	if ( ! empty( $data ) && 'dynamic' === $data['config']['type'] ) {
 
 		$data = $data;
 
@@ -665,7 +704,7 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 
 	}
 
-	// Make sure it gets filtered
+	// Make sure it gets filtered.
 	$data = apply_filters( 'envira_images_pre_data', $data, $gallery_id );
 
 	$i        = 0;
@@ -676,34 +715,35 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 		foreach ( (array) $data['gallery'] as $id => $item ) {
 
 			// Skip over images that are pending (ignore if in Preview mode).
-			if ( isset( $item['status'] ) && 'pending' == $item['status'] && ! is_preview() ) {
+			if ( isset( $item['status'] ) && 'pending' === $item['status'] && ! is_preview() ) {
 				continue;
 			}
 
-			if ( isset( $data['config']['type'] ) && $data['config']['type'] != 'instagram' && $data['config']['type'] != 'fc' ) {
+			if ( isset( $data['config']['type'] ) && 'instagram' !== $data['config']['type'] && 'fc' !== $data['config']['type'] ) {
 
 				$image_size = envira_get_config( 'lightbox_image_size', $data );
 				$image_data = wp_get_attachment_metadata( $id );
 				$src        = wp_get_attachment_image_src( $id, $image_size );
 
-				// check and see if this gallery as image_meta
+				// check and see if this gallery as image_meta.
 				if ( isset( $image_data['image_meta'] ) ) {
-					// santitize image_meta
-					$image_data['image_meta']['caption'] = isset( $image_data['image_meta']['caption'] ) && ! empty( $image_data['image_meta']['caption'] ) && $image_data['image_meta']['caption'] != 'null' ? envira_santitize_title( $image_data['image_meta']['caption'] ) : '';
-					$image_data['image_meta']['title']   = isset( $image_data['image_meta']['title'] ) && ! empty( $image_data['image_meta']['title'] ) && $image_data['image_meta']['title'] != 'null' ? envira_santitize_title( $image_data['image_meta']['title'] ) : '';
+					// santitize image_meta.
+					$image_data['image_meta']['caption'] = isset( $image_data['image_meta']['caption'] ) && ! empty( $image_data['image_meta']['caption'] ) && 'null' !== $image_data['image_meta']['caption'] ? envira_santitize_title( $image_data['image_meta']['caption'] ) : '';
+					$image_data['image_meta']['title']   = isset( $image_data['image_meta']['title'] ) && ! empty( $image_data['image_meta']['title'] ) && 'null' !== $image_data['image_meta']['title'] ? envira_santitize_title( $image_data['image_meta']['title'] ) : '';
 					if ( ! empty( $image_data['image_meta']['keywords'] ) ) {
 						foreach ( $image_data['image_meta']['keywords'] as $index => $keyword ) {
 							$image_data['image_meta']['keywords'][ $index ] = envira_santitize_title( $keyword );
 						}
 					}
 					foreach ( $image_data['image_meta'] as $image_meta_id => $image_meta_data ) {
-						if ( $image_meta_id == 'caption' || $image_meta_id == 'title' ) {
+						if ( 'caption' === $image_meta_id || 'title' === $image_meta_id ) {
 							continue;
 						}
 						$image_data['image_meta'][ $image_meta_id ] = envira_santitize_metadata( $image_data['image_meta'][ $image_meta_id ] );
 					};
-					// assign
+
 					$item['meta'] = $image_data['image_meta'];
+
 				}
 
 				$item['src'] = $src[0];
@@ -715,23 +755,24 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 			}
 			$thumb_args = array(
 				'position' => envira_get_config( 'crop_position', $data ),
-				'width'    => false == envira_get_config( 'thumbnails_custom_size', $data ) ? envira_get_config_default( 'thumbnails_width' ) : envira_get_config( 'thumbnails_width', $data ),
-				'height'   => false == envira_get_config( 'thumbnails_custom_size', $data ) ? envira_get_config_default( 'thumbnails_height' ) : envira_get_config( 'thumbnails_height', $data ),
+				'width'    => false === envira_get_config( 'thumbnails_custom_size', $data ) ? envira_get_config_default( 'thumbnails_width' ) : envira_get_config( 'thumbnails_width', $data ),
+				'height'   => false === envira_get_config( 'thumbnails_custom_size', $data ) ? envira_get_config_default( 'thumbnails_height' ) : envira_get_config( 'thumbnails_height', $data ),
 				'quality'  => 100,
 				'retina'   => false,
 			);
 			$thumb      = envira_resize_image( $item['src'], $thumb_args['width'], $thumb_args['height'], true, envira_get_config( 'crop_position', $data ), $thumb_args['quality'], $thumb_args['retina'], $data );
 
-			$item['index']      = $i;
-			$item['id']         = $id;
-			$item['thumb']      = $thumb;
-			$item['video']      = isset( $item['video_in_gallery'] ) ? true : false;
-			$item['caption']    = envira_get_config( 'lightbox_title_caption', $data ) == 'title' ? envira_santitize_title( $item['title'] ) : envira_santitize_caption( $item['caption'] );
-			$item['title']      = ( ! empty( $item['title'] ) ) ? envira_santitize_title( $item['title'] ) : '';
+			$item['title']   = ( ! empty( $item['title'] ) ) ? envira_santitize_title( $item['title'] ) : '';
+			$item['index']   = $i;
+			$item['id']      = $id;
+			$item['thumb']   = $thumb;
+			$item['video']   = isset( $item['video_in_gallery'] ) ? true : false;
+			$item['caption'] = envira_get_config( 'lightbox_title_caption', $data ) === 'title' ? $item['title'] : envira_santitize_caption( $item['caption'] );
+
 			$item['opts']       = array(
-				'caption' => envira_get_config( 'lightbox_title_caption', $data ) == 'title' ? envira_santitize_title( $item['title'] ) : envira_santitize_caption( $item['caption'] ),
+				'caption' => envira_get_config( 'lightbox_title_caption', $data ) === 'title' ? $item['title'] : envira_santitize_caption( $item['caption'] ),
 				'thumb'   => $thumb,
-				'title'   => envira_santitize_title( $item['title'] ),
+				'title'   => $item['title'],
 			);
 			$item['alt']        = ( ! empty( $item['alt'] ) ) ? envira_santitize_title( $item['alt'] ) : '';
 			$item['gallery_id'] = $gallery_id;
@@ -752,13 +793,13 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 		}
 	}
 
-	// this holds all data, which we will store in transient - so that we can pull out what we need from the cache (see above)
+	// this holds all data, which we will store in transient - so that we can pull out what we need from the cache (see above).
 	$full_data = array(
-		'gallery_images' => json_encode( $images, JSON_UNESCAPED_UNICODE ),
-		'sorted_ids'     => json_encode( $id_array, JSON_UNESCAPED_UNICODE ),
+		'gallery_images' => wp_json_encode( $images, JSON_UNESCAPED_UNICODE ),
+		'sorted_ids'     => wp_json_encode( $id_array, JSON_UNESCAPED_UNICODE ),
 	);
 
-	// set the transient
+	// set the transient.
 	$transient = set_transient( '_eg_fragment_json_' . $gallery_id, $full_data, WEEK_IN_SECONDS );
 
 	if ( $raw ) {
@@ -767,9 +808,9 @@ function envira_get_gallery_images( $gallery_id, $raw = false, $data = null, $re
 
 	}
 
-	if ( $return_sort_ids === false ) {
+	if ( false === $return_sort_ids ) {
 
-		return json_encode( $images, JSON_UNESCAPED_UNICODE );
+		return wp_json_encode( $images, JSON_UNESCAPED_UNICODE );
 
 	} else {
 
@@ -816,6 +857,7 @@ function envira_get_config_default( $key ) {
  * @global int $id        The current post ID.
  * @global object $post   The current post object.
  * @param string $key       The config key to retrieve.
+ * @param string $data       Gallery data.
  * @param string $default A default value to use.
  * @return string            Key value on success, empty string on failure.
  */
@@ -829,7 +871,7 @@ function envira_get_config( $key, $data, $default = null ) {
 
 	$is_mobile_keys = array();
 
-	// If we are on a mobile device, some config keys have mobile equivalents, which we need to check instead
+	// If we are on a mobile device, some config keys have mobile equivalents, which we need to check instead.
 	if ( envira_mobile_detect()->isMobile() ) {
 		$is_mobile_keys = array(
 			'lightbox_enabled'     => 'mobile_lightbox',
@@ -841,7 +883,7 @@ function envira_get_config( $key, $data, $default = null ) {
 			'thumbnails_height'    => 'mobile_thumbnails_height',
 		);
 
-		if ( isset( $data['config']['mobile'] ) && false != $data['config']['mobile'] ) {
+		if ( isset( $data['config']['mobile'] ) && false !== $data['config']['mobile'] ) {
 			$is_mobile_keys['crop_width']  = 'mobile_width';
 			$is_mobile_keys['crop_height'] = 'mobile_height';
 
@@ -850,23 +892,23 @@ function envira_get_config( $key, $data, $default = null ) {
 		$is_mobile_keys = apply_filters( 'envira_gallery_get_config_mobile_keys', $is_mobile_keys );
 
 		if ( array_key_exists( $key, $is_mobile_keys ) ) {
-			// Use the mobile array key to get the config value
+			// Use the mobile array key to get the config value.
 			$key = $is_mobile_keys[ $key ];
 		}
-	} else { // if we are not on a mobile device, check for custom thumbnail sizes
+	} else { // if we are not on a mobile device, check for custom thumbnail sizes.
 
-		// If the user hasn't overrided lightbox thumbnails with custom sizes, make sure these are set to auto
-		if ( ( $key == 'thumbnails_height' || $key == 'thumbnails_width' ) && ( ! isset( $data['config']['thumbnails_custom_size'] ) || $data['config']['thumbnails_custom_size'] === false ) ) {
+		// If the user hasn't overrided lightbox thumbnails with custom sizes, make sure these are set to auto.
+		if ( ( 'thumbnails_height' === $key || 'thumbnails_width' === $key ) && ( ! isset( $data['config']['thumbnails_custom_size'] ) || false === $data['config']['thumbnails_custom_size'] ) ) {
 			$value = 'auto';
 		}
 	}
 
-	// The toolbar is not needed for base dark so lets disable it
-	if ( $key == 'toolbar' && $data['config']['lightbox_theme'] == 'base_dark' ) {
+	// The toolbar is not needed for base dark so lets disable it.
+	if ( 'toolbar' === $key && 'base_dark' === $data['config']['lightbox_theme'] ) {
 		$data['config'][ $key ] = 0;
 	}
 
-	// Disable/Remove FullScreen if Fullscreen addon is not present
+	// Disable/Remove FullScreen if Fullscreen addon is not present.
 	if ( ! class_exists( 'Envira_Fullscreen' ) ) {
 		if ( isset( $data['config']['open_fullscreen'] ) ) {
 			unset( $data['config']['open_fullscreen'] );
@@ -879,7 +921,7 @@ function envira_get_config( $key, $data, $default = null ) {
 		$data['config'][ $key ] = false;
 	}
 
-	$default = $default != null ? $default : envira_get_config_default( $key );
+	$default = null !== $default ? $default : envira_get_config_default( $key );
 	$value   = isset( $data['config'][ $key ] ) ? $data['config'][ $key ] : $default;
 
 	return $value;
@@ -888,15 +930,15 @@ function envira_get_config( $key, $data, $default = null ) {
 
 
 /**
- * envira_get_gallery_data function.
+ * Envira Get Gallery Data function.
  *
  * @access public
- * @param mixed $gallery_id
- * @return void
+ * @param mixed $gallery_id The gallery id.
+ * @return $data
  */
 function envira_get_gallery_data( $gallery_id ) {
 
-	// If no ID is set create a new gallery
+	// If no ID is set create a new gallery.
 	if ( ! isset( $gallery_id ) ) {
 
 		return false;
@@ -915,18 +957,18 @@ function envira_get_gallery_data( $gallery_id ) {
  *
  * @param array $gallery_data   Array of data for the gallery.
  * @param int   $id             The attachment ID to prepare data for.
- * @param array $image          Attachment image. Populated if inserting from the Media Library
+ * @param array $image          Attachment image. Populated if inserting from the Media Library.
  * @return array $gallery_data Amended gallery data with updated image metadata.
  */
 function envira_prepare_gallery_data( $gallery_data, $id, $image = false ) {
 
-	// Get attachment
+	// Get attachment.
 	$attachment = get_post( $id );
 
-	// Add this image to the start or end of the gallery, depending on the setting
+	// Add this image to the start or end of the gallery, depending on the setting.
 	$media_position = envira_get_setting( 'media_position' );
 
-	// Depending on whether we're inserting from the Media Library or not, prepare the image array
+	// Depending on whether we're inserting from the Media Library or not, prepare the image array.
 	if ( ! $image ) {
 		$url       = wp_get_attachment_image_src( $id, 'full' );
 		$alt_text  = get_post_meta( $id, '_wp_attachment_image_alt', true );
@@ -951,10 +993,10 @@ function envira_prepare_gallery_data( $gallery_data, $id, $image = false ) {
 		);
 	}
 
-	// Allow Addons to possibly add metadata now
+	// Allow Addons to possibly add metadata now.
 	$image = apply_filters( 'envira_gallery_ajax_prepare_gallery_data_item', $new_image, $image, $id, $gallery_data );
 
-	// If gallery data is not an array (i.e. we have no images), just add the image to the array
+	// If gallery data is not an array (i.e. we have no images), just add the image to the array.
 	if ( ! isset( $gallery_data['gallery'] ) || ! is_array( $gallery_data['gallery'] ) ) {
 		$gallery_data['gallery']        = array();
 		$gallery_data['gallery'][ $id ] = $image;
@@ -963,7 +1005,7 @@ function envira_prepare_gallery_data( $gallery_data, $id, $image = false ) {
 		switch ( $media_position ) {
 			case 'before':
 				// Add image to start of images array
-				// Store copy of images, reset gallery array and rebuild
+				// Store copy of images, reset gallery array and rebuild.
 				$images                         = $gallery_data['gallery'];
 				$gallery_data['gallery']        = array();
 				$gallery_data['gallery'][ $id ] = $image;
@@ -973,13 +1015,13 @@ function envira_prepare_gallery_data( $gallery_data, $id, $image = false ) {
 				break;
 			case 'after':
 			default:
-				// Add image, this will default to the end of the array
+				// Add image, this will default to the end of the array.
 				$gallery_data['gallery'][ $id ] = $image;
 				break;
 		}
 	}
 
-	// Filter and return
+	// Filter and return.
 	$gallery_data = apply_filters( 'envira_gallery_ajax_item_data', $gallery_data, $attachment, $id, $image );
 
 	return $gallery_data;
@@ -999,7 +1041,7 @@ add_filter( 'envira_gallery_pre_data', 'envira_insure_random_gallery', 10, 2 );
  * @return array $data          Updated gallery data
  */
 function envira_insure_random_gallery( $data, $gallery_id ) {
-	if ( ! $data || ! isset( $data['config']['sort_order'] ) || $data['config']['sort_order'] != 1 ) {
+	if ( ! $data || ! isset( $data['config']['sort_order'] ) || '1' !== $data['config']['sort_order'] ) {
 		return $data;
 	}
 	$data = envira_sort_gallery( $data, '1', 'DESC' ); // '1' = random
@@ -1013,12 +1055,12 @@ add_filter( 'envira_gallery_get_transient_markup', 'envira_maybe_clear_cache_ran
  *
  * @since 1.7.0
  *
- * @param array $transient  Transient
+ * @param array $transient  Transient.
  * @param int   $data       Array of data for the gallery.
- * @return boolean          Allow cache or not
+ * @return boolean          Allow cache or not.
  */
 function envira_maybe_clear_cache_random( $transient, $data ) {
-	if ( ! $data || ! isset( $data['config']['sort_order'] ) || $data['config']['sort_order'] != 1 ) {
+	if ( ! $data || ! isset( $data['config']['sort_order'] ) || 1 !== $data['config']['sort_order'] ) {
 		return $transient;
 	} else {
 		return false;
@@ -1031,8 +1073,8 @@ function envira_maybe_clear_cache_random( $transient, $data ) {
  * @since 1.7.1
  *
  * @access public
- * @param mixed $gallery_id
- * @return void
+ * @param mixed $gallery_id Gallery ID.
+ * @return bool|intenger
  */
 function envira_get_gallery_version( $gallery_id ) {
 
@@ -1054,13 +1096,22 @@ function envira_get_gallery_version( $gallery_id ) {
 
 }
 
+/**
+ * Maybe update the gallery, check the version.
+ *
+ * @since 1.7.1
+ *
+ * @access public
+ * @param mixed $gallery_id Gallery id.
+ * @return boolean
+ */
 function envira_maybe_update_gallery( $gallery_id ) {
 
 	$version = envira_get_gallery_version( $gallery_id );
 
 	if ( ! isset( $version ) || version_compare( $version, '1.8.0', '<' ) ) {
 
-		// do the update stuff
+		return true;
 	}
 
 	return false;
@@ -1101,23 +1152,3 @@ if ( ! function_exists( 'envira_gallery' ) ) {
 
 	}
 }
-
-if ( ! function_exists( 'envira_gallery_link' ) ) {
-
-	/**
-	 * envira_gallery_link function.
-	 *
-	 * @access public
-	 * @param mixed  $content
-	 * @param mixed  $id
-	 * @param string $type (default: 'id')
-	 * @param array  $args (default: array())
-	 * @param bool   $return (default: false)
-	 * @return void
-	 */
-	function envira_gallery_link( $content, $id, $type = 'id', $args = array(), $return = false ) {
-
-	}
-}
-
-

@@ -7,13 +7,12 @@
  * @package Envira_Gallery
  * @author Envira Gallery Team
  */
+
 namespace Envira\Admin;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
-
 	exit;
-
 }
 
 use Envira\Admin\Settings;
@@ -27,6 +26,9 @@ use Envira\Admin\License;
 use Envira\Admin\Notices;
 use Envira\Admin\Media_View;
 use Envira\Admin\Support;
+use Envira\Admin\Gutenberg;
+use Envira\Admin\Welcome;
+use Envira\Admin\Tools;
 
 // use Envira\Admin\Debug.
 
@@ -71,7 +73,7 @@ class Admin_Container {
 
 		// Delete any gallery association on attachment deletion. Also delete any extra cropped images.
 		add_action( 'delete_attachment', array( $this, 'delete_gallery_association' ) );
-		// add_action( 'delete_attachment', array( $this, 'delete_cropped_image' ) );
+
 		// Ensure gallery display is correct when trashing/untrashing galleries.
 		add_action( 'wp_trash_post', array( $this, 'trash_gallery' ) );
 		add_action( 'untrash_post', array( $this, 'untrash_gallery' ) );
@@ -79,12 +81,11 @@ class Admin_Container {
 		// Delete attachments, if setting enabled, when a gallery is permanently deleted.
 		add_action( 'before_delete_post', array( $this, 'delete_gallery' ) );
 
-		// Prevent plugins from breaking Envira in admin
+		// Prevent plugins from breaking Envira in admin.
 		add_action( 'wp_print_scripts', array( $this, 'plugin_humility' ), 1 );
-
 		add_action( 'admin_init', array( $this, 'fix_conflicts' ), 99 );
 
-		// Populate $notices
+		// Populate $notices.
 		$this->notices = get_option( 'envira_gallery_notices' );
 
 		if ( ! is_array( $this->notices ) ) {
@@ -98,13 +99,23 @@ class Admin_Container {
 		$table      = new Table();
 		$editor     = new Editor();
 		$license    = new License();
-		$license    = new Notices();
+		$notices    = new Notices();
 		$addons     = new Addons();
 		$media_view = new Media_View();
+		$welcome    = new Welcome();
 		$support    = new Support();
+		$tools      = new Tools();
+		$gutenberg  = new Gutenberg();
 
 	}
 
+	/**
+	 * Attempts to fix conflicts from other plugins.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
 	public function fix_conflicts() {
 
 		global $pagenow;
@@ -143,10 +154,9 @@ class Admin_Container {
 	 *
 	 * @since 1.3.5
 	 *
-	 * @param string $notice Programmatic Notice Name
+	 * @param string $notice Programmatic Notice Name.
 	 * @return bool Notice Dismissed
 	 */
-
 	public function is_dismissed( $notice ) {
 
 		if ( ! isset( $this->notices[ $notice ] ) ) {
@@ -162,8 +172,7 @@ class Admin_Container {
 	 *
 	 * @since 1.3.5
 	 *
-	 * @param string $notice Programmatic Notice Name
-	 * @return null
+	 * @param string $notice Programmatic Notice Name.
 	 */
 	public function dismiss( $notice ) {
 
@@ -178,8 +187,7 @@ class Admin_Container {
 	 *
 	 * @since 1.3.5
 	 *
-	 * @param string $notice Programmatic Notice Name
-	 * @return null
+	 * @param string $notice Programmatic Notice Name.
 	 */
 	public function undismiss( $notice ) {
 
@@ -193,13 +201,13 @@ class Admin_Container {
 	 *
 	 * @since 1.3.5
 	 *
-	 * @param string $notice             Programmatic Notice Name
-	 * @param string $title              Title
-	 * @param string $message            Message
+	 * @param string $notice             Programmatic Notice Name.
+	 * @param string $title              Title.
+	 * @param string $message            Message.
 	 * @param string $type               Message Type (updated|warning|error) - green, yellow/orange and red respectively.
-	 * @param string $button_text        Button Text (optional)
-	 * @param string $button_url         Button URL (optional)
-	 * @param bool   $is_dismissible     User can Dismiss Message (default: true)
+	 * @param string $button_text        Button Text (optional).
+	 * @param string $button_url         Button URL (optional).
+	 * @param bool   $is_dismissible     User can Dismiss Message (default: true).
 	 */
 	public function display_inline_notice( $notice, $title, $message, $type = 'success', $button_text = '', $button_url = '', $is_dismissible = true ) {
 
@@ -209,37 +217,37 @@ class Admin_Container {
 			return;
 		}
 
-		// Display inline notice
+		// Display inline notice.
 		?>
-		<div class="envira-notice <?php echo $type . ( $is_dismissible ? ' is-dismissible' : '' ); ?>" data-notice="<?php echo $notice; ?>">
+		<div class="envira-notice <?php echo esc_attr( $type ) . ( $is_dismissible ? ' is-dismissible' : '' ); ?>" data-notice="<?php echo $notice; ?>">
 			<?php
-			// Title
+			// Title.
 			if ( ! empty( $title ) ) {
 				?>
 				<p class="envira-intro"><?php echo $title; ?></p>
 				<?php
 			}
 
-			// Message
+			// Message.
 			if ( ! empty( $message ) ) {
 				?>
 				<p><?php echo $message; ?></p>
 				<?php
 			}
 
-			// Button
+			// Button.
 			if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
 				?>
-				<a href="<?php echo $button_url; ?>" target="_blank" class="button button-primary"><?php echo $button_text; ?></a>
+				<a href="<?php echo esc_url( $button_url ); ?>" target="_blank" class="button button-primary"><?php echo esc_html( $button_text ); ?></a>
 				<?php
 			}
 
-			// Dismiss Button
+			// Dismiss Button.
 			if ( $is_dismissible ) {
 				?>
 				<button type="button" class="notice-dismiss">
 					<span class="screen-reader-text">
-						<?php _e( 'Dismiss this notice', 'envira-gallery' ); ?>
+						<?php esc_html_e( 'Dismiss this notice', 'envira-gallery' ); ?>
 					</span>
 				</button>
 				<?php
@@ -267,7 +275,7 @@ class Admin_Container {
 		}
 
 		// If here, we need to assign capabilities
-		// Define the roles we want to assign capabilities to
+		// Define the roles we want to assign capabilities to...
 		$roles = array(
 			'administrator',
 			'editor',
@@ -276,15 +284,15 @@ class Admin_Container {
 			'subscriber',
 		);
 
-		// Iterate through roles
+		// Iterate through roles.
 		foreach ( $roles as $role_name ) {
-			// Properly get the role as WP_Role object
+			// Properly get the role as WP_Role object.
 			$role = get_role( $role_name );
 			if ( ! is_object( $role ) ) {
 				continue;
 			}
 
-			// Map this Role's Post capabilities to our Envira Gallery capabilities
+			// Map this Role's Post capabilities to our Envira Gallery capabilities.
 			$caps = array(
 				'edit_envira_gallery'               => $role->has_cap( 'edit_posts' ),
 				'read_envira_gallery'               => $role->has_cap( 'read' ),
@@ -305,9 +313,9 @@ class Admin_Container {
 				'create_envira_galleries'           => $role->has_cap( 'edit_posts' ),
 			);
 
-			// Add the above Envira capabilities to this Role
+			// Add the above Envira capabilities to this Role.
 			foreach ( $caps as $envira_cap => $value ) {
-				// Don't add if value is false
+				// Don't add if value is false.
 				if ( ! $value ) {
 					continue;
 				}
@@ -336,43 +344,43 @@ class Admin_Container {
 	 *
 	 * @since 1.3.8.2
 	 *
-	 * @param array $file   Uploaded File
+	 * @param array $file   Uploaded File.
 	 * @return array            Uploaded File
 	 */
 	public function fix_image_orientation( $file ) {
 
-		// Check we have a file
+		// Check we have a file.
 		if ( ! file_exists( $file['file'] ) ) {
 			return $file;
 		}
 
-		// Check we have a JPEG
-		if ( $file['type'] !== 'image/jpg' && $file['type'] !== 'image/jpeg' ) {
+		// Check we have a JPEG.
+		if ( 'image/jpg' !== $file['type'] && 'image/jpeg' !== $file['type'] ) {
 			return $file;
 		}
 
-		// Attempt to read EXIF data from the image
+		// Attempt to read EXIF data from the image.
 		$exif_data = wp_read_image_metadata( $file['file'] );
 		if ( ! $exif_data ) {
 			return $file;
 		}
 
-		// Check if an orientation flag exists
+		// Check if an orientation flag exists.
 		if ( ! isset( $exif_data['orientation'] ) ) {
 			return $file;
 		}
 
-		// Check if the orientation flag matches one we're looking for
+		// Check if the orientation flag matches one we're looking for.
 		$required_orientations = array( 8, 3, 6 );
 		if ( ! in_array( $exif_data['orientation'], $required_orientations ) ) {
 			return $file;
 		}
 
 		// If here, the orientation flag matches one we're looking for
-		// Load the WordPress Image Editor class
+		// Load the WordPress Image Editor class.
 		$image = wp_get_image_editor( $file['file'] );
 		if ( is_wp_error( $image ) ) {
-			// Something went wrong - abort
+			// Something went wrong - abort.
 			return $file;
 		}
 
@@ -381,7 +389,7 @@ class Admin_Container {
 		// This is required because when we save an image, it'll lose its metadata.
 		$source_size = getimagesize( $file['file'], $image_info );
 
-		// Depending on the orientation flag, rotate the image
+		// Depending on the orientation flag, rotate the image.
 		switch ( $exif_data['orientation'] ) {
 
 			/**
@@ -408,21 +416,21 @@ class Admin_Container {
 		}
 
 		// Save the image, overwriting the existing image
-		// This will discard the EXIF and IPTC data
+		// This will discard the EXIF and IPTC data.
 		$image->save( $file['file'] );
 
 		// Drop the EXIF orientation flag, otherwise applications will try to rotate the image
 		// before display it, and we don't need that to happen as we've corrected the orientation
-		// Write the EXIF and IPTC metadata to the revised image
+		// Write the EXIF and IPTC metadata to the revised image.
 		$result = $this->transfer_iptc_exif_to_image( $image_info, $file['file'], $exif_data['orientation'] );
 		if ( ! $result ) {
 			return $file;
 		}
 
-		// Read the image again to see if the EXIF data was preserved
+		// Read the image again to see if the EXIF data was preserved.
 		$exif_data = wp_read_image_metadata( $file['file'] );
 
-		// Finally, return the data that's expected
+		// Finally, return the data that's expected.
 		return $file;
 
 	}
@@ -439,24 +447,24 @@ class Admin_Container {
 	 *
 	 * @source http://php.net/iptcembed - ebashkoff at gmail dot com
 	 *
-	 * @param string $image_info                EXIF and IPTC image information from the source image, using getimagesize()
-	 * @param string $destination_image     Path and File of Destination Image, which needs IPTC and EXIF data
+	 * @param string $image_info                EXIF and IPTC image information from the source image, using getimagesize().
+	 * @param string $destination_image     Path and File of Destination Image, which needs IPTC and EXIF data.
 	 * @param int    $original_orientation   The image's original orientation, before we changed it.
-	 *                                       Used when we replace this orientation in the EXIF data
+	 *                                       Used when we replace this orientation in the EXIF data.
 	 * @return bool                         Success
 	 */
 	private function transfer_iptc_exif_to_image( $image_info, $destination_image, $original_orientation ) {
 
-		// Check destination exists
+		// Check destination exists.
 		if ( ! file_exists( $destination_image ) ) {
 			return false;
 		}
 
-		// Get EXIF data from the image info, and create the IPTC segment
+		// Get EXIF data from the image info, and create the IPTC segment.
 		$exif_data = ( ( is_array( $image_info ) && key_exists( 'APP1', $image_info ) ) ? $image_info['APP1'] : null );
 		if ( $exif_data ) {
 			// Find the image's original orientation flag, and change it to 1
-			// This prevents applications and browsers re-rotating the image, when we've already performed that function
+			// This prevents applications and browsers re-rotating the image, when we've already performed that function.
 			$exif_data = str_replace( chr( dechex( $original_orientation ) ), chr( 0x1 ), $exif_data );
 
 			$exif_length = strlen( $exif_data ) + 2;
@@ -464,11 +472,11 @@ class Admin_Container {
 				return false;
 			}
 
-			// Construct EXIF segment
+			// Construct EXIF segment.
 			$exif_data = chr( 0xFF ) . chr( 0xE1 ) . chr( ( $exif_length >> 8 ) & 0xFF ) . chr( $exif_length & 0xFF ) . $exif_data;
 		}
 
-		// Get IPTC data from the source image, and create the IPTC segment
+		// Get IPTC data from the source image, and create the IPTC segment.
 		$iptc_data = ( ( is_array( $image_info ) && key_exists( 'APP13', $image_info ) ) ? $image_info['APP13'] : null );
 		if ( $iptc_data ) {
 			$iptc_length = strlen( $iptc_data ) + 2;
@@ -476,11 +484,11 @@ class Admin_Container {
 				return false;
 			}
 
-			// Construct IPTC segment
+			// Construct IPTC segment.
 			$iptc_data = chr( 0xFF ) . chr( 0xED ) . chr( ( $iptc_length >> 8 ) & 0xFF ) . chr( $iptc_length & 0xFF ) . $iptc_data;
 		}
 
-		// Get the contents of the destination image
+		// Get the contents of the destination image.
 		$destination_image_contents = file_get_contents( $destination_image );
 		if ( ! $destination_image_contents ) {
 			return false;
@@ -489,15 +497,15 @@ class Admin_Container {
 			return false;
 		}
 
-		// Build the EXIF and IPTC data headers
+		// Build the EXIF and IPTC data headers.
 		$destination_image_contents = substr( $destination_image_contents, 2 );
-		$portion_to_add             = chr( 0xFF ) . chr( 0xD8 ); // Variable accumulates new & original IPTC application segments
+		$portion_to_add             = chr( 0xFF ) . chr( 0xD8 ); // Variable accumulates new & original IPTC application segments.
 		$exif_added                 = ! $exif_data;
 		$iptc_added                 = ! $iptc_data;
 
 		while ( ( substr( $destination_image_contents, 0, 2 ) & 0xFFF0 ) === 0xFFE0 ) {
 			$segment_length      = ( substr( $destination_image_contents, 2, 2 ) & 0xFFFF );
-			$iptc_segment_number = ( substr( $destination_image_contents, 1, 1 ) & 0x0F );   // Last 4 bits of second byte is IPTC segment #
+			$iptc_segment_number = ( substr( $destination_image_contents, 1, 1 ) & 0x0F );   // Last 4 bits of second byte is IPTC segment #.
 			if ( $segment_length <= 2 ) {
 				return false;
 			}
@@ -523,7 +531,7 @@ class Admin_Container {
 			$destination_image_contents = substr( $destination_image_contents, $segment_length + 2 );
 		}
 
-		// Write the EXIF and IPTC data to the new file
+		// Write the EXIF and IPTC data to the new file.
 		if ( ! $exif_added ) {
 			$portion_to_add .= $exif_data;
 		}
@@ -565,26 +573,26 @@ class Admin_Container {
 		}
 
 		// 1.2.1: Convert all non-Envira Post Type galleries into Envira CPT galleries.
-		$cptGalleries = get_option( 'envira_gallery_121' );
-		if ( ! $cptGalleries ) {
+		$cpt_galleries = get_option( 'envira_gallery_121' );
+		if ( ! $cpt_galleries ) {
 			// Get Post Types, excluding our own
 			// We don't use post_status => 'any', as this doesn't include CPTs where exclude_from_search = true.
-			$postTypes         = get_post_types(
+			$post_types          = get_post_types(
 				array(
 					'public' => true,
 				)
 			);
-			$excludedPostTypes = array( 'envira', 'envira_album', 'attachment' );
-			foreach ( $postTypes as $key => $postType ) {
-				if ( in_array( $postType, $excludedPostTypes ) ) {
-					unset( $postTypes[ $key ] );
+			$excluded_post_types = array( 'envira', 'envira_album', 'attachment' );
+			foreach ( $post_types as $key => $post_type ) {
+				if ( in_array( $post_type, $excluded_post_types ) ) {
+					unset( $post_types[ $key ] );
 				}
 			}
 
-			// Get all Posts that have _eg_gallery_data set
-			$inPostGalleries = new \ WP_Query(
+			// Get all Posts that have _eg_gallery_data set.
+			$in_post_galleries = new \ WP_Query(
 				array(
-					'post_type'      => $postTypes,
+					'post_type'      => $post_types,
 					'post_status'    => 'any',
 					'posts_per_page' => -1,
 					'meta_query'     => array(
@@ -596,30 +604,30 @@ class Admin_Container {
 				)
 			);
 
-			// Check if any Posts with galleries exist
-			if ( count( $inPostGalleries->posts ) > 0 ) {
+			// Check if any Posts with galleries exist.
+			if ( count( $in_post_galleries->posts ) > 0 ) {
 				$migrated_galleries = 0;
 
-				// Iterate through Posts with Galleries
-				foreach ( $inPostGalleries->posts as $post ) {
+				// Iterate through Posts with Galleries.
+				foreach ( $in_post_galleries->posts as $post ) {
 					// Check if this is an Envira or Envira Album CPT
-					// If so, skip it
-					if ( $post->post_type == 'envira' || $post->post_type == 'envira_album' ) {
+					// If so, skip it.
+					if ( 'envira' === $post->post_type || 'envira_album' === $post->post_type ) {
 						continue;
 					}
 
-					// Get metadata
+					// Get metadata.
 					$data = get_post_meta( $post->ID, '_eg_gallery_data', true );
 					$in   = get_post_meta( $post->ID, '_eg_in_gallery', true );
 
 					// Check if there is at least one image in the gallery
 					// Some Posts save Envira config data but don't have images - we don't want to migrate those,
-					// as we would end up with blank Envira CPT galleries
+					// as we would end up with blank Envira CPT galleries.
 					if ( ! isset( $data['gallery'] ) || ! is_array( $data['gallery'] ) ) {
 						continue;
 					}
 
-					// If here, we need to create a new Envira CPT
+					// If here, we need to create a new Envira CPT.
 					$cpt_args = array(
 						'post_title'  => ( ! empty( $data['config']['title'] ) ? $data['config']['title'] : $post->post_title ),
 						'post_status' => $post->post_status,
@@ -629,54 +637,54 @@ class Admin_Container {
 					if ( ! empty( $data['config']['slug'] ) ) {
 						$cpt_args['post_name'] = $data['config']['slug'];
 					}
-					$enviraGalleryID = wp_insert_post( $cpt_args );
+					$envira_gallery_id = wp_insert_post( $cpt_args );
 
-					// Check gallery creation was successful
-					if ( is_wp_error( $enviraGalleryID ) ) {
+					// Check gallery creation was successful.
+					if ( is_wp_error( $envira_gallery_id ) ) {
 						// @TODO how to handle errors?
 						continue;
 					}
 
-					// Get Envira Gallery Post
-					$enviraPost = get_post( $enviraGalleryID );
+					// Get Envira Gallery Post.
+					$envira_post = get_post( $envira_gallery_id );
 
 					// Map the title and slug of the post object to the custom fields if no value exists yet.
-					$data['config']['title'] = trim( strip_tags( $enviraPost->post_title ) );
-					$data['config']['slug']  = sanitize_text_field( $enviraPost->post_name );
+					$data['config']['title'] = trim( strip_tags( $envira_post->post_title ) );
+					$data['config']['slug']  = sanitize_text_field( $envira_post->post_name );
 
-					// Store post metadata
-					update_post_meta( $enviraGalleryID, '_eg_gallery_data', $data );
-					update_post_meta( $enviraGalleryID, '_eg_in_gallery', $in );
-					update_post_meta( $enviraGalleryID, '_eg_gallery_old', $post->ID );
+					// Store post metadata.
+					update_post_meta( $envira_gallery_id, '_eg_gallery_data', $data );
+					update_post_meta( $envira_gallery_id, '_eg_in_gallery', $in );
+					update_post_meta( $envira_gallery_id, '_eg_gallery_old', $post->ID );
 					if ( ! empty( $data['config']['slug'] ) ) {
-						update_post_meta( $enviraGalleryID, '_eg_gallery_old_slug', $data['config']['slug'] );
+						update_post_meta( $envira_gallery_id, '_eg_gallery_old_slug', $data['config']['slug'] );
 					}
 
-					// Remove post metadata from the original Post
+					// Remove post metadata from the original Post.
 					delete_post_meta( $post->ID, '_eg_gallery_data' );
 					delete_post_meta( $post->ID, '_eg_in_gallery' );
 
-					// Search for the envira shortcode in the Post content, and change its ID to the new Envira Gallery ID
+					// Search for the envira shortcode in the Post content, and change its ID to the new Envira Gallery ID.
 					if ( has_shortcode( $post->post_content, 'envira-gallery' ) ) {
 						$pattern = get_shortcode_regex();
 						if ( preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches ) ) {
 							foreach ( $matches[2] as $key => $shortcode ) {
-								if ( $shortcode == 'envira-gallery' ) {
+								if ( 'envira-gallery' === $shortcode ) {
 									// Found an envira-gallery shortcode
-									// Change the ID
-									$originalShortcode    = $matches[0][ $key ];
-									$replacementShortcode = str_replace( 'id="' . $post->ID . '"', 'id="' . $enviraGalleryID . '"', $originalShortcode );
-									$post->post_content   = str_replace( $originalShortcode, $replacementShortcode, $post->post_content );
+									// Change the ID.
+									$original_shortcode    = $matches[0][ $key ];
+									$replacement_shortcode = str_replace( 'id="' . $post->ID . '"', 'id="' . $envira_gallery_id . '"', $original_shortcode );
+									$post->post_content    = str_replace( $original_shortcode, $replacement_shortcode, $post->post_content );
 									wp_update_post( $post );
 								}
 							}
 						}
 					}
 
-					// Store a relationship between the gallery and this Post
-					update_post_meta( $post->ID, '_eg_gallery_id', $enviraGalleryID );
+					// Store a relationship between the gallery and this Post.
+					update_post_meta( $post->ID, '_eg_gallery_id', $envira_gallery_id );
 
-					// Increment the counter
+					// Increment the counter.
 					$migrated_galleries++;
 				}
 
@@ -689,7 +697,7 @@ class Admin_Container {
 			// Force the tags addon to convert any tags to the new CPT system for any galleries that have been converted to Envira post type.
 			delete_option( 'envira_tags_taxonomy_migrated' );
 
-			// Mark upgrade as complete
+			// Mark upgrade as complete.
 			update_option( 'envira_gallery_121', true );
 		}
 	}
@@ -722,7 +730,7 @@ class Admin_Container {
 		// Get current screen.
 		$screen = get_current_screen();
 
-		// if we are on the widget page, load the admin css
+		// if we are on the widget page, load the admin css.
 		if ( 'widgets' == $screen->id ) {
 
 			wp_register_style( ENVIRA_SLUG . '-admin-style', plugins_url( 'assets/css/admin.css', ENVIRA_FILE ), array(), ENVIRA_VERSION );
@@ -730,7 +738,7 @@ class Admin_Container {
 
 		} elseif ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
 
-			// If we're not on the Envira Post Type screen, only load the modal css then bail
+			// If we're not on the Envira Post Type screen, only load the modal css then bail.
 			wp_register_style( ENVIRA_SLUG . '-admin-modal-style', plugins_url( 'assets/css/admin-modal.css', ENVIRA_FILE ), array(), ENVIRA_VERSION );
 			wp_enqueue_style( ENVIRA_SLUG . '-admin-modal-style' );
 
@@ -787,8 +795,8 @@ class Admin_Container {
 		// Get current screen.
 		$screen = get_current_screen();
 
-		// Include notice js, because notices might need to be displayed on pages other than Envira's
-		wp_register_script( ENVIRA_SLUG . '-admin-notice-script', plugins_url( 'assets/js/min/notices-min.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION );
+		// Include notice js, because notices might need to be displayed on pages other than Envira's.
+		wp_register_script( ENVIRA_SLUG . '-admin-notice-script', plugins_url( 'assets/js/min/notices-min.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION, false );
 		wp_enqueue_script( ENVIRA_SLUG . '-admin-notice-script' );
 		wp_localize_script(
 			ENVIRA_SLUG . '-admin-notice-script',
@@ -798,21 +806,21 @@ class Admin_Container {
 				'dismiss_notice_nonce' => wp_create_nonce( 'envira-gallery-dismiss-notice' ),
 			)
 		);
-		wp_enqueue_style( 'envira-notice-css', plugins_url( 'assets/css/notices.css', ENVIRA_FILE ) );
+		wp_enqueue_style( 'envira-notice-css', plugins_url( 'assets/css/notices.css', ENVIRA_FILE ), false, ENVIRA_VERSION );
 
 		// Bail if we're not on the Envira Post Type screen or in widgets.
 		if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type && 'widgets' !== $screen->base ) {
 			return;
 		}
 
-		// Load necessary admin scripts
-		wp_register_script( ENVIRA_SLUG . '-admin-script', plugins_url( 'assets/js/min/admin-min.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION );
+		// Load necessary admin scripts.
+		wp_register_script( ENVIRA_SLUG . '-admin-script', plugins_url( 'assets/js/min/admin-min.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION, false );
 		wp_enqueue_script( ENVIRA_SLUG . '-admin-script' );
 
-		if ( $hook == 'widgets.php' || $hook == 'post.php' || ( $hook == 'post-new.php' && $_GET['post_type'] == 'envira' ) ) {
+		if ( 'widgets.php' === $hook || 'post.php' === $hook || ( 'post-new.php' === $hook && isset( $_GET['post_type'] ) && 'envira' === $_GET['post_type'] ) ) {
 
-			wp_enqueue_script( 'envira-choice-js', plugins_url( 'assets/js/lib/choices.min.js', ENVIRA_FILE ), false, false, true );
-			wp_enqueue_style( 'envira-choice-css', plugins_url( 'assets/css/choices.css', ENVIRA_FILE ) );
+			wp_enqueue_script( 'envira-choice-js', plugins_url( 'assets/js/lib/choices.min.js', ENVIRA_FILE ), false, ENVIRA_VERSION, true );
+			wp_enqueue_style( 'envira-choice-css', plugins_url( 'assets/css/choices.css', ENVIRA_FILE ), false, ENVIRA_VERSION );
 
 		}
 
@@ -866,7 +874,7 @@ class Admin_Container {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param $id   The post ID being trashed.
+	 * @param integer $id   The post ID being trashed.
 	 * @return null Return early if no gallery is found.
 	 */
 	public function trash_gallery( $id ) {
@@ -881,7 +889,7 @@ class Admin_Container {
 			return;
 		}
 
-		// Check some gallery data exists
+		// Check some gallery data exists.
 		$gallery_data = get_post_meta( $id, '_eg_gallery_data', true );
 		if ( empty( $gallery_data ) ) {
 			return;
@@ -891,7 +899,7 @@ class Admin_Container {
 		$gallery_data['status'] = 'inactive';
 		update_post_meta( $id, '_eg_gallery_data', $gallery_data );
 
-		// Allow other addons to run routines when a Gallery is trashed
+		// Allow other addons to run routines when a Gallery is trashed.
 		do_action( 'envira_gallery_trash', $id, $gallery_data );
 
 	}
@@ -901,7 +909,7 @@ class Admin_Container {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param $id   The post ID being untrashed.
+	 * @param integer $id   The post ID being untrashed.
 	 * @return null Return early if no gallery is found.
 	 */
 	public function untrash_gallery( $id ) {
@@ -928,7 +936,7 @@ class Admin_Container {
 
 		update_post_meta( $id, '_eg_gallery_data', $gallery_data );
 
-		// Allow other addons to run routines when a Gallery is untrashed
+		// Allow other addons to run routines when a Gallery is untrashed.
 		do_action( 'envira_gallery_untrash', $id, $gallery_data );
 
 	}
@@ -941,18 +949,18 @@ class Admin_Container {
 	 *
 	 * @since 1.3.6.1
 	 *
-	 * @param int $post_id Post ID
+	 * @param int $id Post ID.
 	 * @return null
 	 */
 	public function delete_gallery( $id ) {
 
-		// Check if the media_delete setting is enabled
+		// Check if the media_delete setting is enabled.
 		$media_delete = envira_get_setting( 'media_delete' );
-		if ( $media_delete != '1' ) {
+		if ( '1' !== $media_delete ) {
 			return;
 		}
 
-		// Get post
+		// Get post.
 		$gallery = get_post( $id );
 
 		// Flush necessary gallery caches to ensure untrashed galleries are showing.
@@ -963,20 +971,20 @@ class Admin_Container {
 			return;
 		}
 
-		// Determine what images are inside this gallery, thanks to Envira meta-data
+		// Determine what images are inside this gallery, thanks to Envira meta-data.
 		$in_gallery = get_post_meta( $id, '_eg_in_gallery', true );
 		if ( ! is_array( $in_gallery ) ) {
 			return;
 		}
 
-		// Iterate through media, deleting - making sure to delete only images that aren't in another gallery
+		// Iterate through media, deleting - making sure to delete only images that aren't in another gallery.
 		foreach ( $in_gallery as $attach_id ) {
 
 			$attachment  = get_post( $attach_id );
 			$has_gallery = get_post_meta( $attach_id, '_eg_has_gallery', true );
 
-			// If post parent is the Gallery ID, and the image isn't in another gallery, we're OK to delete the image
-			if ( ( $attachment->post_parent == $id || in_array( $attach_id, $in_gallery ) ) && ( count( $has_gallery ) == 1 ) ) { // the "1" should mean only one gallery - the one we are deleting
+			// If post parent is the Gallery ID, and the image isn't in another gallery, we're OK to delete the image.
+			if ( ( $attachment->post_parent == $id || in_array( $attach_id, $in_gallery ) ) && ( count( $has_gallery ) == 1 ) ) { // the "1" should mean only one gallery - the one we are deleting.
 				wp_delete_attachment( $attach_id );
 			}
 		}
@@ -1000,11 +1008,17 @@ class Admin_Container {
 		}
 
 		if ( class_exists( 'Elementor\\Admin' ) ) {
-			// Remove Custom Post Type Support For Various Plugins In The Admin
+			// Remove Custom Post Type Support For Various Plugins In The Admin.
 			remove_post_type_support( 'envira', 'elementor' );
 			remove_post_type_support( 'envira_albums', 'elementor' );
 			if ( isset( $_GET['post'] ) && ( 'envira' == get_post_type( intval( $_GET['post'] ) ) || 'envira_albums' == get_post_type( intval( $_GET['post'] ) ) ) ) {
 				wp_dequeue_script( 'elementor-admin-app' );
+			}
+		}
+
+		if ( is_plugin_active( 'advanced-rich-text-tools/index.php' ) ) {
+			if ( isset( $_GET['post'] ) && ( 'envira' == get_post_type( intval( $_GET['post'] ) ) || 'envira_albums' == get_post_type( intval( $_GET['post'] ) ) ) ) {
+				wp_dequeue_script( 'advanced-rich-text-tools' );
 			}
 		}
 

@@ -83,7 +83,7 @@ class MEC_skin_map extends MEC_skins
         $this->args['meta_query'] = $this->meta_query();
         
         // Tag
-        $this->args['tag'] = $this->tag_query();
+        //$this->args['tag'] = $this->tag_query();
         
         // Author
         $this->args['author'] = $this->author_query();

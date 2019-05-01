@@ -306,11 +306,10 @@ class MEC_notifications extends MEC_base
      * Send new event notification
      * @author Webnus <info@webnus.biz>
      * @param int $event_id
-     * @param object $post
      * @param boolean $update
      * @return boolean
      */
-    public function new_event($event_id, $post, $update)
+    public function new_event($event_id, $update = false)
     {
         // If this is an autosave, our form has not been submitted, so we don't want to do anything.
         if(defined('DOING_AUTOSAVE') and DOING_AUTOSAVE) return false;
@@ -354,9 +353,10 @@ class MEC_notifications extends MEC_base
         $message = str_replace('%%blog_url%%', get_bloginfo('url'), $message);
         $message = str_replace('%%blog_description%%', get_bloginfo('description'), $message);
         
-        // Book Data
+        // Event Data
         $message = str_replace('%%admin_link%%', $this->link(array('post_type'=>$event_PT), $this->main->URL('admin').'edit.php'), $message);
         $message = str_replace('%%event_title%%', get_the_title($event_id), $message);
+        $message = str_replace('%%event_link%%', get_post_permalink($event_id), $message);
         $message = str_replace('%%event_status%%', $status, $message);
         $message = str_replace('%%event_note%%', get_post_meta($event_id, 'mec_note', true), $message);
         
@@ -459,6 +459,7 @@ class MEC_notifications extends MEC_base
         $location = get_term($location_id, 'mec_location');
         
         $message = str_replace('%%event_title%%', get_the_title($event_id), $message);
+        $message = str_replace('%%event_link%%', get_post_permalink($event_id), $message);
         
         $message = str_replace('%%event_organizer_name%%', (isset($organizer->name) ? $organizer->name : ''), $message);
         $message = str_replace('%%event_organizer_tel%%', get_term_meta($organizer_id, 'tel', true), $message);
@@ -499,7 +500,10 @@ class MEC_notifications extends MEC_base
         if($ticket_end_minute == '0') $ticket_end_minute_s = '00';
         if($ticket_end_minute == '5') $ticket_end_minute_s = '05';
 
-        $ticket_time = $ticket_start_hour . ':' .  $ticket_start_minute_s . '(' . $ticket_start_ampm .') ' . esc_html__('to' , 'modern-events-calendar-lite') . ' ' . $ticket_end_hour . ':' . $ticket_end_minute_s . '(' . $ticket_end_ampm .')';
+        $ticket_start_seconds = $this->main->time_to_seconds($this->main->to_24hours($ticket_start_hour, $ticket_start_ampm), $ticket_start_minute_s);
+        $ticket_end_seconds = $this->main->time_to_seconds($this->main->to_24hours($ticket_end_hour, $ticket_end_ampm), $ticket_end_minute_s);
+
+        $ticket_time = $this->main->get_time($ticket_start_seconds).' ' . esc_html__('to' , 'modern-events-calendar-lite') . ' ' .$this->main->get_time($ticket_end_seconds);
 
         $message = str_replace('%%ticket_name%%', $ticket_name, $message);
         $message = str_replace('%%ticket_time%%', $ticket_time, $message);
@@ -546,7 +550,9 @@ class MEC_notifications extends MEC_base
         $attendees = get_post_meta($book_id, 'mec_attendees', true);
         if(!is_array($attendees) or (is_array($attendees) and !count($attendees))) $attendees = array(get_post_meta($book_id, 'mec_attendee', true));
 
-        $reg_fields = $this->main->get_reg_fields();
+        $event_id = get_post_meta($book_id, 'mec_event_id', true);
+
+        $reg_fields = $this->main->get_reg_fields($event_id);
         foreach($attendees as $attendee)
         {
             $reg_form = isset($attendee['reg']) ? $attendee['reg'] : array();
@@ -556,8 +562,13 @@ class MEC_notifications extends MEC_base
 
             foreach($reg_form as $field_id=>$value)
             {
+                // Placeholder Keys
+                if(!is_numeric($field_id)) continue;
+
                 $type = $reg_fields[$field_id]['type'];
+
                 $label = isset($reg_fields[$field_id]) ? $reg_fields[$field_id]['label'] : '';
+                if(trim($label) == '') continue;
 
                 if($type == 'agreement')
                 {

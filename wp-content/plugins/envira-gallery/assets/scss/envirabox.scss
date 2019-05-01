@@ -324,9 +324,9 @@ body{
 .envirabox-spaceball { z-index: 1; }
 
 .envirabox-slide--iframe .envirabox-content {
-/* 	width: 100%;
+/*  width: 100%;
 	height: 100%; */
- 	max-width: calc(100% - 100px);
+    max-width: calc(100% - 100px);
 	max-height: calc(100% - 200px);
 	overflow: visible;
 	background: #fff;
@@ -338,7 +338,7 @@ body{
 
 .envirabox-slide--iframe .envirabox-content {
 /* .envirabox-slide--iframe .envirabox-content iframe { */
-/* 	max-width: calc(100% - 100px);
+/*  max-width: calc(100% - 100px);
 	max-height: calc(100% - 88px); */
 }
 
@@ -642,7 +642,7 @@ body{
 .envirabox-theme-base {
 	.envirabox-caption,
 	.envirabox-title {
-		visibility: hidden; /* hide initially while rest loads to prevent ackward */
+
 	}
 	.envirabox-navigation,
 	.envirabox-navigation-inside {

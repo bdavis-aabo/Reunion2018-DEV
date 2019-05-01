@@ -14,6 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Review class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Review {
 
 	/**
@@ -62,7 +70,7 @@ class Review {
 	 * that graciously asks them to rate us.
 	 *
 	 * @since
-	 * @param string $text
+	 * @param string $text Text.
 	 * @return string
 	 */
 	public function admin_footer( $text ) {
@@ -139,12 +147,12 @@ class Review {
 		// We have a candidate! Output a review message.
 		?>
 		<div class="notice notice-info is-dismissible envira-review-notice">
-			<p><?php _e( 'Hey, I noticed you created a photo gallery with Envira - that’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress to help us spread the word and boost our motivation.', 'envira-gallery' ); ?></p>
-			<p><strong><?php _e( '~ Nathan Singh<br>CEO of Envira Gallery', 'envira-gallery' ); ?></strong></p>
+			<p><?php esc_html_e( 'Hey, I noticed you created a photo gallery with Envira - that’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress to help us spread the word and boost our motivation.', 'envira-gallery' ); ?></p>
+			<p><strong><?php esc_html_e( '~ Nathan Singh<br>CEO of Envira Gallery', 'envira-gallery' ); ?></strong></p>
 			<p>
-				<a href="https://wordpress.org/support/plugin/envira-gallery-lite/reviews/?filter=5#new-post" class="envira-dismiss-review-notice envira-review-out" target="_blank" rel="noopener"><?php _e( 'Ok, you deserve it', 'envira-gallery' ); ?></a><br>
-				<a href="#" class="envira-dismiss-review-notice" target="_blank" rel="noopener"><?php _e( 'Nope, maybe later', 'envira-gallery' ); ?></a><br>
-				<a href="#" class="envira-dismiss-review-notice" target="_blank" rel="noopener"><?php _e( 'I already did', 'envira-gallery' ); ?></a><br>
+				<a href="https://wordpress.org/support/plugin/envira-gallery-lite/reviews/?filter=5#new-post" class="envira-dismiss-review-notice envira-review-out" target="_blank" rel="noopener"><?php esc_html_e( 'Ok, you deserve it', 'envira-gallery' ); ?></a><br>
+				<a href="#" class="envira-dismiss-review-notice" target="_blank" rel="noopener"><?php esc_html_e( 'Nope, maybe later', 'envira-gallery' ); ?></a><br>
+				<a href="#" class="envira-dismiss-review-notice" target="_blank" rel="noopener"><?php esc_html_e( 'I already did', 'envira-gallery' ); ?></a><br>
 			</p>
 		</div>
 		<script type="text/javascript">

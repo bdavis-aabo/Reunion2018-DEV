@@ -19,20 +19,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.3.1.6
  *
- * @param string $string Serialized string to fix
- * @return array Unserialized data
+ * @param string $string Serialized string to fix.
+ * @return array Unserialized data.
  */
 function envira_fix_serialized_string( $string ) {
 
-	// Check string is serialised and if it already works return it
+	// Check string is serialised and if it already works return it.
 	if ( ! preg_match( '/^[aOs]:/', $string ) ) {
 		return $string;
 	}
-	if ( @unserialize( $string ) !== false ) {
-		return @unserialize( $string );
+	if ( unserialize( $string ) !== false ) {
+		return unserialize( $string );
 	}
 
-	// String needs fixing - fix it
+	// String needs fixing - fix it.
 	$string = preg_replace_callback( '/\bs:(\d+):"(.*?)"/', array( $this, 'fix_str_length' ), $string );
 
 	return unserialize( $string );
@@ -45,8 +45,8 @@ function envira_fix_serialized_string( $string ) {
  *
  * @since 1.3.1.6
  *
- * @param array $matches preg_replace matches
- * @return string Replacement string
+ * @param array $matches preg_replace matches.
+ * @return string Replacement string.
  */
 function envira_fix_str_length( $matches ) {
 

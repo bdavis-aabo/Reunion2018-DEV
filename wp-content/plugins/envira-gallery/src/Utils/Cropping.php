@@ -37,15 +37,15 @@ class Cropping {
 		// Get common vars.
 		$args = array( $url, $width, $height, $crop, $align, $quality, $retina, $data );
 
-		// Filter args
+		// Filter args.
 		$args = apply_filters( 'envira_gallery_resize_image_args', $args );
 
 		// Don't resize images that don't belong to this site's URL
 		// Strip ?lang=fr from blog's URL - WPML adds this on
-		// and means our next statement fails
+		// and means our next statement fails.
 		if ( is_multisite() ) {
 			$blog_id = get_current_blog_id();
-			// doesn't use network_site_url because this will be incorrect for remapped domains
+			// doesn't use network_site_url because this will be incorrect for remapped domains.
 			if ( is_main_site( $blog_id ) ) {
 				$site_url = preg_replace( '/\?.*/', '', network_site_url() );
 			} else {
@@ -55,7 +55,7 @@ class Cropping {
 			$site_url = preg_replace( '/\?.*/', '', get_bloginfo( 'url' ) );
 		}
 
-		// WPML check - if there is a /fr or any domain in the url, then remove that from the $site_url
+		// WPML check - if there is a /fr or any domain in the url, then remove that from the $site_url.
 		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
 			if ( strpos( $site_url, '/' . ICL_LANGUAGE_CODE ) !== false ) {
 				$site_url = str_replace( '/' . ICL_LANGUAGE_CODE, '', $site_url );
@@ -77,7 +77,7 @@ class Cropping {
 			return $url;
 		}
 
-		// Get image info
+		// Get image info.
 		$common = envira_get_image_info( $args );
 
 		// Unpack variables if an array, otherwise return WP_Error.
@@ -190,10 +190,10 @@ class Cropping {
 	}
 
 	/**
-	 * crop function.
+	 * Crop function.
 	 *
 	 * @access public
-	 * @param mixed $id
+	 * @param mixed $post_id Post id.
 	 * @return void
 	 */
 	public function crop( $post_id ) {
@@ -257,7 +257,7 @@ class Cropping {
 		if ( isset( $settings['config']['mobile_thumbnails'] ) && $settings['config']['mobile_thumbnails'] ) {
 
 			// get the proper size of thumbnails, to make sure we have the thumbnails created upon save and NOT generated on the front-end
-			// this will override width and height
+			// this will override width and height.
 			$mobile_thumbnail_width  = apply_filters( 'envira_gallery_mobile_lightbox_thumbnail_width', $settings['config']['mobile_thumbnails_width'], $settings );
 			$mobile_thumbnail_height = apply_filters( 'envira_gallery_mobile_lightbox_thumbnail_height', $settings['config']['mobile_thumbnails_height'], $settings );
 

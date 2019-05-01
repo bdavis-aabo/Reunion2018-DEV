@@ -21,9 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.7.0
  *
  * @access public
- * @param mixed $template
- * @param array $data (default: array())
- * @return void
+ * @param mixed $template Template to load.
+ * @param array $data (default: array()) Data to pass to template.
+ * @return bool did the template load.
  */
 function envira_load_admin_partial( $template, $data = array() ) {
 
@@ -40,40 +40,12 @@ function envira_load_admin_partial( $template, $data = array() ) {
 }
 
 /**
- * envira_load_admin_field function.
- *
- * @since 1.7.1
- *
- * @access public
- * @param mixed $field
- * @param array $data (default: array())
- * @return void
- */
-function envira_load_admin_field( $field, $data = array() ) {
-
-	if ( empty( $data ) ) {
-		return false;
-	}
-
-	$dir = trailingslashit( plugin_dir_path( ENVIRA_FILE ) . 'src/Views/fields' );
-
-	if ( file_exists( $dir . $field . '.php' ) ) {
-
-		include $dir . $field . '.php';
-		return true;
-	}
-
-	return false;
-
-}
-
-/**
  * Get user license Key
  *
  * @since 1.7.0
  *
  * @access public
- * @return void
+ * @return string|bool
  */
 function envira_get_license_key() {
 

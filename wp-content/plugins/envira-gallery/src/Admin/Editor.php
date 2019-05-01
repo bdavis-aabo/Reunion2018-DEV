@@ -7,6 +7,7 @@
  * @package Envira_Gallery
  * @author  Envira Gallery Team <support@enviragallery.com>
  */
+
 namespace Envira\Admin;
 
 // Exit if accessed directly.
@@ -16,6 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 }
 
+/**
+ * Editor class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Editor {
 
 	/**
@@ -58,7 +67,7 @@ class Editor {
 		wp_register_style( ENVIRA_SLUG . '-editor-style', plugins_url( 'assets/css/editor.css', ENVIRA_FILE ), array(), ENVIRA_VERSION );
 		wp_enqueue_style( ENVIRA_SLUG . '-editor-style' );
 
-		// Enqueue the gallery / album selection script
+		// Enqueue the gallery / album selection script.
 		wp_enqueue_script( ENVIRA_SLUG . '-gallery-select-script', plugins_url( 'assets/js/min/gallery-select-min.js', ENVIRA_FILE ), array( 'jquery' ), ENVIRA_VERSION, true );
 		wp_localize_script(
 			ENVIRA_SLUG . '-gallery-select-script',
@@ -104,7 +113,7 @@ class Editor {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param int $post_id Post ID
+	 * @param int $post_id Post ID.
 	 */
 	public function save_gallery_ids( $post_id ) {
 
@@ -117,7 +126,7 @@ class Editor {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param int $post_id Post ID
+	 * @param int $post_id Post ID.
 	 */
 	public function remove_gallery_ids( $post_id ) {
 
@@ -132,35 +141,35 @@ class Editor {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @param int  $post_id Post ID
-	 * @param bool $remove Remove Post ID from Gallery Meta (false)
+	 * @param int  $post_id Post ID.
+	 * @param bool $remove Remove Post ID from Gallery Meta (false).
 	 * @return bool
 	 */
 	private function update_gallery_post_ids( $post_id, $remove = true ) {
 
-		// Get post
+		// Get post.
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			return;
 		}
 
-		// Don't do anything if we are saving a Gallery or Album
+		// Don't do anything if we are saving a Gallery or Album.
 		if ( in_array( $post->post_type, array( 'envira', 'envira_album' ) ) ) {
 			return;
 		}
 
-		// Don't do anything if this is a Post Revision
+		// Don't do anything if this is a Post Revision.
 		if ( wp_is_post_revision( $post ) ) {
 			return false;
 		}
 
-		// Check content for shortcodes
+		// Check content for shortcodes.
 		if ( ! has_shortcode( $post->post_content, 'envira-gallery' ) ) {
 			return false;
 		}
 
 		// Content has Envira shortcode(s)
-		// Extract them to get Gallery IDs
+		// Extract them to get Gallery IDs.
 		$pattern = '\[(\[?)(envira\-gallery)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
 		if ( ! preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches ) ) {
 			return false;
@@ -169,37 +178,37 @@ class Editor {
 			return false;
 		}
 
-		// Iterate through shortcode matches, extracting the gallery ID and storing it in the meta
+		// Iterate through shortcode matches, extracting the gallery ID and storing it in the meta.
 		$gallery_ids = array();
 		foreach ( $matches[3] as $shortcode ) {
-			// Grab ID
+			// Grab ID.
 			$gallery_ids[] = preg_replace( '/[^0-9]/', '', $shortcode );
 		}
 
-		// Check we found gallery IDs
+		// Check we found gallery IDs.
 		if ( ! $gallery_ids ) {
 			return false;
 		}
 
-		// Iterate through each gallery
+		// Iterate through each gallery.
 		foreach ( $gallery_ids as $gallery_id ) {
-			// Get Post IDs this Gallery is included in
+			// Get Post IDs this Gallery is included in.
 			$post_ids = get_post_meta( $gallery_id, '_eg_in_posts', true );
 			if ( ! is_array( $post_ids ) ) {
 				$post_ids = array();
 			}
 
 			if ( $remove ) {
-				// Remove the Post ID
+				// Remove the Post ID.
 				if ( isset( $post_ids[ $post_id ] ) ) {
 					unset( $post_ids[ $post_id ] );
 				}
 			} else {
-				// Add the Post ID
+				// Add the Post ID.
 				$post_ids[ $post_id ] = $post_id;
 			}
 
-			// Save
+			// Save.
 			update_post_meta( $gallery_id, '_eg_in_posts', $post_ids );
 		}
 

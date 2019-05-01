@@ -15,6 +15,7 @@ jQuery(document).ready(function()
         atts: "'.http_build_query(array('atts'=>$this->atts), '', '&').'",
         ajax_url: "'.admin_url('admin-ajax.php', NULL).'",
         sed_method: "'.$this->sed_method.'",
+        image_popup: "'.$this->image_popup.'",
         sf:
         {
             container: "'.($this->sf_status ? '#mec_search_form_'.$this->id : '').'",
@@ -26,8 +27,10 @@ jQuery(document).ready(function()
 
 // Include javascript code into the footer
 $this->factory->params('footer', $javascript);
+$styling = $this->main->get_styling();
+$event_colorskin = (isset($styling['mec_colorskin'] ) || isset($styling['color'])) ? 'colorskin-custom' : '';
 ?>
-<div id="mec_skin_<?php echo $this->id; ?>" class="mec-wrap mec-full-calendar-wrap">
+<div id="mec_skin_<?php echo $this->id; ?>" class="mec-wrap <?php echo $event_colorskin; ?> mec-full-calendar-wrap">
     
     <div class="mec-totalcal-box">
         <?php if($this->sf_status): ?>

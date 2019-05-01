@@ -1,10 +1,10 @@
-=== Modern Events Calendar Lite ===
+﻿=== Modern Events Calendar Lite ===
 Contributors: webnus
 Donate link: https://webnus.net
 Tags: Event, Events, Calendar, Booking, Schedule, Organizer, Venue
 Requires at least: 4.0.0
-Tested up to: 5.0
-Stable tag: 3.3.5
+Tested up to: 5.2
+Stable tag: 4.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,6 +191,124 @@ You can see [plugin documentation here](https://webnus.net/dox/modern-events-cal
 22. Widget
 
 == Changelog ==
+
+= 4.2.0 =
+- Compatibility: WordPress 5.2
+- Added: Additional Location feature
+- Added: MEC_Name and MEC_Email field to edit booking form
+- Added: Rearrange ability for booking form fileds (even email or name)
+- Added: Date field to booking form
+- Added: Upload file field to booking form
+- Added: Upload file option to manage MIME types and maximum upload size
+- Added: %%event_link%% tag to the notifications
+- Added: Norwegian (Bokmål) language
+- Fixed: Some issues in RSS feed of events regarding showing content and excerpt
+- Fixed: Attached image in frontend submission form
+- Fixed: Exporting custom day events to Google Calendar in manual export and automated syncronization
+
+= 4.1.0 =
+- Added: Tag and Speaker filter to shortcodes
+- Fixed: Sold out ticket notification
+- Fixed: Modal view when Youtube video is in event content
+- Fixed: Social network displaying when option is disabled
+- Fixed: Search box displaying in shortcodes when all items are disabled
+- Fixed: %%event_note%% tag in email
+- Fixed: Displaying QR code widget when is deactivate
+- Fixed: Displaying variations in booking details page
+- Fixed: Conflict on end date and custom days events
+- Fixed: Label issue on daily schedule
+- Fixed: Undefined issue on custom days for "Frontend Event Submission"
+- Fixed: Creating custom days events from frontend
+- Fixed: Displaying events of end day of the month on daily, monthly and weekly skins
+
+= 4.0.0 =
+- Refactored: Search system completely
+- Improved: Search speed
+- Reduced: Number of queries to have better performance
+- Fixed: Showing multiple day events till end of event
+- Fixed: Occurrences on booking module
+- Fixed: Next occurrence date module for multiple day events
+- Fixed: Rendering data of some events
+- Fixed: Regarding table charset and collate on some hosts
+- Fixed: MEC uninstallation
+- Fixed: Checking existence of needed tables
+- Fixed: Showing all days of multiple events
+- Fixed: Import Facebook Image
+- Fixed: WPML compatibilty in ajax
+- Fixed: Widgets position in single event page
+- Fixed: Sticky infobar in settings
+- Fixed: Speaker box
+- Fixed: Monthly Calendar/Novel responsive
+- Fixed: Some PHP notices
+- Fixed: Some minor issues
+
+= 3.5.2 =
+- Fixed: Slider view
+
+= 3.5.1 =
+- Fixed: Issue in saving settings
+- Fixed: Issue in disable google font
+- Fixed: Issue in frontend event submission of custom days event
+
+= 3.5.0 =
+- Added: Facebook events importer
+- Added: Activation box in welcome page and removed activation tab from MEC settings
+- Added: Ability to define date period for custom days
+- Added: Event Schema markup to single page and shortcodes
+- Added: Custom Archive Skin feature
+- Added: Custom Category Skin feature
+- Added: Carousel skin type 4
+- Removed: old support page and added new one
+- Updated: spanish language from lite version repository
+- Fixed: Modal booking
+- Fixed: link for image in countdown view type 3
+- Fixed: Checkout button style
+
+
+= 3.4.5 =
+- Added: Disable Google Fonts options due to GDPR
+- Added: Search field for settings
+- Added: Settings import/export feature
+- Added: New Monthly Skin (simple)
+- Added: Deactivate MEC lite when Pro is activate
+- Changed: settings styles
+- Improved: Styling Options
+- Fixed: Global ticket variations
+- Fixed: Showing end time in local time widget when end time or event time is/are hidden
+- Fixed: Showing shortcodes in event excerpt
+- Fixed: Not showing event title in novel style of monthly calendar
+- Fixed: Ticket time in notifications
+- Fixed: CSV export for custom fields
+- Fixed: Notifications for full attendee info
+- Fixed: Social icons when occurrence is set
+- Fixed: Next event module
+- Fixed: Showing booking tickets.
+- Fixed: Some PHP notices.
+
+= 3.4.0 =
+- Added: Profile shortcode to show user bookings’ details
+- Added: Import from Meetup
+- Added: Auto sync for importing meetup events
+- Added: Ability to remove hourly schedule days
+- Added: Ability to change ticket price per date periods (Pro)
+- Fixed: Issue in Meetup and Stripe API
+- Fixed: Daily view in mobile and tablet
+- Fixed: Custom color in masonry category
+- Fixed: Masonry in Elementor tab
+- Fixed: Typography issues
+- Fixed: Google reCaptcha in Frontend submission form
+- Fixed: Booking smooth scroll (Pro)
+- Fixed: Event information displaying order in single event page (default skin)
+- Fixed: Date-picker in backend
+- Fixed: Display Grid clean and Monthly View when search box is enable
+- Fixed: Load languages in Lite version
+- Fixed: Load speaker in accordion toggle view
+- Fixed: Alt tag for images in Masonry view
+- Fixed: Modal view when click on thumbnails
+- Fixed: Console error (colorBrightness when no event exists)
+- Fixed: HTML tags in paragraph field of booking form both in backend and frontend (Pro)
+- Fixed: Invalid occurrence date in single event pages
+- Fixed: Some minor issues
 
 = 3.3.5 =
 - Compatibility: WordPress v5.0

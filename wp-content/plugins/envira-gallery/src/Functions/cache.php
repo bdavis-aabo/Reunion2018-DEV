@@ -43,6 +43,13 @@ function envira_flush_gallery_caches( $post_id, $slug = '' ) {
 
 }
 
+/**
+ * Helper method to flush all cache.
+ *
+ * @since 1.8.0
+ *
+ * @return void
+ */
 function envira_flush_all_cache() {
 
 	global $wpdb;
@@ -50,13 +57,11 @@ function envira_flush_all_cache() {
 	$transient_pattern_2 = '_transient_timeout__eg__%';
 	$transient_pattern_3 = '_transient_timeout__eg_%';
 
-	$sql = $wpdb->prepare( "SELECT option_name AS name, option_value AS value FROM $wpdb->options WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s", $transient_pattern_1, $transient_pattern_2, $transient_pattern_3 );
+	$query = $wpdb->get_results( $wpdb->prepare( "SELECT option_name AS name, option_value AS value FROM $wpdb->options WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s", $transient_pattern_1, $transient_pattern_2, $transient_pattern_3 ), OBJECT ); // @codingStandardsIgnoreLine
 
-	$query = $wpdb->get_results( $sql, OBJECT );
+	foreach ( $query as $result ) {
 
-	foreach ( $query as $resault ) {
-
-		$transient = $resault->name;
+		$transient = $result->name;
 
 		$key = str_replace( '_transient_timeout_', '', $transient );
 		$key = str_replace( '_transient_', '', $transient );
@@ -65,7 +70,7 @@ function envira_flush_all_cache() {
 
 			if ( function_exists( 'wp_cache_delete' ) ) {
 
-				wp_cache_delete( $key, 'trainsient' );
+				wp_cache_delete( $key, 'transient' );
 
 			}
 		} else {
@@ -77,6 +82,18 @@ function envira_flush_all_cache() {
 
 }
 
+add_filter( 'envira_gallery_get_transient_markup', 'envira_troubleshoot_turn_off_gallery_transients', 10, 1 );
+
+/**
+ * Helper Method to troulbeshoot Gallery
+ *
+ * !!! Todo move to envira-albums
+ *
+ * @since 1.8.5
+ *
+ * @param string $transient Transient String.
+ * @return bool|string
+ */
 function envira_troubleshoot_turn_off_gallery_transients( $transient ) {
 
 	if ( get_option( 'eg_t_gallery_status' ) === true ) {
@@ -86,8 +103,18 @@ function envira_troubleshoot_turn_off_gallery_transients( $transient ) {
 	}
 
 }
-add_filter( 'envira_gallery_get_transient_markup', 'envira_troubleshoot_turn_off_gallery_transients', 10, 1 );
+add_filter( 'envira_albums_get_transient_markup', 'envira_troubleshoot_turn_off_album_transients', 10, 1 );
 
+/**
+ * Helper Method to troulbeshoot Albums
+ *
+ * !!! Todo move to envira-albums
+ *
+ * @since 1.8.5
+ *
+ * @param string $transient Transient String.
+ * @return bool|string
+ */
 function envira_troubleshoot_turn_off_album_transients( $transient ) {
 
 	if ( get_option( 'eg_t_album_status' ) === true ) {
@@ -97,4 +124,3 @@ function envira_troubleshoot_turn_off_album_transients( $transient ) {
 	}
 
 }
-add_filter( 'envira_albums_get_transient_markup', 'envira_troubleshoot_turn_off_album_transients', 10, 1 );

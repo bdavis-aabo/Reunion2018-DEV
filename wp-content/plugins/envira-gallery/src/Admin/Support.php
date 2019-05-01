@@ -17,6 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 }
 
+/**
+ * Support class.
+ *
+ * @since 1.8.1
+ *
+ * @package Envira_Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Support {
 
 	/**
@@ -28,6 +36,13 @@ class Support {
 	 */
 	public $hook;
 
+	/**
+	 * Holds gallery transient status.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @var string
+	 */
 	public $gallery_transient_status;
 
 	/**
@@ -63,7 +78,7 @@ class Support {
 		// Load admin assets.
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 
-		// Load Admin Bar
+		// Load Admin Bar.
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_support_button' ), 9999 );
 
 		if ( isset( $_GET['action'] ) && $_GET['action'] == 'view-gallery-settings' ) {
@@ -181,7 +196,7 @@ class Support {
 		}
 
 		if ( $something_changed ) {
-			// update settings for that gallery
+			// update settings for that gallery.
 			update_post_meta( $gallery_id, '_eg_gallery_data', $oringial_settings );
 			add_action( 'envira_support_notices', array( $this, 'updated_gallery_message' ), 10 );
 		}
@@ -238,7 +253,7 @@ class Support {
 
 			<?php
 
-				// Get gallery data from Post Meta
+				// Get gallery data from Post Meta.
 				$data          = get_post_meta( $gallery_id, '_eg_gallery_data', true );
 				$updated       = 0;
 				$post          = get_post( $gallery_id );
@@ -247,7 +262,7 @@ class Support {
 			foreach ( $data['gallery'] as $item_id => $item ) {
 				if ( empty( $data['gallery'][ $item_id ]['link'] ) && ! empty( $data['gallery'][ $item_id ]['src'] ) ) {
 					  $data['gallery'][ $item_id ]['link'] = $data['gallery'][ $item_id ]['src'];
-					  echo '<p>Updated link of image #' . $item_id . ' to ' . $data['gallery'][ $item_id ]['src'] . '</p>';
+					  echo '<p>Updated link of image #' . esc_html( $item_id ) . ' to ' . esc_url( $data['gallery'][ $item_id ]['src'] ) . '</p>';
 					  $updated++;
 				}
 			}
@@ -256,7 +271,7 @@ class Support {
 				update_post_meta( $gallery_id, '_eg_gallery_data', $data );
 			}
 
-				echo '<p>Updated a total of <strong>' . $updated . '</strong> items for the <strong>' . $gallery_title . '</strong> gallery.</p></div>';
+				echo '<p>Updated a total of <strong>' . esc_html( $updated ) . '</strong> items for the <strong>' . esc_html( $gallery_title ) . '</strong> gallery.</p></div>';
 
 			?>
 
@@ -273,11 +288,11 @@ class Support {
 	 */
 	public function clear_all_transients() {
 
-		if ( empty( $_GET['page'] ) || $_GET['page'] != 'envira-gallery-support-general' || ( $_GET['page'] == 'envira-gallery-support-general' && empty( $_POST ) ) ) {
+		if ( empty( $_GET['page'] ) || 'envira-gallery-support-general' !== $_GET['page'] || ( 'envira-gallery-support-general' === $_GET['page'] && empty( $_POST ) ) ) {
 			return;
 		}
 
-		if ( $_POST['action'] == 'clear-all' ) {
+		if ( 'clear-all' === $_POST['action'] ) {
 
 			global $wpdb;
 
@@ -288,22 +303,29 @@ class Support {
 
 	}
 
+	/**
+	 * Total transients
+	 *
+	 * @since 1.8.1
+	 */
 	public function total_transients() {
 
 		global $wpdb;
 
-		// get current PHP time, offset by a minute to avoid clashes with other tasks
+		// get current PHP time, offset by a minute to avoid clashes with other tasks.
 		$threshold = time() - MINUTE_IN_SECONDS;
 
-		// count transient expiration records, total and expired
+		// count transient expiration records, total and expired.
 		$sql    = "
 			select count(*) as `total`, count(case when option_value < '$threshold' then 1 end) as `expired`
-			from $wpdb->options
-			where (option_name like '\_transient\_timeout\_%' or option_name like '\_site\_transient\_timeout\_%')
+			from " . $wpdb->options . "
+			where (option_name like '%_transient_timeout_%' or option_name like '%_site_transient_timeout_%')
 		";
-		$counts = $wpdb->get_row( $sql );
 
-		// count never-expire transients
+		// $counts               = $wpdb->get_row( $wpdb->prepare( '%s', array( $sql ) ) );
+		$counts               = $wpdb->get_row( $sql );
+
+		// count never-expire transients.
 		$sql                  = "
 			select count(*)
 			from $wpdb->options
@@ -311,12 +333,18 @@ class Support {
 			and option_name not like '%\_timeout\_%'
 			and autoload = 'yes'
 		";
+		// $counts->never_expire = $wpdb->get_var( $wpdb->prepare( '%s', array( $sql ) ) );
 		$counts->never_expire = $wpdb->get_var( $sql );
 
 		return $counts;
 
 	}
 
+	/**
+	 * Total Envira transients
+	 *
+	 * @since 1.8.1
+	 */
 	public function total_envira_transients() {
 
 		global $wpdb;
@@ -328,17 +356,22 @@ class Support {
 			OR option_name LIKE ('%_transient__ea_%');"
 		);
 
-		return sizeof( $results );
+		return count( $results );
 
 	}
 
+	/**
+	 * Clear All Cache
+	 *
+	 * @since 1.8.1
+	 */
 	public function clear_all_envira_cache() {
 
 		if ( empty( $_GET['page'] ) || $_GET['page'] != 'envira-gallery-support-general' || ( $_GET['page'] == 'envira-gallery-support-general' && empty( $_POST ) ) ) {
 			return;
 		}
 
-		if ( $_POST['action'] == 'flush-cache' ) {
+		if ( 'flush-cache' === $_POST['action'] ) {
 
 			if ( function_exists( 'envira_flush_all_cache' ) ) {
 				envira_flush_all_cache();
@@ -347,6 +380,11 @@ class Support {
 
 	}
 
+	/**
+	 * Total Options
+	 *
+	 * @since 1.8.1
+	 */
 	public function total_options() {
 
 		global $wpdb;
@@ -360,13 +398,19 @@ class Support {
 
 	}
 
+
+	/**
+	 * Clear All Options
+	 *
+	 * @since 1.8.1
+	 */
 	public function clear_all_envira_options() {
 
-		if ( empty( $_GET['page'] ) || $_GET['page'] != 'envira-gallery-support-general' || ( $_GET['page'] == 'envira-gallery-support-general' && empty( $_POST ) ) ) {
+		if ( empty( $_GET['page'] ) || 'envira-gallery-support-general' !== $_GET['page'] || ( 'envira-gallery-support-general' === $_GET['page'] && empty( $_POST ) ) ) {
 			return;
 		}
 
-		if ( $_POST['action'] == 'delete-options' ) {
+		if ( 'delete-options' === $_POST['action'] ) {
 
 			global $wpdb;
 
@@ -376,13 +420,18 @@ class Support {
 
 	}
 
+	/**
+	 * Test API
+	 *
+	 * @since 1.8.1
+	 */
 	public function test_api() {
 
 		if ( empty( $_GET['page'] ) || $_GET['page'] != 'envira-gallery-support-api' || ( $_GET['page'] == 'envira-gallery-support-api' && empty( $_POST ) ) ) {
 			return;
 		}
 
-		if ( $_POST['action'] == 'test-api' ) {
+		if ( 'test-api' === $_POST['action'] ) {
 
 			$license = new \Envira\Admin\License();
 
@@ -431,13 +480,18 @@ class Support {
 
 	}
 
+	/**
+	 * Settings
+	 *
+	 * @since 1.8.1
+	 */
 	public function settings() {
 
-		if ( empty( $_GET['page'] ) || $_GET['page'] != 'envira-gallery-support-settings' || ( $_GET['page'] == 'envira-gallery-support-settings' && empty( $_POST ) ) ) {
+		if ( empty( $_GET['page'] ) || 'envira-gallery-support-settings' !== $_GET['page']|| ( 'envira-gallery-support-settings' === $_GET['page'] && empty( $_POST ) ) ) {
 			return;
 		}
 
-		if ( $_POST['action'] == 'settings' ) {
+		if ( isset( $_POST['action'] ) && 'settings' === $_POST['action'] ) {
 
 			if ( isset( $_POST['support_show_admin_bar'] ) && intval( $_POST['support_show_admin_bar'] ) == 1 ) {
 				update_option( 'eg_admin_bar', 1, null, 'no' );
@@ -451,6 +505,11 @@ class Support {
 
 	}
 
+	/**
+	 * Get API Info
+	 *
+	 * @since 1.8.1
+	 */
 	public function get_api_info() {
 
 		return ( array(
@@ -462,12 +521,22 @@ class Support {
 
 	}
 
+	/**
+	 * Get Total Galleries
+	 *
+	 * @since 1.8.1
+	 */
 	public function total_galleries() {
 
 		return ( wp_count_posts( 'envira' )->publish );
 
 	}
 
+	/**
+	 * Get Total Albums
+	 *
+	 * @since 1.8.1
+	 */
 	public function total_albums() {
 
 		if ( class_exists( 'Envira_Albums' ) ) {
@@ -478,6 +547,12 @@ class Support {
 
 	}
 
+	/**
+	 * Get Problem Galleries
+	 *
+	 * @param in $image_limit Image limit.
+	 * @since 1.8.1
+	 */
 	public function get_problem_galleries( $image_limit = 100 ) {
 
 		$galleries         = _envira_get_galleries( true, null, 100 );
@@ -519,7 +594,7 @@ class Support {
 					'issue_text' => 'has a \'exif\' setting but the <strong>EXIF Addon</strong> is not installed or activated.',
 				);
 			}
-			if ( ( array_key_exists( 'pagination_images_per_page', $settings ) && $settings->pagination === 1 && ! class_exists( 'Envira_Pagination' ) ) ) {
+			if ( ( array_key_exists( 'pagination_images_per_page', $settings ) && 1 === $settings->pagination && ! class_exists( 'Envira_Pagination' ) ) ) {
 				$problem_galleries[] = array(
 					'link'       => admin_url( 'post.php?post=' . $gallery['id'] . '&action=edit' ),
 					'title'      => ( 'Gallery #' . $gallery['id'] ),
@@ -527,7 +602,7 @@ class Support {
 				);
 			}
 			/* check settings set to 0 */
-			if ( array_key_exists( 'pagination_images_per_page', $settings ) && $settings->pagination === 1 && $settings->pagination_images_per_page === 0 && class_exists( 'Envira_Pagination' ) ) {
+			if ( array_key_exists( 'pagination_images_per_page', $settings ) && 1 === $settings->pagination && 0 === $settings->pagination_images_per_page && class_exists( 'Envira_Pagination' ) ) {
 				$problem_galleries[] = array(
 					'severity'   => 'warning',
 					'link'       => admin_url( 'post.php?post=' . $gallery['id'] . '&action=edit' ),
@@ -541,6 +616,12 @@ class Support {
 
 	}
 
+	/**
+	 * Get Problem Albums
+	 *
+	 * @param in $gallery_limit Image limit.
+	 * @since 1.8.1
+	 */
 	public function get_problem_albums( $gallery_limit = 100 ) {
 
 		$albums         = _envira_get_albums( true, null, 100 );
@@ -582,7 +663,7 @@ class Support {
 					'issue_text' => 'has a \'exif\' setting but the <strong>EXIF Addon</strong> is not installed or activated.',
 				);
 			}
-			if ( ( array_key_exists( 'pagination_images_per_page', $settings ) && $settings['pagination'] === 1 && ! class_exists( 'Envira_Pagination' ) ) ) {
+			if ( ( array_key_exists( 'pagination_images_per_page', $settings ) && 1 === $settings['pagination'] && ! class_exists( 'Envira_Pagination' ) ) ) {
 				$problem_albums[] = array(
 					'link'       => admin_url( 'post.php?post=' . $album['id'] . '&action=edit' ),
 					'title'      => ( 'Album #' . $album['id'] ),
@@ -590,7 +671,7 @@ class Support {
 				);
 			}
 			/* check settings set to 0 */
-			if ( array_key_exists( 'pagination_images_per_page', $settings ) && $settings['pagination'] === 1 && $settings['pagination_images_per_page'] === 0 && class_exists( 'Envira_Pagination' ) ) {
+			if ( array_key_exists( 'pagination_images_per_page', $settings ) && 1 === $settings['pagination'] && 0 === $settings['pagination_images_per_page'] && class_exists( 'Envira_Pagination' ) ) {
 				$problem_albums[] = array(
 					'severity'   => 'warning',
 					'link'       => admin_url( 'post.php?post=' . $album['id'] . '&action=edit' ),
@@ -604,9 +685,15 @@ class Support {
 
 	}
 
+	/**
+	 * Is Gallery On/Off
+	 *
+	 * @since 1.8.1
+	 * return string
+	 */
 	public function is_gallery_on_or_off() {
 
-		if ( get_option( 'eg_t_gallery_status' ) ) {
+		if ( get_option( 'eg_t_gallery_status' ) && get_option( 'eg_t_gallery_status' ) === 'disabled' ) {
 			return 'Off';
 		} else {
 			return 'On';
@@ -614,9 +701,15 @@ class Support {
 
 	}
 
+	/**
+	 * Is Album On/Off
+	 *
+	 * @since 1.8.1
+	 * return string
+	 */
 	public function is_album_on_or_off() {
 
-		if ( get_option( 'eg_t_album_status' ) ) {
+		if ( get_option( 'eg_t_album_status' ) && get_option( 'eg_t_album_status' ) === 'disabled' ) {
 			return 'Off';
 		} else {
 			return 'On';
@@ -624,13 +717,19 @@ class Support {
 
 	}
 
+	/**
+	 * Change Gallery Status
+	 *
+	 * @since 1.8.1
+	 * return string
+	 */
 	public function toggle_gallery_transient_setting() {
 
-		if ( empty( $_GET['page'] ) || $_GET['page'] != 'envira-gallery-support-general' || ( $_GET['page'] == 'envira-gallery-support-general' && empty( $_POST ) ) ) {
+		if ( empty( $_GET['page'] ) || 'envira-gallery-support-general' !== $_GET['page'] || ( 'envira-gallery-support-general' === $_GET['page'] && empty( $_POST ) ) ) {
 			return;
 		}
 
-		if ( $_POST['action'] == 'toggle-envira-gallery-transients' ) {
+		if ( 'toggle-envira-gallery-transients' === $_POST['action'] ) {
 
 			wp_cache_delete( 'eg_t_gallery_status' );
 
@@ -647,13 +746,19 @@ class Support {
 
 	}
 
+	/**
+	 * Change Album Status
+	 *
+	 * @since 1.8.1
+	 * return string
+	 */
 	public function toggle_album_transient_setting() {
 
-		if ( empty( $_GET['page'] ) || $_GET['page'] != 'envira-gallery-support-general' || ( $_GET['page'] == 'envira-gallery-support-general' && empty( $_POST ) ) ) {
+		if ( empty( $_GET['page'] ) || 'envira-gallery-support-general' !== $_GET['page'] || ( 'envira-gallery-support-general' === $_GET['page'] && empty( $_POST ) ) ) {
 			return;
 		}
 
-		if ( $_POST['action'] == 'toggle-envira-album-transients' ) {
+		if ( 'toggle-envira-album-transients' === $_POST['action'] ) {
 
 			wp_cache_delete( 'eg_t_album_status' );
 
@@ -684,7 +789,7 @@ class Support {
 		<h3 class="nav-tab-wrapper">
 			<a class="nav-tab 
 			<?php
-			if ( $_GET['page'] == 'envira-gallery-support-general' ) :
+			if ( isset( $_GET['page'] ) && 'envira-gallery-support-general' === $_GET['page'] ) :
 				?>
 				nav-tab-active<?php endif; ?>" href="
 				<?php
@@ -705,7 +810,7 @@ class Support {
 			</a>
 			<a class="nav-tab 
 			<?php
-			if ( $_GET['page'] == 'envira-gallery-support-api' ) :
+			if ( isset( $_GET['page'] ) && 'envira-gallery-support-api' === $_GET['page'] ) :
 				?>
 				nav-tab-active<?php endif; ?>" href="
 				<?php
@@ -726,7 +831,7 @@ class Support {
 			</a>
 			<a class="nav-tab 
 			<?php
-			if ( $_GET['page'] == 'envira-gallery-support-tools' ) :
+			if ( isset( $_GET['page'] ) && 'envira-gallery-support-tools' === $_GET['page'] ) :
 				?>
 				nav-tab-active<?php endif; ?>" href="
 				<?php
@@ -747,7 +852,7 @@ class Support {
 			</a>
 			<a class="nav-tab 
 			<?php
-			if ( $_GET['page'] == 'envira-gallery-support-logs' ) :
+			if ( isset( $_GET['page'] ) && 'envira-gallery-support-logs' === $_GET['page'] ) :
 				?>
 				nav-tab-active<?php endif; ?>" href="
 				<?php
@@ -768,7 +873,7 @@ class Support {
 			</a>
 			<a class="nav-tab 
 			<?php
-			if ( $_GET['page'] == 'envira-gallery-support-settings' ) :
+			if ( isset( $_GET['page'] ) && 'envira-gallery-support-settings' === $_GET['page'] ) :
 				?>
 				nav-tab-active<?php endif; ?>" href="
 				<?php
@@ -870,7 +975,7 @@ class Support {
 
 					<div class="card">
 						<h2 class="title">Information</h2>
-						<p><strong>Number of Galleries:</strong>&nbsp;&nbsp;<?php echo $this->total_galleries(); ?>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<strong>Number of Albums:</strong>&nbsp;&nbsp;<?php echo $this->total_albums(); ?></p>
+						<p><strong>Number of Galleries:</strong>&nbsp;&nbsp;<?php echo esc_html( $this->total_galleries() ); ?>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<strong>Number of Albums:</strong>&nbsp;&nbsp;<?php echo esc_html( $this->total_albums() ); ?></p>
 						<blockquote style="line-height: 13px;">
 							<ul>
 								<?php
@@ -886,9 +991,9 @@ class Support {
 
 										?>
 										<?php if ( ! empty( $gallery['image_count'] ) ) { ?>
-									<li><span class="alert" style="font-weight: 600; color:<?php echo $color; ?>;"><?php echo $label; ?>:</span> <a href="<?php echo $gallery['link']; ?>"><?php echo $gallery['title']; ?></a> has <?php echo $gallery['image_count']; ?> images.</li>
+									<li><span class="alert" style="font-weight: 600; color:<?php echo esc_attr( $color ); ?>;"><?php echo esc_html( $label ); ?>:</span> <a href="<?php echo esc_url( $gallery['link'] ); ?>"><?php echo esc_html( $gallery['title'] ); ?></a> has <?php echo esc_html( $gallery['image_count'] ); ?> images.</li>
 									<?php } else { ?>
-										<li><span class="alert" style="font-weight: 600; color:orange;">Note:</span> <a href="<?php echo $gallery['link']; ?>"><?php echo $gallery['title']; ?></a> <?php echo $gallery['issue_text']; ?></li>
+										<li><span class="alert" style="font-weight: 600; color:orange;">Note:</span> <a href="<?php echo esc_url( $gallery['link'] ); ?>"><?php echo esc_html( $gallery['title'] ); ?></a> <?php echo esc_html( $gallery['issue_text'] ); ?></li>
 									<?php } ?>
 										<?php
 									}
@@ -926,7 +1031,7 @@ class Support {
 								if ( $time <= 60 ) {
 
 									?>
-								<li><span class="alert" style="font-weight: 600; color:orange;">Note:</span> Maximum Limit For Runtime Set To <strong><?php echo $time; ?> Seconds</strong></li>
+								<li><span class="alert" style="font-weight: 600; color:orange;">Note:</span> Maximum Limit For Runtime Set To <strong><?php echo esc_html( $time ); ?> Seconds</strong></li>
 								<?php } ?>
 								<?php
 
@@ -939,7 +1044,7 @@ class Support {
 							</ul>
 						</blockquote>
 						<div style="display: inline-block;">
-							<a href="<?php echo admin_url( '/edit.php?post_type=envira&page=envira-gallery-settings#!envira-tab-debug' ); ?>"  class="button button-warning"><?php _e( 'View Support Information', 'envira-gallery' ); ?></a>
+							<a href="<?php echo admin_url( '/edit.php?post_type=envira&page=envira-gallery-settings#!envira-tab-debug' ); ?>"  class="button button-warning"><?php esc_html_e( 'View Support Information', 'envira-gallery' ); ?></a>
 						</div>
 					</div>
 
@@ -951,32 +1056,31 @@ class Support {
 						?>
 						<h2 class="title">Cache</h2>
 						<ul>
-						<li>Envira transients: <?php echo $this->total_envira_transients(); ?></li>
-						<li>All transients: <?php echo $total->total; ?></li>
-						<li>Expired transients: <?php echo $total->expired; ?></li>
-						<li>Never Expire transients: <?php echo $total->never_expire; ?></li>
+						<li>Envira transients: <?php echo esc_html( $this->total_envira_transients() ); ?></li>
+						<li>All transients: <?php echo esc_html( $total->total ); ?></li>
+						<li>Expired transients: <?php echo esc_html( $total->expired ); ?></li>
+						<li>Never Expire transients: <?php echo esc_html( $total->never_expire ); ?></li>
 						</ul>
 						<div style="display: inline-block; margin: 5px;">
 							<form action="" method="post">
 								<input type="hidden" name="action" value="flush-cache" />
-								<input type="submit" class="button button-primary" value="<?php _e( 'Flush All Envira Cache', 'envira-gallery' ); ?>" />
+								<input type="submit" class="button button-primary" value="<?php esc_html_e( 'Flush All Envira Cache', 'envira-gallery' ); ?>" />
 							</form>
 						</div>
 						<div style="display: inline-block; margin: 5px;">
 							<form action="" method="post">
 								<input type="hidden" name="action" value="clear-all" />
-								<input type="submit" class="button button-warning" value="<?php _e( 'Clear ALL Transients', 'envira-gallery' ); ?>" />
+								<input type="submit" class="button button-warning" value="<?php esc_html_e( 'Clear ALL Transients', 'envira-gallery' ); ?>" />
 							</form>
 						</div>
 						<div style="display: inline-block; margin: 5px;">
 							<?php
 								$gallery_on_or_off = $this->is_gallery_on_or_off();
-								$style_color       = $gallery_on_or_off == 'On' ? 'red' : '';
-								// echo '-'; echo get_option( 'eg_t_gallery_status' );
+								$style_color       = 'On' === $gallery_on_or_off ? 'red' : '';
 							?>
 							<form action="" method="post">
 								<input type="hidden" name="action" value="toggle-envira-gallery-transients" />
-								<input type="submit" class="button button-error" style="color: <?php echo $style_color; ?>" value="<?php _e( 'Turn Gallery Transients ' . $gallery_on_or_off, 'envira-gallery' ); ?>" />
+								<input type="submit" class="button button-error" style="color: <?php echo esc_html( $style_color ); ?>" value="<?php _e( 'Turn Gallery Transients ' . $gallery_on_or_off, 'envira-gallery' ); ?>" />
 							</form>
 						</div>
 						<?php
@@ -991,7 +1095,7 @@ class Support {
 							?>
 							<form action="" method="post">
 								<input type="hidden" name="action" value="toggle-envira-album-transients" />
-								<input type="submit" class="button button-warning" style="color: <?php echo $style_color; ?>" value="<?php _e( 'Turn Album Transients ' . $album_on_or_off, 'envira-gallery' ); ?>" />
+								<input type="submit" class="button button-warning" style="color: <?php echo esc_html( $style_color ); ?>" value="<?php _e( 'Turn Album Transients ' . $album_on_or_off, 'envira-gallery' ); ?>" />
 							</form>
 						</div>
 						<?php } ?>
@@ -1004,19 +1108,19 @@ class Support {
 
 						?>
 						<h2 class="title">Envira Options</h2>
-						<p>Current number of options: <?php echo sizeof( $envira_options ); ?></p></p>
+						<p>Current number of options: <?php echo count( $envira_options ); ?></p></p>
 						<blockquote>
 							<?php if ( ! empty( $envira_options ) ) { ?>
 							<ul>
 								<?php foreach ( $envira_options as $option ) { ?>
-									<li><?php echo $option->option_name; ?></li>
+									<li><?php echo esc_html( $option->option_name ); ?></li>
 								<?php } ?>
 							</ul>
 							<?php } ?>
 						</blockquote>
 						<form action="" method="post">
 							<input type="hidden" name="action" value="delete-options" />
-							<input type="submit" class="button button-primary" value="<?php _e( 'Clear Envira Specific Options', 'envira-gallery' ); ?>" />
+							<input type="submit" class="button button-primary" value="<?php esc_html_e( 'Clear Envira Specific Options', 'envira-gallery' ); ?>" />
 						</form>
 					</div>
 
@@ -1064,7 +1168,7 @@ class Support {
 						<p><small>This uses the API call for confirming license keys.</small></p>
 						<form action="" method="post">
 							<input type="hidden" name="action" value="test-api" />
-							<input type="submit" class="button button-primary" value="<?php _e( 'Test API', 'envira-gallery' ); ?>" />
+							<input type="submit" class="button button-primary" value="<?php esc_html_e( 'Test API', 'envira-gallery' ); ?>" />
 						</form>
 
 						<br/>
@@ -1084,14 +1188,12 @@ class Support {
 							<li>No Test Attempt Has Been Logged</li>
 							<?php } else { ?>
 							<li><?php echo date( DATE_RFC2822, $api_results['time_tested'] ); ?><br/>
-								<strong>RESPONSE CODE: </strong> <strong style="color: green; font-weight: 800;"><?php echo $api_results['response_code']; ?></strong></li>
+								<strong>RESPONSE CODE: </strong> <strong style="color: green; font-weight: 800;"><?php echo esc_html( $api_results['response_code'] ); ?></strong></li>
 							<?php } ?>
-							<?php // if ( $api_results['response_code'] != '200' ) { ?>
 							<li><strong>Response Code Response Body:</strong> <?php print_r( $api_results['response_body'] ); ?></li>
 							<li><strong>Response Code Response:</strong> 
 								<?php echo highlight_string( "<?php\n\$data =\n" . var_export( $api_results['response'], true ) . ";\n?>" ); ?>
 							</li>
-							<?php // } ?>
 						</ul>
 
 						
@@ -1234,8 +1336,8 @@ class Support {
 	 */
 	public function envira_debug_log() {
 
-		$toobig = apply_filters( 'debug_log_too_big', 5 );// how many MB throws a warning?
-		$latest = apply_filters( 'debug_log_latest_count', 15 );// sets the number of latest error lines
+		$toobig = apply_filters( 'debug_log_too_big', 5 ); // how many MB throws a warning?
+		$latest = apply_filters( 'debug_log_latest_count', 15 ); // sets the number of latest error lines.
 
 		if ( ! WP_DEBUG_LOG ) {
 			?>
@@ -1276,9 +1378,9 @@ class Support {
 
 		if ( ! isset( $_GET['loadanyhow'] ) ) {
 
-			$size = round( filesize( $path ) / pow( 1024, 2 ), 2 );// Can use MB_IN_BYTES but it would only work for 4.4 and up
+			$size = round( filesize( $path ) / pow( 1024, 2 ), 2 ); // Can use MB_IN_BYTES but it would only work for 4.4 and up.
 			if ( $size > $toobig ) {
-				echo '<div class="notice notice-warning"><p>Log is ' . $size . 'MB... Do you really want to load it here?</p><p><a href="' . $link . '&loadanyhow">Yes, load it anyhow.</a></p></div>';
+				echo '<div class="notice notice-warning"><p>Log is ' . esc_html( $size ) . 'MB... Do you really want to load it here?</p><p><a href="' . esc_url( $link ) . '&loadanyhow">Yes, load it anyhow.</a></p></div>';
 				$toobig = false;
 			}
 		}
@@ -1286,8 +1388,8 @@ class Support {
 		$nonce = wp_create_nonce( 'delete-log' );
 		?>
 		<div class="wrap">
-			<form action="<?php echo $link; ?>" method="post" style="position:fixed;">
-				<input type="hidden" name="delete-log" value="<?php echo $nonce; ?>">
+			<form action="<?php echo esc_url( $link ); ?>" method="post" style="position:fixed;">
+				<input type="hidden" name="delete-log" value="<?php echo esc_html( $nonce ); ?>">
 				<input type="submit" class="button button-primary" value="Delete Log">
 			</form>
 		<?php
@@ -1300,7 +1402,7 @@ class Support {
 
 			if ( $latest ) {
 				$lines = count( $log );
-				if ( $lines > 25 ) {// Avoid scrolling
+				if ( $lines > 25 ) {// Avoid scrolling.
 					echo '<h2>Latest Errors</h2>';
 					echo '<div style="font-family:monospace;word-wrap:break-word;">';
 					for ( $l = $lines - $latest; $l < $lines; ) {
@@ -1414,7 +1516,7 @@ class Support {
 		}
 
 		$admin_option = get_option( 'eg_admin_bar' );
-		$admin_bar    = ! empty( $admin_option ) && $admin_option == true ? true : false;
+		$admin_bar    = ! empty( $admin_option ) && true === $admin_option ? true : false;
 
 		if ( ! $admin_bar ) {
 			return;

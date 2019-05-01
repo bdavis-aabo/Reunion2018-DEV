@@ -5,7 +5,7 @@
  * Description: Enables album capabilities for Envira galleries.
  * Author:      Envira Gallery Team
  * Author URI:  https://enviragallery.com
- * Version:     1.6.6
+ * Version:     1.6.9
  * Text Domain: envira-albums
  * Domain Path: languages
  *
@@ -67,7 +67,7 @@ if ( ! class_exists( 'Envira_Albums' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '1.6.6';
+		public $version = '1.6.9';
 
 		/**
 		 * The name of the plugin.

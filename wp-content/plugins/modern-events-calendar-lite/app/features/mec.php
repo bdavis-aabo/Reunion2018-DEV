@@ -60,6 +60,7 @@ class MEC_feature_mec extends MEC_base
     public function init()
     {
         $this->factory->action('admin_menu', array($this, 'menus'));
+        $this->factory->action('admin_menu', array($this, 'support_menu'), 21);
         $this->factory->action('init', array($this, 'register_post_type'));
         $this->factory->action('add_meta_boxes', array($this, 'register_meta_boxes'), 1);
         
@@ -90,15 +91,119 @@ class MEC_feature_mec extends MEC_base
         $this->factory->action('mec_booking_completed', array($this->notifications, 'booking_notification'), 11);
         $this->factory->action('mec_booking_completed', array($this->notifications, 'admin_notification'), 12);
         $this->factory->action('mec_booking_confirmed', array($this->notifications, 'booking_confirmation'), 10);
-        $this->factory->action('save_post', array($this->notifications, 'new_event'), 50, 3);
+        $this->factory->action('mec_fes_added', array($this->notifications, 'new_event'), 50, 3);
         
         $this->page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'MEC-settings';
         
         // MEC Post Type Name
         $this->PT = $this->main->get_main_post_type();
 
-        // Disable Gutenberg
+        // Disable Block Editor
         $this->factory->filter('gutenberg_can_edit_post_type', array($this, 'gutenberg'), 10, 2);
+        $this->factory->filter('use_block_editor_for_post_type', array($this, 'gutenberg'), 10, 2);
+
+        // Export Settings
+        $this->factory->action('wp_ajax_download_settings', array($this, 'download_settings'));
+        $this->factory->action('wp_ajax_nopriv_download_settings', array($this, 'download_settings'));
+
+        // Import Settings
+        $this->factory->action('wp_ajax_import_settings', array($this, 'import_settings'));
+        $this->factory->action('wp_ajax_nopriv_import_settings', array($this, 'import_settings'));
+
+        // License Activation
+        $this->factory->action('wp_ajax_activate_license', array($this, 'activate_license'));
+        $this->factory->action('wp_ajax_nopriv_activate_license', array($this, 'activate_license'));
+
+        // Scheduler Cronjob
+        $schedule = $this->getSchedule();
+        $this->factory->action('mec_scheduler', array($schedule, 'cron'));
+    }
+
+    /* Activate License */
+    public function activate_license()
+    {
+        if(!wp_verify_nonce($_REQUEST['nonce'], 'mec_settings_nonce'))
+        {
+            exit();
+        }
+
+        $options = get_option('mec_options');
+
+        $options['product_name'] = $_REQUEST['content']['LicenseTypeJson'];
+        $options['purchase_code'] = $_REQUEST['content']['PurchaseCodeJson'];
+        update_option( 'mec_options' , $options);
+
+        $verify = NULL;
+        if($this->getPRO())
+        {
+            $envato = $this->getEnvato();
+            $verify = $envato->get_MEC_info('dl');
+        }
+
+        if(!is_null($verify))
+        {
+            $LicenseStatus = 'success';
+        }
+        else 
+        {
+            $LicenseStatus = __('Activation faild. Please check your purchase code or license type.<br><b>Note: Your purchase code should match your licesne type.</b>' , 'modern-events-calendar-lite') . '<a style="text-decoration: underline; padding-left: 7px;" href="https://webnus.ticksy.com/article/14445/" target="_blank">'  . __('Troubleshooting' , 'modern-events-calendar-lite') . '</a>';
+        }
+
+        echo $LicenseStatus;
+        wp_die();
+    }
+    
+
+    /* Download MEC settings */
+    public function download_settings()
+    {
+        if(!wp_verify_nonce( $_REQUEST['nonce'], 'mec_settings_download'))
+        {
+            exit();
+        }
+
+        $content = get_option('mec_options');
+        $content = json_encode($content, true);
+
+        header('Content-type: application/txt');
+        header('Content-Description: MEC Settings');
+        header('Content-Disposition: attachment; filename="mec_options_backup_' . date( 'd-m-Y' ) . '.json"');
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
+        print_r($content);
+        wp_die();
+    }
+
+    /* Download MEC settings */
+    public function import_settings()
+    {
+        if(!wp_verify_nonce( $_REQUEST['nonce'], 'mec_settings_nonce'))
+        {
+            exit();
+        }
+
+        $options = $_REQUEST['content'];
+        if($options == 'No-JSON')
+        {
+            echo '<div class="mec-message-import-error">' . esc_html__('Your options is not in JSON format. Please insert correct options in this field and try again.' , 'modern-events-calendar-lite') . '</div>';
+            exit();
+        }
+        else
+        {
+            if(empty($options))
+            {
+                echo '<div class="mec-message-import-error">' . esc_html__('Your options field can not be empty!' , 'modern-events-calendar-lite') . '</div>';
+                exit;
+            }
+            else
+            {
+                update_option('mec_options' , $options);
+                echo '<div class="mec-message-import-success">' . esc_html__('Your options imported successfuly.', 'modern-events-calendar-lite') . '</div>';
+            }
+        }
+
+        wp_die();
     }
 
     /**
@@ -182,6 +287,15 @@ class MEC_feature_mec extends MEC_base
     }
 
     /**
+     * Add the support menu
+     * @author Webnus <info@webnus.biz>
+     */
+    public function support_menu()
+    {
+        add_submenu_page('mec-intro', __('MEC - Support', 'modern-events-calendar-lite'), __('Support', 'modern-events-calendar-lite'), 'manage_options', 'MEC-support', array($this, 'support_page'));
+    }
+
+    /**
      * Add the calendars menu
      * @author Webnus <info@webnus.biz>
      */
@@ -192,6 +306,7 @@ class MEC_feature_mec extends MEC_base
         
         remove_menu_page('edit.php?post_type=mec-events');
         remove_menu_page('edit.php?post_type=mec_calendars');
+        do_action('before_mec_submenu_action');
         
         add_submenu_page('mec-intro', __('Add Event', 'modern-events-calendar-lite'), __('Add Event', 'modern-events-calendar-lite'), 'edit_posts', 'post-new.php?post_type='.$this->PT);
         add_submenu_page('mec-intro', __('Tags', 'modern-events-calendar-lite'), __('Tags', 'modern-events-calendar-lite'), 'edit_others_posts', 'edit-tags.php?taxonomy=post_tag&post_type='.$this->PT);
@@ -208,6 +323,9 @@ class MEC_feature_mec extends MEC_base
 
         add_submenu_page('mec-intro', __('Shortcodes', 'modern-events-calendar-lite'), __('Shortcodes', 'modern-events-calendar-lite'), 'edit_others_posts', 'edit.php?post_type=mec_calendars');
         add_submenu_page('mec-intro', __('MEC - Settings', 'modern-events-calendar-lite'), __('Settings', 'modern-events-calendar-lite'), 'manage_options', 'MEC-settings', array($this, 'page'));
+        add_submenu_page('mec-intro', __('MEC - Addons', 'modern-events-calendar-lite'), __('Addons', 'modern-events-calendar-lite'), 'manage_options', 'MEC-addons', array($this, 'addons'));
+
+        do_action('after_mec_submenu_action');
     }
     
     /**
@@ -240,6 +358,7 @@ class MEC_feature_mec extends MEC_base
                 'supports'=>array('title')
             )
         );
+        do_action('mec_register_post_type');
     }
     
     /**
@@ -395,6 +514,52 @@ class MEC_feature_mec extends MEC_base
         include $path;
         echo $output = ob_get_clean();
     }
+
+    /**
+     * Get Addons page
+     * @author Webnus <info@webnus.biz>
+     * @return void
+     */
+    public function addons()
+    {
+        $this->display_addons();
+    }
+
+    /**
+     * Show Addons page
+     * @author Webnus <info@webnus.biz>
+     * @return void
+     */
+    public function display_addons()
+    {
+        $path = MEC::import('app.features.mec.addons', true, true);
+        ob_start();
+        include $path;
+        echo $output = ob_get_clean();
+    }
+
+    /**
+     * Show support page
+     * @author Webnus <info@webnus.biz>
+     * @return void
+     */
+    public function display_support()
+    {
+        $path = MEC::import('app.features.mec.support-page', true, true);
+        ob_start();
+        include $path;
+        echo $output = ob_get_clean();
+    }
+
+    /**
+     * support page
+     * @author Webnus <info@webnus.biz>
+     * @return void
+     */
+    public function support_page()
+    {
+        $this->display_support();
+    }
     
     /**
      * Show content settings menu
@@ -406,7 +571,8 @@ class MEC_feature_mec extends MEC_base
         $tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'MEC-settings';
         
         if($tab == 'MEC-customcss') $this->styles();
-        elseif($tab == 'MEC-support') $this->support();
+        elseif($tab == 'MEC-ie') $this->import_export();
+        //elseif($tab == 'MEC-support') $this->support();
         elseif($tab == 'MEC-reg-form') $this->regform();
         elseif($tab == 'MEC-gateways') $this->gateways();
         elseif($tab == 'MEC-notifications') $this->notifications();
@@ -456,20 +622,34 @@ class MEC_feature_mec extends MEC_base
         include $path;
         echo $output = ob_get_clean();
     }
+
+    /**
+     * Show content of import/export tab
+     * @author Webnus <info@webnus.biz>
+     * @return void
+     */
+    public function import_export()
+    {
+        $path = MEC::import('app.features.mec.ie', true, true);
+
+        ob_start();
+        include $path;
+        echo $output = ob_get_clean();
+    }
     
     /**
      * Show content of support tab
      * @author Webnus <info@webnus.biz>
      * @return void
      */
-    public function support()
-    {
-        $path = MEC::import('app.features.mec.support', true, true);
+    // public function support()
+    // {
+    //     $path = MEC::import('app.features.mec.support', true, true);
         
-        ob_start();
-        include $path;
-        echo $output = ob_get_clean();
-    }
+    //     ob_start();
+    //     include $path;
+    //     echo $output = ob_get_clean();
+    // }
     
     /**
      * Show content of registration form tab
@@ -479,7 +659,7 @@ class MEC_feature_mec extends MEC_base
     public function regform()
     {
         $path = MEC::import('app.features.mec.regform', true, true);
-        
+
         ob_start();
         include $path;
         echo $output = ob_get_clean();
@@ -561,20 +741,34 @@ class MEC_feature_mec extends MEC_base
      * @param int $value
      * @return string
      */
-    public function sed_method_field($skin, $value = 0)
+    public function sed_method_field($skin, $value = 0, $image_popup = 0)
     {
-        return '<div class="mec-form-row">
+        $image_popup_html = '
+            <div class="mec-form-row mec-image-popup-wrap mec-switcher">
+                <div class="mec-col-4">
+                    <label for="mec_skin_'.$skin.'_image_popup">'.__('Display content\'s images as Popup', 'modern-events-calendar-lite').'</label>
+                </div>
+                <div class="mec-col-4">
+                    <input type="hidden" name="mec[sk-options]['.$skin.'][image_popup]" value="0" />
+                    <input type="checkbox" name="mec[sk-options]['.$skin.'][image_popup]" id="mec_skin_'.$skin.'_image_popup" value="1"
+                ';
+                if( $image_popup == 1 ) $image_popup_html .= 'checked="checked"'; 
+                $image_popup_html .= '/><label for="mec_skin_'.$skin.'_image_popup"></label>
+                </div>
+            </div>
+        ';
+        return '<div class="mec-form-row mec-sed-method-wrap">
             <div class="mec-col-4">
                 <label for="mec_skin_'.$skin.'_sed_method">'.__('Single Event Display Method', 'modern-events-calendar-lite').'</label>
             </div>
             <div class="mec-col-4">
-                <input type="hidden" name="mec[sk-options]['.$skin.'][sed_method]" value="0" id="mec_skin_'.$skin.'_sed_method_field" />
+                <input type="hidden" name="mec[sk-options]['.$skin.'][sed_method]" value="'.$value.'" id="mec_skin_'.$skin.'_sed_method_field" />
                 <ul class="mec-sed-methods" data-for="#mec_skin_'.$skin.'_sed_method_field">
                     <li data-method="0" class="'.(!$value ? 'active' : '').'">'.__('Separate Window', 'modern-events-calendar-lite').'</li>
                     <li data-method="m1" class="'.($value === 'm1' ? 'active' : '').'">'.__('Modal 1', 'modern-events-calendar-lite').'</li>
                 </ul>
             </div>
-        </div>';
+        </div>' . $image_popup_html;
     }
 
     /**

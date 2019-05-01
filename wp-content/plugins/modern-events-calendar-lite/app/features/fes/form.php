@@ -18,6 +18,7 @@ jQuery(document).ready(function()
         jQuery("#mec_fes_form").addClass("mec-fes-loading");
         jQuery(".mec-fes-form-cntt").hide();
         jQuery(".mec-fes-form-sdbr").hide();
+        jQuery(".mec-fes-submit-wide").hide();
 
         
         // Fix WordPress editor issue
@@ -40,6 +41,7 @@ jQuery(document).ready(function()
                 jQuery("#mec_fes_form").removeClass("mec-fes-loading");
                 jQuery(".mec-fes-form-cntt").show();
                 jQuery(".mec-fes-form-sdbr").show();
+                jQuery(".mec-fes-submit-wide").show();
                 
                 if(response.success == "1")
                 {
@@ -312,7 +314,7 @@ $this->factory->params('footer', $javascript);
                     <div class="mec-form-row">
                         <div class="mec-col-4">
                             <input type="text" class="" name="mec[date][comment]" id="mec_comment" placeholder="<?php _e('Time Comment', 'modern-events-calendar-lite'); ?>" value="<?php echo esc_attr($comment); ?>" />
-                            <p class="description"><?php _e('It shows next to event time on calendar. You can insert Timezone etc. in this field.', 'modern-events-calendar-lite'); ?></p>
+                            <p class="description"><?php _e('It shows next to event time on single event page. You can insert Timezone etc. in this field.', 'modern-events-calendar-lite'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -350,8 +352,9 @@ $this->factory->params('footer', $javascript);
                         </div>
                         <div class="mec-form-row" id="mec_exceptions_in_days_container">
                             <div class="mec-form-row">
-                                <div class="mec-col-4">
-                                    <input type="text" id="mec_exceptions_in_days_date" value="" placeholder="<?php _e('Date', 'modern-events-calendar-lite'); ?>" class="mec_date_picker" />
+                                <div class="mec-col-6">
+                                    <input type="text" id="mec_exceptions_in_days_start_date" value="" placeholder="<?php _e('Start', 'modern-events-calendar-lite'); ?>" class="mec_date_picker" />
+                                    <input type="text" id="mec_exceptions_in_days_end_date" value="" placeholder="<?php _e('End', 'modern-events-calendar-lite'); ?>" class="mec_date_picker" />
                                     <button class="button" type="button" id="mec_add_in_days"><?php _e('Add', 'modern-events-calendar-lite'); ?></button>
                                     <p class="description"><?php _e('Add certain days to event occurrence dates.', 'modern-events-calendar-lite'); ?></p>
                                 </div>
@@ -360,7 +363,7 @@ $this->factory->params('footer', $javascript);
                                 <?php $i = 1; foreach($in_days as $in_day): ?>
                                 <div class="mec-form-row" id="mec_in_days_row<?php echo $i; ?>">
                                     <input type="hidden" name="mec[in_days][<?php echo $i; ?>]" value="<?php echo $in_day; ?>" />
-                                    <span class="mec-in-days-day"><?php echo $in_day; ?></span>
+                                    <span class="mec-in-days-day"><?php echo str_replace(':', ' - ', $in_day); ?></span>
                                     <span class="mec-in-days-remove" onclick="mec_in_days_remove(<?php echo $i; ?>);">x</span>
                                 </div>
                                 <?php $i++; endforeach; ?>
@@ -369,32 +372,34 @@ $this->factory->params('footer', $javascript);
                             <div class="mec-util-hidden" id="mec_new_in_days_raw">
                                 <div class="mec-form-row" id="mec_in_days_row:i:">
                                     <input type="hidden" name="mec[in_days][:i:]" value=":val:" />
-                                    <span class="mec-in-days-day">:val:</span>
+                                    <span class="mec-in-days-day">:label:</span>
                                     <span class="mec-in-days-remove" onclick="mec_in_days_remove(:i:);">x</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="mec-form-row">
-                            <label for="mec_repeat_ends_never"><h5 class="mec-title"><?php _e('Ends Repeat', 'modern-events-calendar-lite'); ?></h5></label>
-                        </div>
-                        <div class="mec-form-row">
-                            <input <?php if($mec_repeat_end == 'never') echo 'checked="checked"'; ?> type="radio" value="never" name="mec[date][repeat][end]" id="mec_repeat_ends_never" />
-                            <label for="mec_repeat_ends_never"><?php _e('Never', 'modern-events-calendar-lite'); ?></label>
-                        </div>
-                        <div class="mec-form-row">  
-                            <div class="mec-col-3">
-                                <input <?php if($mec_repeat_end == 'date') echo 'checked="checked"'; ?> type="radio" value="date" name="mec[date][repeat][end]" id="mec_repeat_ends_date" />
-                                <label for="mec_repeat_ends_date"><?php _e('On', 'modern-events-calendar-lite'); ?></label>
+                        <div id="mec_end_wrapper">
+                            <div class="mec-form-row">
+                                <label for="mec_repeat_ends_never"><h5 class="mec-title"><?php _e('Ends Repeat', 'modern-events-calendar-lite'); ?></h5></label>
                             </div>
-                            <input class="mec-col-2" type="text" name="mec[date][repeat][end_at_date]" id="mec_date_repeat_end_at_date" value="<?php echo esc_attr($repeat_end_at_date); ?>" />
-                        </div>
-                        <div class="mec-form-row">
-                            <div class="mec-col-3">
-                                <input <?php if($mec_repeat_end == 'occurrences') echo 'checked="checked"'; ?> type="radio" value="occurrences" name="mec[date][repeat][end]" id="mec_repeat_ends_occurrences" />
-                                <label for="mec_repeat_ends_occurrences"><?php _e('After', 'modern-events-calendar-lite'); ?></label>
+                            <div class="mec-form-row">
+                                <input <?php if($mec_repeat_end == 'never') echo 'checked="checked"'; ?> type="radio" value="never" name="mec[date][repeat][end]" id="mec_repeat_ends_never" />
+                                <label for="mec_repeat_ends_never"><?php _e('Never', 'modern-events-calendar-lite'); ?></label>
                             </div>
-                            <input class="mec-col-2" type="text" name="mec[date][repeat][end_at_occurrences]" id="mec_date_repeat_end_at_occurrences" placeholder="<?php _e('Occurrences times', 'modern-events-calendar-lite'); ?>"  value="<?php echo esc_attr(($repeat_end_at_occurrences+1)); ?>" />
-                            <a class="mec-tooltip" title="<?php esc_attr_e('The event will finish after certain repeats. For example if you set it to 10, the event will finish after 10 repeats.', 'modern-events-calendar-lite'); ?>"><i title="" class="dashicons-before dashicons-editor-help"></i></a>
+                            <div class="mec-form-row">
+                                <div class="mec-col-3">
+                                    <input <?php if($mec_repeat_end == 'date') echo 'checked="checked"'; ?> type="radio" value="date" name="mec[date][repeat][end]" id="mec_repeat_ends_date" />
+                                    <label for="mec_repeat_ends_date"><?php _e('On', 'modern-events-calendar-lite'); ?></label>
+                                </div>
+                                <input class="mec-col-2" type="text" name="mec[date][repeat][end_at_date]" id="mec_date_repeat_end_at_date" value="<?php echo esc_attr($repeat_end_at_date); ?>" />
+                            </div>
+                            <div class="mec-form-row">
+                                <div class="mec-col-3">
+                                    <input <?php if($mec_repeat_end == 'occurrences') echo 'checked="checked"'; ?> type="radio" value="occurrences" name="mec[date][repeat][end]" id="mec_repeat_ends_occurrences" />
+                                    <label for="mec_repeat_ends_occurrences"><?php _e('After', 'modern-events-calendar-lite'); ?></label>
+                                </div>
+                                <input class="mec-col-2" type="text" name="mec[date][repeat][end_at_occurrences]" id="mec_date_repeat_end_at_occurrences" placeholder="<?php _e('Occurrences times', 'modern-events-calendar-lite'); ?>"  value="<?php echo esc_attr(($repeat_end_at_occurrences+1)); ?>" />
+                                <a class="mec-tooltip" title="<?php esc_attr_e('The event will finish after certain repeats. For example if you set it to 10, the event will finish after 10 repeats.', 'modern-events-calendar-lite'); ?>"><i title="" class="dashicons-before dashicons-editor-help"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -411,16 +416,6 @@ $this->factory->params('footer', $javascript);
             </div>
             <?php endif; ?>
             
-            <div class="mec-form-row mec-fes-submit-wide">
-                <?php if($this->main->get_recaptcha_status('fes')): ?><div class="mec-form-row mec-google-recaptcha"><div class="g-recaptcha" data-sitekey="<?php echo $this->settings['google_recaptcha_sitekey']; ?>"></div></div><?php endif; ?>
-                <button class="mec-fes-sub-button" type="submit"><?php _e('Submit', 'modern-events-calendar-lite'); ?></button>
-                <div class="mec-util-hidden">
-                    <input type="hidden" name="mec[post_id]" value="<?php echo $post_id; ?>" id="mec_fes_post_id" class="mec-fes-post-id" />
-                    <input type="hidden" name="action" value="mec_fes_form" />
-                    <?php wp_nonce_field('mec_fes_form'); ?>
-                </div>
-            </div>
-            <div class="mec-util-hidden" id="mec_fes_form_message"></div>
         </div>
         
         <div class="mec-fes-form-sdbr">
@@ -620,17 +615,16 @@ $this->factory->params('footer', $javascript);
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
-
-            <div class="mec-form-row mec-fes-submit-mobile">
-                <?php if($this->main->get_recaptcha_status('fes')): ?><div class="mec-form-row mec-google-recaptcha"><div class="g-recaptcha" data-sitekey="<?php echo $this->settings['google_recaptcha_sitekey']; ?>"></div></div><?php endif; ?>
-                <button class="mec-fes-sub-button" type="submit"><?php _e('Submit', 'modern-events-calendar-lite'); ?></button>
-                <div class="mec-util-hidden">
-                    <input type="hidden" name="mec[post_id]" value="<?php echo $post_id; ?>" id="mec_fes_post_id" class="mec-fes-post-id" />
-                    <input type="hidden" name="action" value="mec_fes_form" />
-                    <?php wp_nonce_field('mec_fes_form'); ?>
-                </div>
-            </div>
-            <div class="mec-util-hidden" id="mec_fes_form_message"></div>
         </div>
+        <div class="mec-form-row mec-fes-submit-wide">
+            <?php if($this->main->get_recaptcha_status('fes')): ?><div class="mec-form-row mec-google-recaptcha"><div class="g-recaptcha" data-sitekey="<?php echo $this->settings['google_recaptcha_sitekey']; ?>"></div></div><?php endif; ?>
+            <button class="mec-fes-sub-button" type="submit"><?php _e('Submit', 'modern-events-calendar-lite'); ?></button>
+            <div class="mec-util-hidden">
+                <input type="hidden" name="mec[post_id]" value="<?php echo $post_id; ?>" id="mec_fes_post_id" class="mec-fes-post-id" />
+                <input type="hidden" name="action" value="mec_fes_form" />
+                <?php wp_nonce_field('mec_fes_form'); ?>
+            </div>
+        </div>
+        <div class="mec-util-hidden" id="mec_fes_form_message"></div>
     </form>
 </div>

@@ -1,6 +1,6 @@
 // MEC Single Event Displayer
 var mecSingleEventDisplayer = {
-    getSinglePage: function(id, occurrence, ajaxurl, layout)
+    getSinglePage: function(id, occurrence, ajaxurl, layout,image_popup)
     {
         if(jQuery('.mec-modal-result').length === 0) jQuery('.mec-wrap').append('<div class="mec-modal-result"></div>');
         jQuery('.mec-modal-result').addClass('mec-modal-preloader');
@@ -13,7 +13,15 @@ var mecSingleEventDisplayer = {
             success: function(response)
             {
                 jQuery('.mec-modal-result').removeClass("mec-modal-preloader");
-                lity(response);
+                lity(jQuery.parseHTML(response));
+                if (image_popup != 0) {
+                    if (jQuery('.lity-content .mec-events-content a img').length > 0) {
+                        jQuery('.lity-content .mec-events-content a img').each(function () {
+                            jQuery(this).closest('a').attr('data-lity', '');
+                        });
+                    }
+                }
+                
             },
             error: function()
             {
@@ -53,6 +61,15 @@ var mecSingleEventDisplayer = {
         {
             search();
         });
+
+        $("#mec_sf_speaker_" + settings.id).on('change', function (e) {
+            search();
+        });
+
+        $("#mec_sf_tag_" + settings.id).on('change', function (e) {
+            search();
+        });
+
         
         $("#mec_sf_label_"+settings.id).on('change', function(e)
         {
@@ -83,6 +100,8 @@ var mecSingleEventDisplayer = {
             var category = $("#mec_sf_category_"+settings.id).length ? $("#mec_sf_category_"+settings.id).val() : '';
             var location = $("#mec_sf_location_"+settings.id).length ? $("#mec_sf_location_"+settings.id).val() : '';
             var organizer = $("#mec_sf_organizer_"+settings.id).length ? $("#mec_sf_organizer_"+settings.id).val() : '';
+            var speaker = $("#mec_sf_speaker_"+settings.id).length ? $("#mec_sf_speaker_"+settings.id).val() : '';
+            var tag = $("#mec_sf_tag_"+settings.id).length ? $("#mec_sf_tag_"+settings.id).val() : '';
             var label = $("#mec_sf_label_"+settings.id).length ? $("#mec_sf_label_"+settings.id).val() : '';
             var month = $("#mec_sf_month_"+settings.id).length ? $("#mec_sf_month_"+settings.id).val() : '';
             var year = $("#mec_sf_year_"+settings.id).length ? $("#mec_sf_year_"+settings.id).val() : '';
@@ -96,8 +115,7 @@ var mecSingleEventDisplayer = {
                 month = '';
                 year = '';
             }
-            
-            var atts = settings.atts+'&sf[s]='+s+'&sf[month]='+month+'&sf[year]='+year+'&sf[category]='+category+'&sf[location]='+location+'&sf[organizer]='+organizer+'&sf[label]='+label;
+            var atts = settings.atts+'&sf[s]='+s+'&sf[month]='+month+'&sf[year]='+year+'&sf[category]='+category+'&sf[location]='+location+'&sf[organizer]='+organizer+'&sf[speaker]='+speaker+'&sf[tag]='+tag+'&sf[label]='+label;
             settings.callback(atts);
         }
     };
@@ -704,7 +722,7 @@ var mecSingleEventDisplayer = {
 
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
 
@@ -976,6 +994,8 @@ var mecSingleEventDisplayer = {
                 $('#mec_monthly_view_month_'+settings.id+'_'+month_id+' .mec-calendar-events-sec:not([data-mec-cell=' + data_mec_cell + '])').slideUp();
                 $('#mec_monthly_view_month_'+settings.id+'_'+month_id+' .mec-calendar-events-sec[data-mec-cell=' + data_mec_cell + ']').slideDown();
             });
+
+            mec_tooltip();
             
             // Single Event Method
             if(settings.sed_method != '0')
@@ -985,10 +1005,13 @@ var mecSingleEventDisplayer = {
 
             if (settings.style == 'novel')
             {
-                $('.mec-single-event-novel').colourBrightness();
-                $('.mec-single-event-novel').each(function () {
-                    $(this).colourBrightness()
-                });
+                if ($('.mec-single-event-novel').length > 0)
+                {
+                    $('.mec-single-event-novel').colourBrightness();
+                    $('.mec-single-event-novel').each(function () {
+                        $(this).colourBrightness()
+                    });
+                }
             }
         }
         
@@ -1002,8 +1025,22 @@ var mecSingleEventDisplayer = {
 
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
+           
+        }
+
+        function mec_tooltip()
+        {
+            if ($('.mec-monthly-tooltip').length > 1) {
+                $('.mec-monthly-tooltip').tooltipster({
+                    theme: 'tooltipster-shadow',
+                    interactive: true,
+                    delay: 100,
+                    minWidth: 350,
+                    maxWidth: 350,
+                });
+            }
         }
     };
 
@@ -1271,7 +1308,7 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
     };
@@ -1399,9 +1436,11 @@ var mecSingleEventDisplayer = {
             var owl = $("#mec-owl-calendar-d-table-"+settings.id+"-"+month_id);
             owl.owlCarousel(
             {
-                items : 22, //22 items above 1000px browser width
                 responsiveClass: true,
                 responsive: {
+                    0: {
+                        items: 2,
+                    },
                     479: {
                         items: 4,
                     },
@@ -1413,6 +1452,9 @@ var mecSingleEventDisplayer = {
                     },
                     1000: {
                         items: 19,
+                    },
+                    1200: {
+                        items: 22,
                     }
                 },
                 dots: false,
@@ -1569,7 +1611,7 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
     };
@@ -1862,7 +1904,7 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
     };
@@ -1882,7 +1924,7 @@ var mecSingleEventDisplayer = {
             sf: {}
         }, options);
 
-        console.log(settings);
+        //console.log(settings);
 
         // Set Listeners
         setListeners();
@@ -1907,7 +1949,7 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
     };
@@ -1941,7 +1983,6 @@ var mecSingleEventDisplayer = {
         });
         function initMasonry()
         {
-            console.log()
             var $container = $("#mec_skin_"+settings.id+" .mec-event-masonry");
             var $grid = $container.isotope({
                 filter: '*',
@@ -1956,8 +1997,12 @@ var mecSingleEventDisplayer = {
                     queue: false
                 }
             });
-            console.log(settings.masonry_like_grid);
             if (settings.masonry_like_grid == 1) $grid.isotope({ sortBy: 'date' });
+
+            // Fix Elementor tab
+            $('.elementor-tabs').find('.elementor-tab-title').click(function(){
+                $grid.isotope({ sortBy: 'date' });
+            });
 
             $("#mec_skin_"+settings.id+" .mec-events-masonry-cats a").click(function()
             {
@@ -2014,10 +2059,18 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
     };
+
+    if (typeof (MEC_WIDGET_NAME) != "undefined" ) {
+        jQuery(window).on('elementor/frontend/init', function () {
+            elementorFrontend.hooks.addAction('frontend/element_ready/' + MEC_WIDGET_NAME +'.default', function() {
+                initMasonry();
+            });
+        });
+    }
 
 }(jQuery));
 
@@ -2161,7 +2214,17 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
+            });
+            $("#mec_skin_"+settings.id+" .mec-event-image a img").off('click').on('click', function(e)
+            {
+                e.preventDefault();
+                var href = $(this).parent().attr('href');
+
+                var id = $(this).parent().data('event-id');
+                var occurrence = get_parameter_by_name('occurrence', href);
+
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
         
@@ -2358,7 +2421,17 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
+            });
+            $("#mec_skin_"+settings.id+" .mec-event-image a img").off('click').on('click', function(e)
+            {
+                e.preventDefault();
+                var href = $(this).parent().attr('href');
+
+                var id = $(this).parent().data('event-id');
+                var occurrence = get_parameter_by_name('occurrence', href);
+
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
         
@@ -2537,7 +2610,7 @@ var mecSingleEventDisplayer = {
                 var id = $(this).data('event-id');
                 var occurrence = get_parameter_by_name('occurrence', href);
 
-                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method);
+                mecSingleEventDisplayer.getSinglePage(id, occurrence, settings.ajax_url, settings.sed_method, settings.image_popup);
             });
         }
 
@@ -2716,6 +2789,40 @@ var mecSingleEventDisplayer = {
                     rtl: owl_rtl,
                 });
                 owl.bind(
+                    "mouseleave",
+                    function (event) {
+                        $("#mec_skin_" + settings.id + " .mec-owl-carousel").trigger('play.owl.autoplay');
+                    }
+                );
+            }
+            else if (settings.style === 'type4')
+            {
+                $("#mec_skin_" + settings.id + " .mec-owl-carousel").owlCarousel(
+                    {
+                        autoplay: true,
+                        loop: true,
+                        autoplayTimeout: settings.autoplay,
+                        items: settings.items,
+                        dots: false,
+                        nav: true,
+                        responsiveClass: true,
+                        responsive: {
+                            0: {
+                                items: 1,
+                                stagePadding: 50,
+                            },
+                            979: {
+                                items: 2,
+                            },
+                            1199: {
+                                items: settings.count,
+                            }
+                        },
+                        autoplayHoverPause: true,
+                        navText: ["<i class='mec-sl-arrow-left'></i>", " <i class='mec-sl-arrow-right'></i>"],
+                        rtl: owl_rtl,
+                    });
+                $("#mec_skin_" + settings.id + " .mec-owl-carousel").bind(
                     "mouseleave",
                     function (event) {
                         $("#mec_skin_" + settings.id + " .mec-owl-carousel").trigger('play.owl.autoplay');
@@ -2981,7 +3088,7 @@ function get_parameter_by_name(name, url)
         });
 
         // Register Booking Smooth Scroll
-        $('a[href="#mec-events-meta-group-booking"]').click(function()
+        $('a.simple-booking[href^="#mec-events-meta-group-booking"]').click(function()
         {
             if(location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname)
             {
@@ -3001,5 +3108,17 @@ function get_parameter_by_name(name, url)
                 }
             }
         });
+
+        // Load Information widget under title in mobile/tablet
+        if ($('.single-mec-events .mec-single-event:not(".mec-single-modern")').length > 0) {
+            if ($('.single-mec-events .mec-event-info-desktop.mec-event-meta.mec-color-before.mec-frontbox').length > 0) {
+                var html = $('.single-mec-events .mec-event-info-desktop.mec-event-meta.mec-color-before.mec-frontbox')[0].outerHTML;
+                if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) < 960) {
+                    $('.single-mec-events .col-md-4 .mec-event-info-desktop.mec-event-meta.mec-color-before.mec-frontbox').remove();
+                    $('.single-mec-events .mec-event-info-mobile').html(html)
+                }
+            }
+        }
+
     });
 })(jQuery);

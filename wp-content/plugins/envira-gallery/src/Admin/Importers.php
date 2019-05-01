@@ -7,6 +7,7 @@
  * @package Envira Gallery
  * @author  Envira Gallery Team <support@enviragallery.com>
  */
+
 namespace Envira\Admin;
 
  // Exit if accessed directly.
@@ -14,6 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Importers class.
+ *
+ * @since 1.7.0
+ *
+ * @package Envira Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
+ */
 class Importers {
 
 	/**
@@ -107,9 +116,9 @@ class Importers {
 		wp_enqueue_style( ENVIRA_SLUG . '-importers-style' );
 		wp_enqueue_style( ENVIRA_SLUG . '-select2' );
 
-		$active_section = isset( $_GET['section'] ) ? sanitize_text_field( $_GET['section'] ) : 'general';
+		$active_section = isset( $_GET['section'] ) ? sanitize_text_field( wp_unslash( $_GET['section'] ) ) : 'general';
 
-		if ( $active_section === 'general' ) {
+		if ( 'general' === $active_section ) {
 
 			// Run a hook to load in custom scripts.
 			do_action( 'envira_importers_styles' );
@@ -137,8 +146,8 @@ class Importers {
 		wp_register_script( ENVIRA_SLUG . '-importers-script', plugins_url( 'assets/js/min/importer-min.js', ENVIRA_FILE ), array( 'jquery', 'jquery-ui-tabs' ), ENVIRA_VERSION, true );
 		wp_enqueue_script( ENVIRA_SLUG . '-importers-script' );
 
-		$active_section = isset( $_GET['section'] ) ? sanitize_text_field( $_GET['section'] ) : 'general';
-		if ( $active_section === 'general' ) {
+		$active_section = isset( $_GET['section'] ) ? sanitize_text_field( wp_unslash( $_GET['section'] ) ) : 'general';
+		if ( 'general' === $active_section ) {
 			// Run a hook to load in custom scripts.
 			do_action( 'envira_importers_scripts' );
 
@@ -157,22 +166,22 @@ class Importers {
 	public function import_page() {
 
 		$importers      = envira_get_importers();
-		$active_section = isset( $_GET['section'] ) ? sanitize_text_field( $_GET['section'] ) : 'general';
+		$active_section = isset( $_GET['section'] ) ? sanitize_text_field( wp_unslash( $_GET['section'] ) ) : 'general';
 
 		do_action( 'envira_head' );
 
 		?>
 
-		<?php if ( $active_section === 'general' ) : ?>
+		<?php if ( 'general' === $active_section ) : ?>
 
 		<div id="importer-heading" class="subheading clearfix">
-			<h2><?php _e( 'Envira Gallery Importers', 'envira-gallery' ); ?></h2>
+			<h2><?php esc_html_e( 'Envira Gallery Importers', 'envira-gallery' ); ?></h2>
 			<form id="add-on-search">
 				<span class="spinner"></span>
-				<input id="add-on-searchbox" name="envira-addon-search" value="" placeholder="<?php _e( 'Search Envira Addons', 'envira-gallery' ); ?>" />
+				<input id="add-on-searchbox" name="envira-addon-search" value="" placeholder="<?php esc_html_e( 'Search Envira Addons', 'envira-gallery' ); ?>" />
 				<select id="envira-filter-select">
-					<option value="asc"><?php _e( 'Sort Ascending (A-Z)', 'envira-gallery' ); ?></option>
-					<option value="desc"><?php _e( 'Sort Descending (Z-A)', 'envira-gallery' ); ?></option>
+					<option value="asc"><?php esc_html_e( 'Sort Ascending (A-Z)', 'envira-gallery' ); ?></option>
+					<option value="desc"><?php esc_html_e( 'Sort Descending (Z-A)', 'envira-gallery' ); ?></option>
 				</select>
 			</form>
 		</div>
@@ -195,11 +204,11 @@ class Importers {
 
 						 <div class="envira-importer-content">
 
-							 <h3 class="envira-importer-title"><?php echo $info['title']; ?></h3>
+							 <h3 class="envira-importer-title"><?php echo esc_html( $info['title'] ); ?></h3>
 
-							 <img class="envira-importer-thumb" src="<?php echo $info['thumb']; ?>" width="300px" height="250px" alt="<?php echo $info['title']; ?>">
+							 <img class="envira-importer-thumb" src="<?php echo esc_url( $info['thumb'] ); ?>" width="300px" height="250px" alt="<?php echo esc_html( $info['title'] ); ?>">
 
-							 <p class="envira-importer-excerpt"><?php echo $info['description']; ?></p>
+							 <p class="envira-importer-excerpt"><?php echo esc_html( $info['description'] ); ?></p>
 
 						</div>
 
@@ -211,7 +220,7 @@ class Importers {
 
 									<a class="envira-icon-cloud-download button button-envira-secondary envira-importer-action-button envira-activate-importer" href="<?php echo esc_url( $info['url'] ); ?>">
 										<i class="envira-cloud-download"></i>
-														<?php _e( 'Import', 'envira-gallery' ); ?>
+														<?php esc_html_e( 'Import', 'envira-gallery' ); ?>
 									</a>
 
 								</div>

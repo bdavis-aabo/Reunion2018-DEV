@@ -10,9 +10,10 @@ $ix_options = $this->main->get_ix_options();
         <a href="<?php echo $this->main->remove_qs_var('tab'); ?>" class="nav-tab"><?php echo __('Google Cal. Import', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-g-calendar-export'); ?>" class="nav-tab"><?php echo __('Google Cal. Export', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-f-calendar-import'); ?>" class="nav-tab nav-tab-active"><?php echo __('Facebook Cal. Import', 'modern-events-calendar-lite'); ?></a>
+        <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-meetup-import'); ?>" class="nav-tab"><?php echo __('Meetup Import', 'modern-events-calendar-lite'); ?></a>
+        <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-sync'); ?>" class="nav-tab"><?php echo __('Synchronization', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-export'); ?>" class="nav-tab"><?php echo __('Export', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-import'); ?>" class="nav-tab"><?php echo __('Import', 'modern-events-calendar-lite'); ?></a>
-        <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-sync'); ?>" class="nav-tab"><?php echo __('Synchronization', 'modern-events-calendar-lite'); ?></a>
         <a href="<?php echo $this->main->add_qs_var('tab', 'MEC-thirdparty'); ?>" class="nav-tab"><?php echo __('Third Party Plugins', 'modern-events-calendar-lite'); ?></a>
     </h2>
     <div class="mec-container">
@@ -23,7 +24,13 @@ $ix_options = $this->main->get_ix_options();
             <div class="mec-facebook-import">
                 <form id="mec_facebook_import_form" action="<?php echo $this->main->get_full_url(); ?>" method="POST">
                     <h3><?php _e('Import from Facebook Calendar', 'modern-events-calendar-lite'); ?></h3>
-                    <p class="description"><?php _e('Import all of your facebook events into MEC.', 'modern-events-calendar-lite'); ?></p>
+                    <p class="description"><?php _e('Import all of your Facebook events into MEC.', 'modern-events-calendar-lite'); ?> <a href="https://webnus.net/dox/modern-events-calendar/import-facebook-events/" target="_blank"><?php _e('Documentation', 'modern-events-calendar-lite'); ?></a></p> 
+                    <div class="mec-form-row">
+                        <label class="mec-col-3" for="mec_ix_facebook_app_token"><?php _e('Facebook Page Access Token', 'modern-events-calendar-lite'); ?></label>
+                        <div class="mec-col-4">
+                            <input type="text" id="mec_ix_facebook_app_token" name="ix[facebook_app_token]" value="<?php echo (isset($ix_options['facebook_app_token']) ? $ix_options['facebook_app_token'] : ''); ?>" />
+                        </div>
+                    </div>
                     <div class="mec-form-row">
                         <label class="mec-col-3" for="mec_ix_facebook_import_page_link"><?php _e('Facebook Page Link', 'modern-events-calendar-lite'); ?></label>
                         <div class="mec-col-4">
@@ -71,6 +78,7 @@ $ix_options = $this->main->get_ix_options();
                         </div>
                         <input type="hidden" name="mec-ix-action" value="facebook-calendar-import-do" />
                         <input type="hidden" name="ix[facebook_import_page_link]" value="<?php echo (isset($this->ix['facebook_import_page_link']) ? $this->ix['facebook_import_page_link'] : ''); ?>" />
+                        <input type="hidden" name="ix[facebook_app_token]" value="<?php echo (isset($this->ix['facebook_app_token']) ? $this->ix['facebook_app_token'] : ''); ?>" />
                         <button id="mec_ix_facebook_import_do_form_button" class="button button-primary mec-button-primary" type="submit"><?php _e('Import', 'modern-events-calendar-lite'); ?></button>
                     </div>
                 </form>

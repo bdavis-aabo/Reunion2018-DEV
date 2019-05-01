@@ -26,7 +26,7 @@ if($method == 'event')
     $start_minutes = (isset($date['start']) and isset($date['start']['minutes'])) ? $date['start']['minutes'] : 0;
     $start_ampm = (isset($date['start']) and isset($date['start']['ampm'])) ? $date['start']['ampm'] : 'AM';
 
-    $next = $this->get_next_event($method, array
+    $next = $this->get_next_event(array
     (
         'show_past_events'=>0,
         'sk-options'=>array

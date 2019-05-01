@@ -21,11 +21,11 @@ foreach( $event->data->labels as $label)
     if(!isset($label['style']) or (isset($label['style']) and !trim($label['style']))) continue;
     if ( $label['style']  == 'mec-label-featured' )
     {
-        $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite' );
+        $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite');
     } 
     elseif ( $label['style']  == 'mec-label-canceled' )
     {
-        $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite' );
+        $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite');
     }
 }
 endif;
@@ -49,7 +49,20 @@ $gmt_offset = $this->main->get_gmt_offset();
 if(isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') === false) $gmt_offset = ' : '.$gmt_offset;
 if(isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 'Edge') == true)$gmt_offset = substr(trim($gmt_offset), 0 , 3);
 if(isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') == true) $gmt_offset = substr(trim($gmt_offset), 2 , 3);
-
+$speakers = '""';
+if ( !empty($event->data->speakers)) 
+{
+    $speakers= [];
+    foreach ($event->data->speakers as $key => $value) {
+        $speakers[] = array(
+            "@type" 	=> "Person",
+            "name"		=> $value['name'],
+            "image"		=> $value['thumbnail'],
+            "sameAs"	=> $value['facebook'],
+        );
+    } 
+    $speakers = json_encode($speakers);
+}
 // Generating javascript code of countdown module
 $javascript = '<script type="text/javascript">
 jQuery(document).ready(function()
@@ -73,6 +86,26 @@ $this->factory->params('footer', $javascript);
 .mec-wrap .mec-event-countdown-style1 .mec-event-countdown-part2:after { border-color: transparent transparent transparent<?php echo $this->bg_color; ?>;}
 </style>
 <div class="mec-wrap <?php echo $this->html_class; ?>" id="mec_skin_<?php echo $this->id; ?>">
+    <script type="application/ld+json">
+    {
+        "@context" 		: "http://schema.org",
+        "@type" 		: "Event",
+        "startDate" 	: "<?php echo !empty( $event->data->meta['mec_date']['start']['date'] ) ? $event->data->meta['mec_date']['start']['date'] : '' ; ?>",
+        "endDate" 		: "<?php echo !empty( $event->data->meta['mec_date']['end']['date'] ) ? $event->data->meta['mec_date']['end']['date'] : '' ; ?>",
+        "location" 		:
+        {
+            "@type" 		: "Place",
+            "name" 			: "<?php echo (isset($location['name']) ? $location['name'] : ''); ?>",
+            "image"			: "<?php echo (isset($location['thumbnail']) ? esc_url($location['thumbnail'] ) : '');; ?>",
+            "address"		: "<?php echo (isset($location['address']) ? $location['address'] : ''); ?>"
+        },
+        "performer": <?php echo $speakers; ?>,
+        "description" 	: "<?php  echo esc_html(preg_replace('/<p>\\s*?(<a .*?><img.*?><\\/a>|<img.*?>)?\\s*<\\/p>/s', '<div class="figure">$1</div>', $event->data->post->post_content)); ?>",
+        "image" 		: "<?php echo !empty($event->data->featured_image['full']) ? esc_html($event->data->featured_image['full']) : '' ; ?>",
+        "name" 			: "<?php esc_html_e($event->data->title); ?>",
+        "url"			: "<?php echo $this->main->get_event_date_permalink($event->data->permalink, $event->date['start']['date']); ?>"
+    }
+    </script>
     <?php if($this->style == 'style1'): ?>
     <article class="mec-event-countdown-style1 col-md-12 <?php echo $this->get_event_classes($event); ?>">
         <div class="mec-event-countdown-part1 col-md-4">
@@ -209,7 +242,7 @@ $this->factory->params('footer', $javascript);
         </div>
         <div class="mec-event-countdown-part2">
             <div class="mec-event-image">
-                <?php echo $event->data->thumbnails['meccarouselthumb']; ?>
+                <a href="<?php echo $event_link; ?>"><?php echo $event->data->thumbnails['meccarouselthumb']; ?></a>
             </div>
         </div>
     </article>

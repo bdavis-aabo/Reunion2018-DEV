@@ -276,6 +276,11 @@ class MEC_feature_locations extends MEC_base
         $locations = get_terms('mec_location', array('orderby'=>'name', 'hide_empty'=>'0'));
         $location_id = get_post_meta($post->ID, 'mec_location_id', true);
         $dont_show_map = get_post_meta($post->ID, 'mec_dont_show_map', true);
+
+        $location_ids = get_post_meta($post->ID, 'mec_additional_location_ids', true);
+        if(!is_array($location_ids)) $location_ids = array();
+
+        $additional_locations_status = (!isset($this->settings['additional_locations']) or (isset($this->settings['additional_locations']) and $this->settings['additional_locations'])) ? true : false;
     ?>
         <div class="mec-meta-box-fields" id="mec-location">
             <h4><?php echo sprintf(__('Event %s', 'modern-events-calendar-lite'), $this->main->m('taxonomy_location', __('Location', 'modern-events-calendar-lite'))); ?></h4>
@@ -334,6 +339,22 @@ class MEC_feature_locations extends MEC_base
                 <input type="hidden" name="mec[dont_show_map]" value="0" />
                 <input type="checkbox" id="mec_location_dont_show_map" name="mec[dont_show_map]" value="1" <?php echo ($dont_show_map ? 'checked="checked"' : ''); ?> /><label for="mec_location_dont_show_map"><?php echo __("Don't show map in single event page", 'modern-events-calendar-lite'); ?></label>
             </div>
+            <?php if($additional_locations_status and count($locations)): ?>
+            <h4><?php echo $this->main->m('other_locations', __('Other Locations', 'modern-events-calendar-lite')); ?></h4>
+            <div class="mec-form-row">
+                <p><?php _e('You can select extra locations in addition to main location if you like.', 'modern-events-calendar-lite'); ?></p>
+                <div class="mec-additional-locations">
+                    <?php foreach($locations as $location): ?>
+                    <div>
+                        <label for="additional_location_ids<?php echo $location->term_id; ?>">
+                            <input type="checkbox" name="mec[additional_location_ids][]" id="additional_location_ids<?php echo $location->term_id; ?>" value="<?php echo $location->term_id; ?>" <?php if(in_array($location->term_id, $location_ids)) echo 'checked="checked"'; ?>>
+                            <?php echo $location->name; ?>
+                        </label>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
 		</div>
     <?php
     }

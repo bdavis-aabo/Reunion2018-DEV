@@ -82,6 +82,7 @@ function envira_albums_get_config_defaults( $post_id ) {
 		'lightbox'                   => false,
 		'lightbox_theme'             => 'base_dark',
 		'title_display'              => 'float',
+		'lightbox_title_caption'     => 'title',
 		'arrows'                     => 1,
 		'arrows_position'            => 'inside',
 		'keyboard'                   => 1,

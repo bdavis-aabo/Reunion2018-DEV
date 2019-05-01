@@ -134,7 +134,7 @@ class Admin_Container {
 			if ( ! isset( $album_data['galleryIDs'] ) || empty( $album_data['galleryIDs'] ) ) {
 				continue;
 			}
-			$key        = array_search( $id, $album_data['galleryIDs'], true );
+			$key = array_search( $id, $album_data['galleryIDs'], true );
 			if ( false !== $key ) {
 				// Delete Gallery ID + Gallery Details in Album.
 				unset( $album_data['galleryIDs'][ $key ] );

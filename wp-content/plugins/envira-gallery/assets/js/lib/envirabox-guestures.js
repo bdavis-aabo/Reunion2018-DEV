@@ -1,34 +1,32 @@
-// ==========================================================================
+;// ==========================================================================
 //
 // Guestures
 // Adds touch guestures, handles click and tap events
 //
 // ==========================================================================
-;(function (window, document, $) {
+(function (window, document, $) {
 	'use strict';
 
 	var requestAFrame = (function () {
-        return window.requestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                window.mozRequestAnimationFrame ||
-                window.oRequestAnimationFrame ||
-                // if all else fails, use setTimeout
-                function (callback) {
-                    return window.setTimeout(callback, 1000 / 60);
-                };
-    })();
+		return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				window.oRequestAnimationFrame ||
+				// if all else fails, use setTimeout
+				function (callback) {
+					return window.setTimeout( callback, 1000 / 60 );
+				};
+	})();
 
-
-    var cancelAFrame = (function () {
-        return window.cancelAnimationFrame ||
-                window.webkitCancelAnimationFrame ||
-                window.mozCancelAnimationFrame ||
-                window.oCancelAnimationFrame ||
-                function (id) {
-                    window.clearTimeout(id);
-                };
-    })();
-
+	var cancelAFrame = (function () {
+		return window.cancelAnimationFrame ||
+				window.webkitCancelAnimationFrame ||
+				window.mozCancelAnimationFrame ||
+				window.oCancelAnimationFrame ||
+				function (id) {
+					window.clearTimeout( id );
+				};
+	})();
 
 	var pointers = function( e ) {
 		var result = [];
@@ -50,7 +48,7 @@
 	};
 
 	var distance = function( point2, point1, what ) {
-		if ( !point1 || !point2 ) {
+		if ( ! point1 || ! point2 ) {
 			return 0;
 		}
 
@@ -66,18 +64,18 @@
 
 	var isClickable = function( $el ) {
 
-		if ( $el.is('a,area,button,[role="button"],input,label,select,summary,textarea') || $.isFunction( $el.get(0).onclick ) || $el.data('selectable') ) {
+		if ( $el.is( 'a,area,button,[role="button"],input,label,select,summary,textarea' ) || $.isFunction( $el.get( 0 ).onclick ) || $el.data( 'selectable' ) ) {
 			return true;
 		}
 
 		// Check for attributes like data-envirabox-next or data-envirabox-close
 		for ( var i = 0, atts = $el[0].attributes, n = atts.length; i < n; i++ ) {
-            if ( atts[i].nodeName.substr(0, 14) === 'data-envirabox-' ) {
-                return true;
-            }
-        }
+			if ( atts[i].nodeName.substr( 0, 14 ) === 'data-envirabox-' ) {
+				return true;
+			}
+		}
 
-	    return false;
+		return false;
 	};
 
 	var hasScrollbars = function( el ) {
@@ -94,7 +92,7 @@
 		var rez = false;
 
 		while ( true ) {
-			rez = hasScrollbars( $el.get(0) );
+			rez = hasScrollbars( $el.get( 0 ) );
 
 			if ( rez ) {
 				break;
@@ -102,14 +100,13 @@
 
 			$el = $el.parent();
 
-			if ( !$el.length || $el.hasClass( 'envirabox-stage' ) || $el.is( 'body' ) ) {
+			if ( ! $el.length || $el.hasClass( 'envirabox-stage' ) || $el.is( 'body' ) ) {
 				break;
 			}
 		}
 
 		return rez;
 	};
-
 
 	var Guestures = function ( instance ) {
 		var self = this;
@@ -122,7 +119,7 @@
 
 		self.destroy();
 
-		self.$container.on( 'touchstart.eb.touch mousedown.eb.touch', $.proxy(self, 'ontouchstart') );
+		self.$container.on( 'touchstart.eb.touch mousedown.eb.touch', $.proxy( self, 'ontouchstart' ) );
 	};
 
 	Guestures.prototype.destroy = function() {
@@ -141,11 +138,11 @@
 
 		// Do not respond to both events
 		if ( isTouchDevice ) {
-	        self.$container.off( 'mousedown.eb.touch' );
-	    }
+			self.$container.off( 'mousedown.eb.touch' );
+		}
 
 		// Ignore clicks while zooming or closing
-		if ( !current || self.instance.isAnimating || self.instance.isClosing ) {
+		if ( ! current || self.instance.isAnimating || self.instance.isClosing ) {
 			e.stopPropagation();
 			e.preventDefault();
 
@@ -158,7 +155,7 @@
 		}
 
 		// Ignore taping on links, buttons, input elements
-		if ( !$target.length || isClickable( $target ) || isClickable( $target.parent() ) ) {
+		if ( ! $target.length || isClickable( $target ) || isClickable( $target.parent() ) ) {
 			return;
 		}
 
@@ -170,7 +167,7 @@
 		self.startPoints = pointers( e );
 
 		// Prevent zooming if already swiping
-		if ( !self.startPoints || ( self.startPoints.length > 1 && instance.isSliding ) ) {
+		if ( ! self.startPoints || ( self.startPoints.length > 1 && instance.isSliding ) ) {
 			return;
 		}
 
@@ -179,15 +176,15 @@
 		self.canTap   = true;
 		self.opts     = current.opts.touch;
 
-		$(document).off( '.eb.touch' );
+		$( document ).off( '.eb.touch' );
 
-		$(document).on( isTouchDevice ? 'touchend.eb.touch touchcancel.eb.touch' : 'mouseup.eb.touch mouseleave.eb.touch',  $.proxy(self, "ontouchend"));
-		$(document).on( isTouchDevice ? 'touchmove.eb.touch' : 'mousemove.eb.touch',  $.proxy(self, "ontouchmove"));
+		$( document ).on( isTouchDevice ? 'touchend.eb.touch touchcancel.eb.touch' : 'mouseup.eb.touch mouseleave.eb.touch',  $.proxy( self, "ontouchend" ) );
+		$( document ).on( isTouchDevice ? 'touchmove.eb.touch' : 'mousemove.eb.touch',  $.proxy( self, "ontouchmove" ) );
 
-		if ( !(self.opts || instance.canPan() ) || !( $target.is( self.$stage ) || self.$stage.find( $target ).length ) ) {
+		if ( ! (self.opts || instance.canPan() ) || ! ( $target.is( self.$stage ) || self.$stage.find( $target ).length ) ) {
 
 			// Prevent ghosting
-			if ( $target.is('img') ) {
+			if ( $target.is( 'img' ) ) {
 				e.preventDefault();
 			}
 
@@ -196,7 +193,7 @@
 
 		e.stopPropagation();
 
-		if ( !( $.envirabox.isMobile && ( isScrollable( self.$target ) || isScrollable( self.$target.parent() ) ) ) ) {
+		if ( ! ( $.envirabox.isMobile && ( isScrollable( self.$target ) || isScrollable( self.$target.parent() ) ) ) ) {
 			e.preventDefault();
 		}
 
@@ -214,8 +211,8 @@
 		self.contentStartPos = $.envirabox.getTranslate( self.$content );
 		self.contentLastPos  = null;
 
-		if ( self.startPoints.length === 1 && !self.isZooming ) {
-			self.canTap = !instance.isSliding;
+		if ( self.startPoints.length === 1 && ! self.isZooming ) {
+			self.canTap = ! instance.isSliding;
 
 			if ( current.type === 'image' && ( self.contentStartPos.width > self.canvasWidth + 1 || self.contentStartPos.height > self.canvasHeight + 1 ) ) {
 
@@ -230,10 +227,10 @@
 				self.isSwiping = true;
 			}
 
-			self.$container.addClass('envirabox-controls--isGrabbing');
+			self.$container.addClass( 'envirabox-controls--isGrabbing' );
 		}
 
-		if ( self.startPoints.length === 2 && !instance.isAnimating && !current.hasError && current.type === 'image' && ( current.isLoaded || current.$ghost ) ) {
+		if ( self.startPoints.length === 2 && ! instance.isAnimating && ! current.hasError && current.type === 'image' && ( current.isLoaded || current.$ghost ) ) {
 			self.isZooming = true;
 
 			self.isSwiping = false;
@@ -243,8 +240,8 @@
 
 			self.$content.css( 'transition-duration', '0ms' );
 
-			self.centerPointStartX = ( ( self.startPoints[0].x + self.startPoints[1].x ) * 0.5 ) - $(window).scrollLeft();
-			self.centerPointStartY = ( ( self.startPoints[0].y + self.startPoints[1].y ) * 0.5 ) - $(window).scrollTop();
+			self.centerPointStartX = ( ( self.startPoints[0].x + self.startPoints[1].x ) * 0.5 ) - $( window ).scrollLeft();
+			self.centerPointStartY = ( ( self.startPoints[0].y + self.startPoints[1].y ) * 0.5 ) - $( window ).scrollTop();
 
 			self.percentageOfImageAtPinchPointX = ( self.centerPointStartX - self.contentStartPos.left ) / self.contentStartPos.width;
 			self.percentageOfImageAtPinchPointY = ( self.centerPointStartY - self.contentStartPos.top  ) / self.contentStartPos.height;
@@ -268,7 +265,7 @@
 			return;
 		}
 
-		if ( !( self.opts || self.instance.canPan() ) || !self.newPoints || !self.newPoints.length ) {
+		if ( ! ( self.opts || self.instance.canPan() ) || ! self.newPoints || ! self.newPoints.length ) {
 			return;
 		}
 
@@ -280,7 +277,7 @@
 		// Skip false ontouchmove events (Chrome)
 		if ( self.distance > 0 ) {
 
-			if ( !( self.$target.is( self.$stage ) || self.$stage.find( self.$target ).length ) ) {
+			if ( ! ( self.$target.is( self.$stage ) || self.$stage.find( self.$target ).length ) ) {
 				return;
 			}
 
@@ -311,15 +308,15 @@
 
 		if ( swiping === true ) {
 
-			if ( Math.abs( self.distance ) > 10 )  {
+			if ( Math.abs( self.distance ) > 10 ) {
 
 				self.canTap = false;
 
 				if ( self.instance.group.length < 2 && self.opts.vertical ) {
-					self.isSwiping  = 'y';
+					self.isSwiping = 'y';
 
 				} else if ( self.instance.isSliding || self.opts.vertical === false || ( self.opts.vertical === 'auto' && $( window ).width() > 800 ) ) {
-					self.isSwiping  = 'x';
+					self.isSwiping = 'x';
 
 				} else {
 					angle = Math.abs( Math.atan2( self.distanceY, self.distanceX ) * 180 / Math.PI );
@@ -332,20 +329,22 @@
 				// Reset points to avoid jumping, because we dropped first swipes to calculate the angle
 				self.startPoints = self.newPoints;
 
-				$.each(self.instance.slides, function( index, slide ) {
-					$.envirabox.stop( slide.$slide );
+				$.each(
+					self.instance.slides,
+					function( index, slide ) {
+						$.envirabox.stop( slide.$slide );
 
-					slide.$slide.css( 'transition-duration', '0ms' );
+						slide.$slide.css( 'transition-duration', '0ms' );
 
-					slide.inTransition = false;
+						slide.inTransition = false;
 
-					if ( slide.pos === self.instance.current.pos ) {
-						self.sliderStartPos.left = $.envirabox.getTranslate( slide.$slide ).left;
+						if ( slide.pos === self.instance.current.pos ) {
+							self.sliderStartPos.left = $.envirabox.getTranslate( slide.$slide ).left;
+						}
 					}
-				});
+				);
 
-				//self.instance.current.isMoved = true;
-
+				// self.instance.current.isMoved = true;
 				// Stop slideshow
 				if ( self.instance.SlideShow && self.instance.SlideShow.isActive ) {
 					self.instance.SlideShow.stop();
@@ -357,10 +356,10 @@
 			if ( swiping == 'x' ) {
 
 				// Sticky edges
-				if ( self.distanceX > 0 && ( self.instance.group.length < 2 || ( self.instance.current.index === 0 && !self.instance.current.opts.loop ) ) ) {
+				if ( self.distanceX > 0 && ( self.instance.group.length < 2 || ( self.instance.current.index === 0 && ! self.instance.current.opts.loop ) ) ) {
 					left = left + Math.pow( self.distanceX, 0.8 );
 
-				} else if ( self.distanceX < 0 && ( self.instance.group.length < 2 || ( self.instance.current.index === self.instance.group.length - 1 && !self.instance.current.opts.loop ) ) ) {
+				} else if ( self.distanceX < 0 && ( self.instance.group.length < 2 || ( self.instance.current.index === self.instance.group.length - 1 && ! self.instance.current.opts.loop ) ) ) {
 					left = left - Math.pow( -self.distanceX, 0.8 );
 
 				} else {
@@ -380,22 +379,30 @@
 				self.requestId = null;
 			}
 
-			self.requestId = requestAFrame(function() {
+			self.requestId = requestAFrame(
+				function() {
 
-				if ( self.sliderLastPos ) {
-					$.each(self.instance.slides, function( index, slide ) {
-						var pos = slide.pos - self.instance.currPos;
+					if ( self.sliderLastPos ) {
+						$.each(
+							self.instance.slides,
+							function( index, slide ) {
+								var pos = slide.pos - self.instance.currPos;
 
-						$.envirabox.setTranslate( slide.$slide, {
-							top  : self.sliderLastPos.top,
-							left : self.sliderLastPos.left + ( pos * self.canvasWidth ) + ( pos * slide.opts.gutter )
-						});
-					});
+								$.envirabox.setTranslate(
+									slide.$slide,
+									{
+										top  : self.sliderLastPos.top,
+										left : self.sliderLastPos.left + ( pos * self.canvasWidth ) + ( pos * slide.opts.gutter )
+									}
+								);
+							}
+						);
 
-					self.$container.addClass( 'envirabox-is-sliding' );
+						self.$container.addClass( 'envirabox-is-sliding' );
+					}
+
 				}
-
-			});
+			);
 
 		}
 
@@ -431,9 +438,11 @@
 			self.requestId = null;
 		}
 
-		self.requestId = requestAFrame(function() {
-			$.envirabox.setTranslate( self.$content, self.contentLastPos );
-		});
+		self.requestId = requestAFrame(
+			function() {
+				$.envirabox.setTranslate( self.$content, self.contentLastPos );
+			}
+		);
 	};
 
 	// Make panning sticky to the edges
@@ -453,22 +462,21 @@
 		var distanceY = self.distanceY;
 
 		// Slow down proportionally to traveled distance
+		minTranslateX = Math.max( 0, canvasWidth * 0.5 - newWidth * 0.5 );
+		minTranslateY = Math.max( 0, canvasHeight * 0.5 - newHeight * 0.5 );
 
-		minTranslateX = Math.max(0, canvasWidth  * 0.5 - newWidth  * 0.5 );
-		minTranslateY = Math.max(0, canvasHeight * 0.5 - newHeight * 0.5 );
-
-		maxTranslateX = Math.min( canvasWidth  - newWidth,  canvasWidth  * 0.5 - newWidth  * 0.5 );
+		maxTranslateX = Math.min( canvasWidth - newWidth,  canvasWidth * 0.5 - newWidth * 0.5 );
 		maxTranslateY = Math.min( canvasHeight - newHeight, canvasHeight * 0.5 - newHeight * 0.5 );
 
 		if ( newWidth > canvasWidth ) {
 
-			//   ->
+			// ->
 			if ( distanceX > 0 && newOffsetX > minTranslateX ) {
 				newOffsetX = minTranslateX - 1 + Math.pow( -minTranslateX + currentOffsetX + distanceX, 0.8 ) || 0;
 			}
 
-			//    <-
-			if ( distanceX  < 0 && newOffsetX < maxTranslateX ) {
+			// <-
+			if ( distanceX < 0 && newOffsetX < maxTranslateX ) {
 				newOffsetX = maxTranslateX + 1 - Math.pow( maxTranslateX - currentOffsetX - distanceX, 0.8 ) || 0;
 			}
 
@@ -476,14 +484,14 @@
 
 		if ( newHeight > canvasHeight ) {
 
-			//   \/
+			// \/
 			if ( distanceY > 0 && newOffsetY > minTranslateY ) {
-				newOffsetY = minTranslateY - 1 + Math.pow(-minTranslateY + currentOffsetY + distanceY, 0.8 ) || 0;
+				newOffsetY = minTranslateY - 1 + Math.pow( -minTranslateY + currentOffsetY + distanceY, 0.8 ) || 0;
 			}
 
-			//   /\
+			// \
 			if ( distanceY < 0 && newOffsetY < maxTranslateY ) {
-				newOffsetY = maxTranslateY + 1 - Math.pow ( maxTranslateY - currentOffsetY - distanceY, 0.8 ) || 0;
+				newOffsetY = maxTranslateY + 1 - Math.pow( maxTranslateY - currentOffsetY - distanceY, 0.8 ) || 0;
 			}
 
 		}
@@ -494,7 +502,6 @@
 		};
 
 	};
-
 
 	Guestures.prototype.limitPosition = function( newOffsetX, newOffsetY, newWidth, newHeight ) {
 
@@ -537,7 +544,6 @@
 		var self = this;
 
 		// Calculate current distance between points to get pinch ratio and new width and height
-
 		var currentWidth  = self.contentStartPos.width;
 		var currentHeight = self.contentStartPos.height;
 
@@ -548,26 +554,23 @@
 
 		var pinchRatio = endDistanceBetweenFingers / self.startDistanceBetweenFingers;
 
-		var newWidth  = Math.floor( currentWidth  * pinchRatio );
+		var newWidth  = Math.floor( currentWidth * pinchRatio );
 		var newHeight = Math.floor( currentHeight * pinchRatio );
 
 		// This is the translation due to pinch-zooming
-		var translateFromZoomingX = (currentWidth  - newWidth)  * self.percentageOfImageAtPinchPointX;
+		var translateFromZoomingX = (currentWidth - newWidth) * self.percentageOfImageAtPinchPointX;
 		var translateFromZoomingY = (currentHeight - newHeight) * self.percentageOfImageAtPinchPointY;
 
-		//Point between the two touches
-
-		var centerPointEndX = ((self.newPoints[0].x + self.newPoints[1].x) / 2) - $(window).scrollLeft();
-		var centerPointEndY = ((self.newPoints[0].y + self.newPoints[1].y) / 2) - $(window).scrollTop();
+		// Point between the two touches
+		var centerPointEndX = ((self.newPoints[0].x + self.newPoints[1].x) / 2) - $( window ).scrollLeft();
+		var centerPointEndY = ((self.newPoints[0].y + self.newPoints[1].y) / 2) - $( window ).scrollTop();
 
 		// And this is the translation due to translation of the centerpoint
 		// between the two fingers
-
 		var translateFromTranslatingX = centerPointEndX - self.centerPointStartX;
 		var translateFromTranslatingY = centerPointEndY - self.centerPointStartY;
 
 		// The new offset is the old/current one plus the total translation
-
 		var newOffsetX = currentOffsetX + ( translateFromZoomingX + translateFromTranslatingX );
 		var newOffsetY = currentOffsetY + ( translateFromZoomingY + translateFromTranslatingY );
 
@@ -591,16 +594,18 @@
 			self.requestId = null;
 		}
 
-		self.requestId = requestAFrame(function() {
-			$.envirabox.setTranslate( self.$content, self.contentLastPos );
-		});
+		self.requestId = requestAFrame(
+			function() {
+				$.envirabox.setTranslate( self.$content, self.contentLastPos );
+			}
+		);
 
 	};
 
 	Guestures.prototype.ontouchend = function( e ) {
 
 		var self = this;
-		var dMs  = Math.max( (new Date().getTime() ) - self.startTime, 1);
+		var dMs  = Math.max( (new Date().getTime() ) - self.startTime, 1 );
 
 		var swiping = self.isSwiping;
 		var panning = self.isPanning;
@@ -610,7 +615,7 @@
 
 		self.$container.removeClass( 'envirabox-controls--isGrabbing' );
 
-		$(document).off( '.eb.touch' );
+		$( document ).off( '.eb.touch' );
 
 		if ( self.requestId ) {
 			cancelAFrame( self.requestId );
@@ -622,7 +627,7 @@
 		self.isPanning = false;
 		self.isZooming = false;
 
-		if ( self.canTap )  {
+		if ( self.canTap ) {
 			return self.onTap( e );
 		}
 
@@ -650,7 +655,7 @@
 	Guestures.prototype.endSwiping = function( swiping ) {
 
 		var self = this;
-		var ret = false;
+		var ret  = false;
 
 		self.instance.isSliding = false;
 		self.sliderLastPos      = null;
@@ -659,17 +664,21 @@
 		if ( swiping == 'y' && Math.abs( self.distanceY ) > 50 ) {
 
 			// Continue vertical movement
-			$.envirabox.animate( self.instance.current.$slide, {
-				top     : self.sliderStartPos.top + self.distanceY + ( self.velocityY * 150 ),
-				opacity : 0
-			}, 150 );
+			$.envirabox.animate(
+				self.instance.current.$slide,
+				{
+					top     : self.sliderStartPos.top + self.distanceY + ( self.velocityY * 150 ),
+					opacity : 0
+				},
+				150
+			);
 
 			ret = self.instance.close( true, 300 );
 
 		} else if ( swiping == 'x' && self.distanceX > 50 && self.instance.group.length > 1 ) {
 			ret = self.instance.previous( self.speedX );
 
-		} else if ( swiping == 'x' && self.distanceX < -50  && self.instance.group.length > 1 ) {
+		} else if ( swiping == 'x' && self.distanceX < -50 && self.instance.group.length > 1 ) {
 			ret = self.instance.next( self.speedX );
 		}
 
@@ -683,13 +692,12 @@
 
 	// Limit panning from edges
 	// ========================
-
 	Guestures.prototype.endPanning = function() {
 
 		var self = this;
 		var newOffsetX, newOffsetY, newPos;
 
-		if ( !self.contentLastPos ) {
+		if ( ! self.contentLastPos ) {
 			return;
 		}
 
@@ -701,7 +709,7 @@
 
 			// Continue movement
 			newOffsetX = self.contentLastPos.left + ( self.velocityX * self.speed );
-			newOffsetY = self.contentLastPos.top  + ( self.velocityY * self.speed );
+			newOffsetY = self.contentLastPos.top + ( self.velocityY * self.speed );
 		}
 
 		newPos = self.limitPosition( newOffsetX, newOffsetY, self.contentStartPos.width, self.contentStartPos.height );
@@ -711,7 +719,6 @@
 
 		$.envirabox.animate( self.$content, newPos, 330 );
 	};
-
 
 	Guestures.prototype.endZooming = function() {
 
@@ -724,7 +731,7 @@
 		var newWidth  = self.newWidth;
 		var newHeight = self.newHeight;
 
-		if ( !self.contentLastPos ) {
+		if ( ! self.contentLastPos ) {
 			return;
 		}
 
@@ -732,16 +739,16 @@
 		newOffsetY = self.contentLastPos.top;
 
 		reset = {
-		    top    : newOffsetY,
-		    left   : newOffsetX,
-		    width  : newWidth,
-		    height : newHeight,
+			top    : newOffsetY,
+			left   : newOffsetX,
+			width  : newWidth,
+			height : newHeight,
 			scaleX : 1,
 			scaleY : 1
-	   };
+		};
 
-	   // Reset scalex/scaleY values; this helps for perfomance and does not break animation
-	   $.envirabox.setTranslate( self.$content, reset );
+		// Reset scalex/scaleY values; this helps for perfomance and does not break animation
+		$.envirabox.setTranslate( self.$content, reset );
 
 		if ( newWidth < self.canvasWidth && newHeight < self.canvasHeight ) {
 			self.instance.scaleToFit( 150 );
@@ -771,7 +778,7 @@
 		var endPoints = ( e && pointers( e ) ) || self.startPoints;
 
 		var tapX = endPoints[0] ? endPoints[0].x - self.$stage.offset().left : 0;
-		var tapY = endPoints[0] ? endPoints[0].y - self.$stage.offset().top  : 0;
+		var tapY = endPoints[0] ? endPoints[0].y - self.$stage.offset().top : 0;
 
 		var where;
 
@@ -783,7 +790,7 @@
 				action = action.apply( instance, [ current, e ] );
 			}
 
-			if ( !action) {
+			if ( ! action) {
 				return;
 			}
 
@@ -860,8 +867,8 @@
 		} else if ( $target.is( '.envirabox-slide' ) ) {
 			where = 'Slide';
 
-		} else if  ( instance.current.$content && instance.current.$content.has( e.target ).length ) {
-		    where = 'Content';
+		} else if ( instance.current.$content && instance.current.$content.has( e.target ).length ) {
+			where = 'Content';
 
 		} else {
 			return;
@@ -890,12 +897,15 @@
 			self.tapY = tapY;
 
 			if ( current.opts[ 'dblclick' + where ] && current.opts[ 'dblclick' + where ] !== current.opts[ 'click' + where ] ) {
-				self.tapped = setTimeout(function() {
-					self.tapped = null;
+				self.tapped = setTimeout(
+					function() {
+						self.tapped = null;
 
-					process( 'click' + where );
+						process( 'click' + where );
 
-				}, 300);
+					},
+					300
+				);
 
 			} else {
 				process( 'click' + where );
@@ -906,17 +916,22 @@
 		return this;
 	};
 
-	$(document).on('onActivate.eb', function (e, instance) {
-		if ( instance && !instance.Guestures ) {
-			instance.Guestures = new Guestures( instance );
+	$( document ).on(
+		'onActivate.eb',
+		function (e, instance) {
+			if ( instance && ! instance.Guestures ) {
+				instance.Guestures = new Guestures( instance );
+			}
 		}
-	});
+	);
 
-	$(document).on('beforeClose.eb', function (e, instance) {
-		if ( instance && instance.Guestures ) {
-			instance.Guestures.destroy();
+	$( document ).on(
+		'beforeClose.eb',
+		function (e, instance) {
+			if ( instance && instance.Guestures ) {
+				instance.Guestures.destroy();
+			}
 		}
-	});
-
+	);
 
 }( window, document, window.jQuery || jQuery ));

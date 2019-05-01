@@ -44,15 +44,49 @@ for($i = 1; $i <= 12; $i++)
                     if(!isset($label['style']) or (isset($label['style']) and !trim($label['style']))) continue;
                     if ( $label['style']  == 'mec-label-featured' )
                     {
-                        $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite' );
+                        $label_style = esc_html__( 'Featured' , 'modern-events-calendar-lite');
                     } 
                     elseif ( $label['style']  == 'mec-label-canceled' )
                     {
-                        $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite' );
+                        $label_style = esc_html__( 'Canceled' , 'modern-events-calendar-lite');
                     }
                 }
                 endif;
+                $speakers = '""';
+                if ( !empty($event->data->speakers)) 
+                {
+                    $speakers= [];
+                    foreach ($event->data->speakers as $key => $value) {
+                        $speakers[] = array(
+                            "@type" 	=> "Person",
+                            "name"		=> $value['name'],
+                            "image"		=> $value['thumbnail'],
+                            "sameAs"	=> $value['facebook'],
+                        );
+                    } 
+                    $speakers = json_encode($speakers);
+                }
                 ?>
+                <script type="application/ld+json">
+                {
+                    "@context" 		: "http://schema.org",
+                    "@type" 		: "Event",
+                    "startDate" 	: "<?php echo !empty( $event->data->meta['mec_date']['start']['date'] ) ? $event->data->meta['mec_date']['start']['date'] : '' ; ?>",
+                    "endDate" 		: "<?php echo !empty( $event->data->meta['mec_date']['end']['date'] ) ? $event->data->meta['mec_date']['end']['date'] : '' ; ?>",
+                    "location" 		:
+                    {
+                        "@type" 		: "Place",
+                        "name" 			: "<?php echo (isset($location['name']) ? $location['name'] : ''); ?>",
+                        "image"			: "<?php echo (isset($location['thumbnail']) ? esc_url($location['thumbnail'] ) : '');; ?>",
+                        "address"		: "<?php echo (isset($location['address']) ? $location['address'] : ''); ?>"
+                    },
+                    "performer": <?php echo $speakers; ?>,
+                    "description" 	: "<?php  echo esc_html(preg_replace('/<p>\\s*?(<a .*?><img.*?><\\/a>|<img.*?>)?\\s*<\\/p>/s', '<div class="figure">$1</div>', $event->data->post->post_content)); ?>",
+                    "image" 		: "<?php echo !empty($event->data->featured_image['full']) ? esc_html($event->data->featured_image['full']) : '' ; ?>",
+                    "name" 			: "<?php esc_html_e($event->data->title); ?>",
+                    "url"			: "<?php echo $this->main->get_event_date_permalink($event->data->permalink, $event->date['start']['date']); ?>"
+                }
+                </script>
                 <?php if($this->style == 'modern'): ?>
                     <div data-style="" class="mec-agenda-event <?php echo $this->get_event_classes($event); ?>">
                         <i class="mec-sl-clock "></i>

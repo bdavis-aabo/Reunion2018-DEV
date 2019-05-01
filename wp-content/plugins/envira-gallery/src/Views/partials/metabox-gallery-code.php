@@ -2,17 +2,26 @@
 /**
  * Outputs the Gallery Code Metabox Content.
  *
- * @since   1.5.0
+ * @since 1.5.0
  *
- * @package Envira_Gallery
- * @author  Envira Team
+ * @package Envira Gallery
+ * @author  Envira Gallery Team <support@enviragallery.com>
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+
+	exit;
+
+}
+
 ?>
+
 <p><?php _e( 'You can place this gallery anywhere into your posts, pages, custom post types or widgets by using the shortcode below:', 'envira-gallery' ); ?></p>
 <div class="envira-code">
 	<input readonly type="text" class="code-textfield" id="envira_shortcode_id_<?php echo $data['post']->ID; ?>" value="[envira-gallery id=&quot;<?php echo $data['post']->ID; ?>&quot;]">
-	<a href="#" title="<?php _e( 'Copy Shortcode to Clipboard', 'envira-gallery' ); ?>" data-clipboard-target="#envira_shortcode_id_<?php echo $data['post']->ID; ?>" class="dashicons dashicons-clipboard envira-clipboard">
-		<span><?php _e( 'Copy to Clipboard', 'envira-gallery' ); ?></span>
+	<a href="#" title="<?php esc_html_e( 'Copy Shortcode to Clipboard', 'envira-gallery' ); ?>" data-clipboard-target="#envira_shortcode_id_<?php echo $data['post']->ID; ?>" class="dashicons dashicons-clipboard envira-clipboard">
+		<span><?php esc_html_e( 'Copy to Clipboard', 'envira-gallery' ); ?></span>
 	</a>
 </div>
 
@@ -21,8 +30,8 @@ if ( ! empty( $data['gallery_data']['config']['slug'] ) ) {
 	?>
 	<div class="envira-code">
 	<textarea readonly class="code-textfield" id="envira_shortcode_slug_<?php echo $data['post']->ID; ?>">[envira-gallery slug=&quot;<?php echo $data['gallery_data']['config']['slug']; ?>&quot;]</textarea>
-		<a href="#" title="<?php _e( 'Copy Shortcode to Clipboard', 'envira-gallery' ); ?>" data-clipboard-target="#envira_shortcode_slug_<?php echo $data['post']->ID; ?>" class="dashicons dashicons-clipboard envira-clipboard">
-			<span><?php _e( 'Copy to Clipboard', 'envira-gallery' ); ?></span>
+		<a href="#" title="<?php esc_html_e( 'Copy Shortcode to Clipboard', 'envira-gallery' ); ?>" data-clipboard-target="#envira_shortcode_slug_<?php echo $data['post']->ID; ?>" class="dashicons dashicons-clipboard envira-clipboard">
+			<span><?php esc_html_e( 'Copy to Clipboard', 'envira-gallery' ); ?></span>
 		</a>
 	</div>
 	<?php
@@ -50,8 +59,8 @@ if ( ! empty( $data['gallery_data']['config']['slug'] ) ) {
 	?>
 	<div class="envira-code">
 		<textarea readonly rows="3" class="code-textfield" id="envira_template_tag_slug_<?php echo $data['post']->ID; ?>"><?php echo 'if ( function_exists( \'envira_gallery\' ) ) { envira_gallery( \'' . $data['gallery_data']['config']['slug'] . '\', \'slug\' ); }'; ?></textarea>
-		 <a href="#" title="<?php _e( 'Copy Template Tag to Clipboard', 'envira-gallery' ); ?>" data-clipboard-target="#envira_template_tag_slug_<?php echo $data['post']->ID; ?>" class="dashicons dashicons-clipboard envira-clipboard">
-			<span><?php _e( 'Copy to Clipboard', 'envira-gallery' ); ?></span>
+		<a href="#" title="<?php esc_html_e( 'Copy Template Tag to Clipboard', 'envira-gallery' ); ?>" data-clipboard-target="#envira_template_tag_slug_<?php echo $data['post']->ID; ?>" class="dashicons dashicons-clipboard envira-clipboard">
+			<span><?php esc_html_e( 'Copy to Clipboard', 'envira-gallery' ); ?></span>
 		</a>
 	</div>
 	<?php

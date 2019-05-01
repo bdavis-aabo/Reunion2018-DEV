@@ -557,14 +557,16 @@ body.post-type-envira_album.envira-default-success {
   width: 80%; }
 
 /* ==========================================================================
-   Support Screen
+   Welcome / Support Screen
    ========================================================================== */
-/* #menu-posts-envira {
-	.wp-submenu li:nth-last-child(-n+4) {
-		display: none;
-		content: '';
-	}
-} */
+ul#adminmenu li.menu-icon-envira ul.wp-submenu li:last-child {
+  display: block; }
+
+body.envira-welcome-enabled ul#adminmenu li.menu-icon-envira ul.wp-submenu li:nth-last-child(-n+4) {
+  display: none; }
+body.envira-welcome-enabled ul#adminmenu li.menu-icon-envira ul.wp-submenu li:last-child {
+  display: block; }
+
 /* ==========================================================================
    Modal General
    ========================================================================== */

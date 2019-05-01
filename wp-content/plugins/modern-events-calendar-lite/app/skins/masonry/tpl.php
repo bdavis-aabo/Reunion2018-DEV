@@ -23,8 +23,9 @@ jQuery(document).ready(function()
         end_date: "'.$this->end_date.'",
 		offset: "'.$this->next_offset.'",
         atts: "'.http_build_query(array('atts'=>$this->atts), '', '&').'",
-        ajax_url: "'.admin_url('admin-ajax.php?lang=ru', NULL).'",
+        ajax_url: "'.admin_url('admin-ajax.php', NULL).'",
         sed_method: "'.$this->sed_method.'",
+        image_popup: "'.$this->image_popup.'",
         masonry_like_grid: "'.$this->masonry_like_grid.'",
         sf:
         {
@@ -36,8 +37,10 @@ jQuery(document).ready(function()
 
 // Include javascript code into the footer
 $this->factory->params('footer', $javascript);
+$styling = $this->main->get_styling();
+$event_colorskin = (isset($styling['mec_colorskin'] ) || isset($styling['color'])) ? ' colorskin-custom ' : '';
 ?>
-<div class="mec-wrap mec-skin-masonry-container <?php echo $this->html_class; ?>" id="mec_skin_<?php echo $this->id; ?>">
+<div class="mec-wrap mec-skin-masonry-container<?php echo $event_colorskin; ?><?php echo $this->html_class; ?>" id="mec_skin_<?php echo $this->id; ?>">
     <?php if(trim($this->filter_by)) echo $this->filter_by(); ?>
 
     <?php if($this->found): ?>
@@ -45,11 +48,11 @@ $this->factory->params('footer', $javascript);
         <?php echo $items_html; ?>
     </div>
     <div class="mec-skin-masonry-no-events-container mec-util-hidden" id="mec_skin_no_events_<?php echo $this->id; ?>">
-        <?php _e('No event found!', 'moder-events-calendar-lite'); ?>
+        <?php _e('No event found!', 'modern-events-calendar-lite'); ?>
     </div>
     <?php else: ?>
     <div class="mec-skin-masonry-events-container" id="mec_skin_events_<?php echo $this->id; ?>">
-        <?php _e('No event found!', 'moder-events-calendar-lite'); ?>
+        <?php _e('No event found!', 'modern-events-calendar-lite'); ?>
     </div>
     <?php endif; ?>
     
