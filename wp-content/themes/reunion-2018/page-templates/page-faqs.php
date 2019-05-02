@@ -2,7 +2,8 @@
 
 <?php get_header() ?>
 
-  <?php if(!is_front_page()): get_template_part('page/page-navigation'); endif; ?>
+  <?php if(!is_front_page() && !is_page('reunion-metropolitan-district-faqs')): get_template_part('page/page-navigation'); endif; ?>
+  <?php if(is_page('reunion-metropolitan-district-faqs')): get_template_part('page/metro-navigation'); endif; ?>
 
   <?php get_template_part('page/page-heroimage') ?>
 
