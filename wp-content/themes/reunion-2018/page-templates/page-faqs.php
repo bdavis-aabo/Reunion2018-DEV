@@ -22,7 +22,7 @@
     </div>
   </section>
 
-  <?php if(is_page('community-faqs')): ?>
+  <?php if(is_page('community-faqs') || is_page('reunion-metropolitan-district-faqs')): ?>
   <section class="page-faqs">
     <div class="container">
       <div class="row">
