@@ -33,7 +33,7 @@
       <div class="secondary-links-container">
         <ul class="secondary-links">
           <li><a href="/home-builders/quick-move-in-homes" class="blue-btn left-btn btn">Quick Move-in Homes</a></li>
-          <li><a href="#stay-connected" class="gold-btn right-btn btn">Stay Connected</a></li>
+          <li><a href="/stay-connected" class="gold-btn right-btn btn">Stay Connected</a></li>
         </ul>
         <ul class="social-links">
           <li class="icon"><a href="https://www.facebook.com/ReunionCO" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
