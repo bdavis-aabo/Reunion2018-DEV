@@ -33,13 +33,17 @@ html { scroll-behavior: smooth; }
   &.sticky { position: fixed; width: 100%; animation: smoothScroll 1s forwards; z-index: 16; }
 }
 .news-box { padding: 10px; text-align: left; float: left; width: 100%; z-index: 1; position: relative; z-index: 1;
-  box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: transform .5s ease-out; top: -15px; left: 0; transform: translateY(-60px);
-  .fas { padding-top: 2px; display: block; float: left; }
-  p { float: left; padding: 8px 0 0 20px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 14px; width: 80%;
+  box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: transform .5s ease-out; top: -15px; left: 0; transform: translateY(-75px);
+  .alert-title { margin: 0; padding: 0;
+    .fas { padding-top: 2px; display: block; float: left; }
+    .alert-caps { text-transform: uppercase; padding: 5px 0 0 10px; display: block; float: left; }
+  }
+  .fas { padding-top: 2px; display: block; float: left; font-size: 1.1em; }
+  p { float: left; padding: 0 0 0 25px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 14px; width: 80%;
     line-height: 1.5em;
     .alert-caps { text-transform: uppercase; }
   }
-  .alert-close { color: $white; transition: opacity .3s ease-in-out; float: right; cursor: pointer;
+  .alert-close { color: $white; transition: opacity .3s ease-in-out; float: right; cursor: pointer; position: absolute; right: 10px; top: 10px;
     &:hover { opacity: .8; }
   }
   &.show-alert { transform: translateY(10px); z-index: 1;}
@@ -624,16 +628,17 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   .header {
     .reunion-logo { width: 175px; }
   }
-  .news-box { padding: 10px 20px; text-align: left; float: left; width: 100%; position: relative; top: 0; left: 0; z-index: 1;
+  .news-box { padding: 10px 20px; text-align: left; float: left; width: 100%; position: relative; top: -35px; left: 0; z-index: 1;
     box-shadow: 0 2px 5px rgba(0,0,0,.3);
-    .fas { padding-top: 2px; display: block; float: left; }
-    p { float: left; padding: 8px 0 0 20px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 18px;
-      .alert-caps { text-transform: uppercase; }
+    .alert-title { margin: 0; padding: 0;
+      .fas { padding-top: 2px; display: block; float: left; }
+      .alert-caps { text-transform: uppercase; padding: 10px 0 0 10px; display: block; float: left; }
     }
-    .alert-close { color: $white; transition: opacity .3s ease-in-out; float: right; cursor: pointer;
+    p { float: left; padding: 0 0 0 45px; margin: 0; font-family: 'tradegothic-normal', sans-serif; font-size: 18px; }
+    .alert-close { color: $white; transition: opacity .3s ease-in-out; cursor: pointer;
       &:hover { opacity: .8; }
     }
-    &.show-alert { transform: translateY(0);}
+    &.show-alert { transform: translateY(35px);}
   }
   .scroll-indicator { display: block; width: 20px; height: 152px; background: transparent url('../images/scroll-indicator.png');
     position: absolute; bottom: -76px; left: 50%; transform: translateX(-50%); }

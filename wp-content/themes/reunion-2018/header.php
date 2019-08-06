@@ -37,8 +37,8 @@
         </ul>
         <ul class="social-links">
           <li class="icon"><a href="https://www.facebook.com/ReunionCO" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
-          <li class="icon"><a href="http://www.pinterest.com/ReunionCO/" target="_blank"><i class="fab fa-pinterest-square"></i></a></li>
-          <li class="icon"><a href="http://instagram.com/reunionco" target="_blank"><i class="fab fa-instagram"></i></a></li>
+          <li class="icon"><a href="https://www.pinterest.com/ReunionCO/" target="_blank"><i class="fab fa-pinterest-square"></i></a></li>
+          <li class="icon"><a href="https://instagram.com/reunionco" target="_blank"><i class="fab fa-instagram"></i></a></li>
           <li class="icon"><a href="https://www.youtube.com/user/ReunionCO" target="_blank"><i class="fab fa-youtube-square"></i></a></li>
         </ul>
       </div>

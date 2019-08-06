@@ -24,8 +24,8 @@
     <?php if($_alerts->have_posts()): ?>
     <section class="news-box red-bg">
       <?php while($_alerts->have_posts()): $_alerts->the_post() ?>
-      <i class="fas fa-2x fa-exclamation-circle gold-txt"></i>
-      <p><span class="alert-caps"><?php the_title() ?></span> - <?php echo get_field('alert_content') ?></p>
+      <p class="alert-title"><i class="fas fa-2x fa-exclamation-circle gold-txt"></i> <span class="alert-caps"><?php the_title() ?></span></p>
+      <?php echo get_field('alert_content') ?>
       <a class="alert-close"><i class="fas fa-2x fa-times"></i></a>
       <?php endwhile; ?>
     </section>
