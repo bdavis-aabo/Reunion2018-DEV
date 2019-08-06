@@ -231,14 +231,15 @@ img.aligncenter, .aligncenter { float: none; margin: 0 auto 15px; display: inher
 
 /*** Event Table Styles ***/
 .tablepress {
-  &.event-table { 
-    td { padding: 20px; border-top: none !important; width: 50%;
+  &.event-table {
+    td { padding: 20px; border-top: none !important; width: 33%; text-align: center; border-right: 2px solid $gold;
       strong { color: $red; font-family: 'rockwell-bold',sans-serif; font-size: 1.25em; }
       em { font-family: 'tradegothic-normal', sans-serif; font-size: 1.1em; text-transform: uppercase; font-style: normal; display: block;
         color: $blue; }
       ul { margin: 8px 0; padding: 0;
         li { padding: 0 0 6px; }
       }
+      &:last-child { border-right: none; }
     }
   }
 }
