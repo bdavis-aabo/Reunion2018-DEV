@@ -1,3 +1,4 @@
+@import 'mixins';
 @import 'design';
 @import 'navigation';
 /*** TABLE OF CONTENTS
@@ -506,6 +507,29 @@ html { scroll-behavior: smooth; }
   }
 }
 
+/*** CLICK TO CALL BUTTON/BOX ***/
+.call-btn { position: fixed; bottom: 15px; left: 15px; width: 48px; height: 48px; border-radius: 100%; background: $gold; border: 2px solid $white; box-shadow: 0,0,10px,rgba(0,0,0,.5);
+  text-align: center; padding: 5px 0 0 2px; transition: all 250ms ease-in-out; z-index: 1000; cursor: pointer; outline: none;
+  &.focus { outline: none !important; -webkit-outline: none !important; }
+  &:hover { background: tint($gold,10); box-shadow: none; }
+  .fas { font-size: 24px; color: $white; }
+
+  &.hide { transform: translateY(90px); }
+}
+.call-box { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1001; transform: translateY(100%); transition: all 250ms ease-in-out;
+  .close-callbox { position: absolute; right: 15px; top: 15px; cursor: pointer; color: $white !important;
+    .fas { font-size: 1.5em; }
+  }
+  .call-box-contents { padding: 50px 15px; position: relative; top: 40px;
+    .call-box-title { font-size: 1.75em; color: $gold; margin: 0 0 12px; }
+    p { line-height: 1.75em; }
+    .click-to-call  { list-style: none; margin-left: 0; padding-left: 0;
+      li { padding: 10px 0 0; }
+    }
+  }
+  &.open { transform: translateY(0); }
+}
+
 /*** HOMEPAGE PROMOTIONAL LIGHTBOX ***/
 .window-mask { position: fixed; background: rgba(0,0,0,.8); top: 0; left: 0; width: 100vw; height: 100vh; z-index: -999; opacity: 0;
   transition: opacity .5s ease-in-out;
@@ -738,6 +762,21 @@ No media query since this is the default in Bootstrap because it is "mobile firs
     }
   }
 
+  /*** CLICK TO CALL BUTTON/BOX ***/
+  .call-btn { position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; border-radius: 100%; padding: 5px 0 0 3px;
+    .fas { font-size: 24px; }
+  }
+  .call-box {
+    .call-box-contents { padding: 25px; position: relative;
+      .call-box-title { font-size: 1.75em; color: $gold; margin: 0 0 8px; }
+      .click-to-call  { font-size: 1.1em; list-style: none; margin-left: 0; padding-left: 0;
+        li { padding: 10px 0 0;
+          a { color: $blue; }
+        }
+      }
+    }
+  }
+
   /*** HOMEPAGE PROMOTIONAL LIGHTBOX ***/
   .window-mask {
     .promotion-container { min-width: auto; }
@@ -871,6 +910,20 @@ No media query since this is the default in Bootstrap because it is "mobile firs
 
   .footer {
     .map-container { min-height: auto; }
+  }
+
+  /*** CLICK TO CALL BUTTON/BOX ***/
+  .call-btn { position: fixed; width: 72px; height: 72px; border-radius: 100%; padding: 5px 0 0 3px;
+    .fas { font-size: 36px; }
+    &.hide { transform: translateY(120px); }
+  }
+  .call-box { left: 20px; bottom: 20px; top: unset; width: 40vw; height: 25vh; transform: translateY(110%); border: 4px solid $white;
+    .call-box-contents { padding: 25px; position: relative; color: $white;
+      .call-box-title { font-size: 1.75em; color: $blue; margin: 0 0 8px; }
+      .click-to-call  { font-size: 1.1em; list-style: none; margin-left: 0; padding-left: 0;
+        li { padding: 10px 0 0; }
+      }
+    }
   }
 }
 

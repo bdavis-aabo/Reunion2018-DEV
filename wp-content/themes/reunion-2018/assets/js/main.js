@@ -190,3 +190,15 @@ jQuery('input.mailto_check').change(function(){
 	});
 
 //$('select.price:first-child').css('display','none');
+setTimeout(function(){
+  $('.call-btn').removeClass('hide')
+}, 2000);
+
+$('.call-btn').click(function(){
+  $(this).toggleClass('hide');
+  $('.call-box').addClass('open');
+});
+$('.close-callbox').click(function(){
+  $('.call-box').removeClass('open');
+  $('.call-btn').removeClass('hide');
+});

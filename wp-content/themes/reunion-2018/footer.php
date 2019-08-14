@@ -35,12 +35,22 @@
   </div>
 </footer>
 
-<?php if(!is_front_page()): ?>
-  <button class="contact-btn" onclick="ga('send','event','contact','click','floating-btn');">
 
-  </button>
-<?php endif; ?>
+<button class="call-btn hide" onclick="ga('send','event','contact','click','floating-btn');"><i class="fas fa-comment-dots"></i></button>
+<div class="call-box gold-bg">
+  <a class="close-callbox"><i class="fas fa-times"></i></a>
 
+  <div class="call-box-contents">
+    <h1 class="call-box-title">Seeing is believing...</h1>
+    <p>Come see for yourself why Reunion is real life. Schedule a tour today with one of our builders:</p>
+    <ul class="click-to-call">
+      <li><strong>Oakwood Homes</strong> - <a href="tel:3034868915" onclick="ga('send','event','Click to Call', '303-486-8915');">303-486-8915</a></li>
+      <li><strong>Richmond American Homes</strong> - <a href="tel:3038505750" onclick="ga('send','event','Click to Call', '303-850-7570');">303-850-7570</a></li>
+      <li><strong>Shea SPACES / Shea Homes</strong> - <a href="tel:3032867601" onclick="ga('send','event','Click to Call', '303-286-7601');">303-286-7601</a></li>
+    </p>
+  </div>
+
+</div>
 
 <?php if(is_front_page() || is_page('home')): get_template_part('home/home-promotion'); endif; ?>
 
