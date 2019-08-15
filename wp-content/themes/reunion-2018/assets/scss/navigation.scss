@@ -40,7 +40,7 @@ $bar-thickness:               2px;
         .nav-link { color: $white; cursor: pointer; padding-left: 0;
           &:hover { color: $gold; }
           &.dropdown-toggle {
-            &:after { border: none; content: '\f078'; font-family: 'Font Awesome 5 Free'; font-weight: 900; vertical-align: -1px; margin-left: 15px; }
+            &:after { border: none; content: '\f078'; font-family: 'Font Awesome 5'; font-weight: 900; vertical-align: -1px; margin-left: 15px; }
           }
         }
         .dropdown-menu { border-radius: 0; display: block;
