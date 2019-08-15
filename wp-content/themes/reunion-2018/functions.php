@@ -62,7 +62,7 @@ function wpt_register_js(){
 
 function wpt_register_css(){
   wp_register_style('bootstrap.min', '//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css');
-  //wp_register_style('fontawesome.min', '//pro.fontawesome.com/releases/v5.10.1/css/all.css');
+  wp_register_style('fontawesome.min', get_template_directory_uri().'/assets/fonts/fontawesome/css/all.css');
   wp_register_style('main.min', get_template_directory_uri() . '/assets/css/main.min.css');
   wp_enqueue_style('bootstrap.min');
   wp_enqueue_style('fontawesome.min');
