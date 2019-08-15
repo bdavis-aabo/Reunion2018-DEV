@@ -12,6 +12,8 @@
     <?php include_once('assets/_inc/header-includes.php') ?>
     <?php include_once('assets/_inc/ga-include.php') ?>
 
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.1/css/all.css" integrity="sha384-y++enYq9sdV7msNmXr08kJdkX4zEI1gMjjkw0l9ttOepH7fMdhb7CePwuRQCfwCr" crossorigin="anonymous">
+
     <?php wp_head() ?>
   </head>
   <body>
