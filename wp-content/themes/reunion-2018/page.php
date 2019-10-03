@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <?php if(is_page('model-directory') || is_page('reunion-community-map')): ?>
+    <?php /* if(is_page('model-directory') || is_page('reunion-community-map')): ?>
     <div class="container-fluid">
       <div class="row">
         <div class="col-10 offset-1">
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <?php endif; ?>
+    <?php endif; */ ?>
 
     <?php if(get_field('page_content_image') != ''): $_bodyImage = get_field('page_content_image'); ?>
       <img src="<?php echo $_bodyImage['url'] ?>" class="aligncenter img-fluid" alt="<?php the_title() ?>" />

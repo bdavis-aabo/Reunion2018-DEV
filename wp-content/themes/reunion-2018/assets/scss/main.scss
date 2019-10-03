@@ -1035,6 +1035,19 @@ No media query since this is the default in Bootstrap because it is "mobile firs
   .pagehero-section {
     .page-heroimage { background-position: center 0 !important; }
   }
+  .call-box { height: 380px; }
+}
+
+// Microsoft Edge
+@supports (-ms-ime-align:auto)  {
+  .call-box { left: 20px; bottom: 20px; top: unset; width: 40vw; height: 380px; transform: translateY(110%); border: 4px solid $white;
+    .call-box-contents { padding: 25px; position: relative; color: $white;
+      .call-box-title { font-size: 1.75em; color: $blue; margin: 0 0 8px; }
+      .click-to-call  { font-size: 1.1em; list-style: none; margin-left: 0; padding-left: 0;
+        li { padding: 10px 0 0; }
+      }
+    }
+  }
 }
 
 /* End */
