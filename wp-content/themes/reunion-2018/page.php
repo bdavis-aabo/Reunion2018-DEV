@@ -20,20 +20,6 @@
         </div>
       </div>
     </div>
-    <?php /* if(is_page('model-directory') || is_page('reunion-community-map')): ?>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-10 offset-1">
-          <div class="map-container">
-            <?php echo get_the_post_thumbnail($post->ID, 'full', array('class' => 'img-fluid aligncenter')); ?>
-            <p>
-              <a href="<?php bloginfo('template_directory') ?>/assets/images/ReunionBuilderMap.pdf" target="_blank" class="btn gold-btn">Download Directory Map</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <?php endif; */ ?>
 
     <?php if(get_field('page_content_image') != ''): $_bodyImage = get_field('page_content_image'); ?>
       <img src="<?php echo $_bodyImage['url'] ?>" class="aligncenter img-fluid" alt="<?php the_title() ?>" />

@@ -44,9 +44,10 @@
     <h1 class="call-box-title">Seeing is believing...</h1>
     <p>Come see for yourself why Reunion is real life. Schedule a tour today with one of our builders:</p>
     <ul class="click-to-call">
-      <li><strong>Oakwood Homes</strong> - <a href="tel:3034868915" onclick="ga('send','event','Click to Call', '303-486-8915');">303-486-8915</a></li>
-      <li><strong>Richmond American Homes</strong> - <a href="tel:3038505750" onclick="ga('send','event','Click to Call', '303-850-7570');">303-850-7570</a></li>
-      <li><strong>Shea SPACES / Shea Homes</strong> - <a href="tel:3032867601" onclick="ga('send','event','Click to Call', '303-286-7601');">303-286-7601</a></li>
+      <li><strong>Oakwood Homes</strong> - <a href="tel:3034868915" onclick="ga('send','event','Click to Call Popup', '303-486-8915');">303-486-8915</a></li>
+      <li><strong>Richmond American Homes</strong> - <a href="tel:3038505750" onclick="ga('send','event','Click to Call Popup', '303-850-7570');">303-850-7570</a></li>
+      <li><strong>Shea SPACES / Shea Homes</strong> - <a href="tel:3032867601" onclick="ga('send','event','Click to Call Popup', '303-286-7601');">303-286-7601</a></li>
+      <li><strong>Reunion Information Center</strong> - <a href="tel:3034868842" onclick="ga('send','event','Click to Call Popup', '303-486-8842');">303-486-8842</a></li>
     </p>
   </div>
 

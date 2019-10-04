@@ -1,10 +1,5 @@
 $(document).ready(function(){
 
-  // var screen_mobile = 667;
-  // if(window.innerWidth <= screen_mobile){
-  //   setTimeout(function(){ window.scrollTo(0,1) }, 1000);
-  // }
-
   //fix header to top on scroll
   $(window).scroll(function(){
     if($(this).scrollTop() > 101){
@@ -17,7 +12,7 @@ $(document).ready(function(){
   });
 
 
-  //nav-btn
+  //nav-btn animation
   $('.nav-btn').click(function(){
     $('.nav-btn').toggleClass('open');
     //navigation animation
@@ -43,7 +38,8 @@ $(document).ready(function(){
           $(this).parent().removeClass('show');
           $(this).next().removeClass('show');
       }
-  });
+  }); //end Dropdown hover
+
   // Check the dropdown on hover
   $(".dropdown-menu").hover( function () {
   }, function() {
@@ -56,7 +52,7 @@ $(document).ready(function(){
           $(this).parent().removeClass('show');
           $(this).removeClass('show');
       }
-  });
+  }); //end check dropdown
 
   //alert box & promotion lightbox Functions
   function displayAlert(){
@@ -77,8 +73,6 @@ $(document).ready(function(){
     $('.promotion-container').removeClass('visible');
     $('html, body').css('overflow', 'auto');
   }
-
-
 
   if(window.location.pathname === '/'){
     if($('.news-box').length){
@@ -109,7 +103,7 @@ $(document).ready(function(){
         }
       });
     }
-  }
+  } //end alertbox + lightbox functions
 
   if(window.location.pathname === '/amenities/parks-and-trails/'){
     $('.map-point').hover(function(){
@@ -122,6 +116,7 @@ $(document).ready(function(){
 		});
   }
 
+  // Homepage FadeIn / FadeOut
   $('.home-image').click(function(){
     var e = $(this),
       t = e.attr('data-link');
@@ -176,18 +171,27 @@ if(window.location.pathname === '/about-reunion/' || window.location.pathname ==
 }
 
 //email to script
-jQuery('input.mailto_check').change(function(){
-		var emailTo = [];
-		var builder = [];
-
-		jQuery.each(jQuery('input.mailto_check:checked'), function(){
-	    emailTo.push(jQuery(this).attr('data-mailto'));
-			builder.push(jQuery(this).attr('data-builder'));
-		});
-
-		jQuery('#mailto').val(emailTo.join(', '));
-		jQuery('#builder').val(builder.join(', '));
+$('input.mailto_check').change(function(){
+	var emailTo = [];
+	var builder = [];
+	jQuery.each($('input.mailto_check:checked'), function(){
+    emailTo.push($(this).attr('data-mailto'));
+		builder.push($(this).attr('data-builder'));
 	});
+	$('#mailto').val(emailTo.join(', '));
+	$('#builder').val(builder.join(', '));
+});
+
+//change ph# to required if realtor is yes
+$('.realtor').change(function(){
+  if(this.checked){
+    $('.phone_num').prop('required',true);
+    $('.phone-label').append('<span class="req">*</span>');
+  } else {
+    $('.phone_num').prop('required',false);
+    $('.phone-label > .req').remove();
+  }
+});
 
 //$('select.price:first-child').css('display','none');
 setTimeout(function(){
